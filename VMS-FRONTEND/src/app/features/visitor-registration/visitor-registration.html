@@ -463,69 +463,40 @@
 
           </div>
 
+<!-- EMAIL -->
+<div class="field-group">
 
-          <!-- EMAIL -->
-          <div class="field-group">
+  <label for="email">
+    Email Address
+    <span class="required">*</span>
+  </label>
 
-            <label for="searchEmail">
-              Email Address
-              <span class="required">*</span>
-            </label>
+  <div
+    class="input-wrapper"
+    [class.input-error]="isInvalid(visitorForm, 'email')"
+  >
 
-            <div [formGroup]="searchForm">
+    <span class="input-icon">
+      @
+    </span>
 
-              <div
-                class="input-wrapper"
-                [class.input-error]="
-                  isInvalid(searchForm, 'email')
-                "
-              >
+    <input
+      id="email"
+      type="email"
+      formControlName="email"
+      placeholder="example@domain.com"
+    />
 
-                <span class="input-icon">
-                  @
-                </span>
+  </div>
 
-              <input
-  id="searchEmail"
-  type="email"
-  formControlName="email"
-  placeholder="example@domain.com"
-  (blur)="searchVisitor()"
-/>
+  <div
+    class="error-message"
+    *ngIf="isInvalid(visitorForm, 'email')"
+  >
+    Please enter a valid email address.
+  </div>
 
-              </div>
-
-              <!-- <div class="email-search-row">
-
-                <button
-                  type="button"
-                  class="inline-search-button"
-                  (click)="searchVisitor()"
-                  [disabled]="isSearching"
-                >
-                  {{
-                    isSearching
-                      ? 'Searching...'
-                      : 'Check Existing Visitor'
-                  }}
-                </button>
-
-              </div> -->
-
-              <div
-                class="error-message"
-                *ngIf="
-                  isInvalid(searchForm, 'email')
-                "
-              >
-                Please enter a valid email address.
-              </div>
-
-            </div>
-
-          </div>
-
-
+</div>
           <!-- MOBILE NUMBER -->
           <div class="field-group">
 
@@ -804,6 +775,7 @@
                 id="expectedArrivalAt"
                 type="datetime-local"
                 formControlName="expectedArrivalAt"
+                [min]="minDateTime"
               />
 
             </div>
@@ -840,6 +812,7 @@
                 id="expectedDepartureAt"
                 type="datetime-local"
                 formControlName="expectedDepartureAt"
+                [min]="minDateTime"
               />
 
             </div>

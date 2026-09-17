@@ -1,65 +1,31 @@
-// import { VisitStatus } from "./visit-status";
+
+
+// import { VisitStatus } from './visit-status';
 
 // export interface Visit {
 //   id: number;
 
+//   visitReference: string;
+
 //   visitorId: number;
 
-//   visitorTypeId: number;
+//   visitorType: string;
+//   registrationType: string;
 
-//   registrationTypeId: number;
+//   purpose: string;
 
-//   purposeId: number;
+//   hostId: number;
+//   departmentId?: number | null;
 
-//   hostEmployeeId: number;
+//   expectedArrivalAt: string;
+//   expectedDepartureAt?: string | null;
 
-//   departmentId: number;
+//   remarks?: string | null;
 
-//   visitDate: string;
-
-//   visitTime: string;
-
-//   remarks?: string;
+//   // ID proof is optional
+//   proofType?: string | null;
+//   proofNumber?: string | null;
+//   proofImagePath?: string | null;
 
 //   status: VisitStatus;
-
-//   qrCode?: string;
-
-//   checkInTime?: string;
-
-//   checkOutTime?: string;
-
-//   createdAt?: string;
-
-//   updatedAt?: string;
 // }
-
-import { VisitStatus } from './visit-status';
-
-export interface Visit {
-  id: number;
-
-  visitReference: string;
-
-  visitorId: number;
-
-  visitorType: string;
-  registrationType: string;
-
-  purpose: string;
-
-  hostId: number;
-  departmentId?: number | null;
-
-  expectedArrivalAt: string;
-  expectedDepartureAt?: string | null;
-
-  remarks?: string | null;
-
-  // ID proof is optional
-  proofType?: string | null;
-  proofNumber?: string | null;
-  proofImagePath?: string | null;
-
-  status: VisitStatus;
-}
