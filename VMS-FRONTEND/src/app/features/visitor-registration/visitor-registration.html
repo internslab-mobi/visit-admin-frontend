@@ -735,10 +735,10 @@
                 </option>
 
                 <option
-                  *ngFor="let department of departments"
-                  [ngValue]="department.id"
+                  *ngFor="let employee of employees"
+                  [ngValue]="employee.department.id"
                 >
-                  {{ department.name }}
+                  {{ employee.department.departmentName }}
                 </option>
 
               </select>

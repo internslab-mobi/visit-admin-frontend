@@ -1,15 +1,23 @@
 export interface Employee {
-  id: number;
+  id: string;
+  employeeCode: string;
 
-  employeeId: string;
-
-  fullName: string;
+  firstName: string;
+  lastName: string;
 
   email: string;
+  mobileNumber: string;
 
-  departmentId: number;
+  department: Department;
 
-  designation?: string;
+  designation: string;
+  status: string;
+}
 
-  isActive: boolean;
+export interface Department {
+  id: string;
+  departmentCode: string;
+  departmentName: string;
+  description: string | null;
+  status: string;
 }

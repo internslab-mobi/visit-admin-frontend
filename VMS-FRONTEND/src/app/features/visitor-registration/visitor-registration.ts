@@ -362,6 +362,7 @@ private readonly cdr=inject(ChangeDetectorRef);
     /*
      * Employees
      */
+    console.log('Loading employees...');
 
     this.employeeService
       .getEmployees()
@@ -722,8 +723,7 @@ private readonly cdr=inject(ChangeDetectorRef);
         visitValue.purpose
           ?.trim(),
 
-      hostId:
-        Number(visitValue.hostId),
+      hostId: visitValue.hostId,
 
       visitDate:
         arrivalDate,
@@ -936,38 +936,31 @@ private readonly cdr=inject(ChangeDetectorRef);
 
   onEmployeeChange(): void {
 
-    const employeeId =
-      Number(
-        this.visitForm
-          .get('hostId')
-          ?.value
-      );
+  const employeeId =
+    this.visitForm.get('hostId')?.value;
 
-    if (!employeeId) {
-
-      this.visitForm.patchValue({
-        departmentId: null
-      });
-
-      return;
-    }
-
-    const employee =
-      this.employees.find(
-        employee =>
-          employee.id === employeeId
-      );
-
-    if (!employee) {
-      return;
-    }
-
+  if (!employeeId) {
     this.visitForm.patchValue({
-      departmentId:
-        employee.departmentId
+      departmentId: null
     });
+    return;
   }
 
+  const employee = this.employees.find(
+    employee => employee.id === employeeId
+  );
+
+  if (!employee) {
+    this.visitForm.patchValue({
+      departmentId: null
+    });
+    return;
+  }
+
+  this.visitForm.patchValue({
+    departmentId: employee.department.id
+  });
+}
   /*
    * ============================================================
    * ID PROOF FILE
@@ -1084,11 +1077,10 @@ private readonly cdr=inject(ChangeDetectorRef);
    */
 
   getEmployeeDisplayName(
-    employee: Employee
-  ): string {
-
-    return `${employee.employeeId} — ${employee.fullName}`;
-  }
+  employee: Employee
+): string {
+  return `${employee.id} — ${employee.firstName} ${employee.lastName}`;
+}
 
   /*
    * ============================================================
