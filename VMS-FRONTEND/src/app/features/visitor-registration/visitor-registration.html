@@ -1,0 +1,1210 @@
+<div class="registration-page">
+
+  <!-- =====================================================
+       LEFT WELCOME PANEL
+       ===================================================== -->
+  <aside class="welcome-panel">
+
+    <div class="welcome-overlay"></div>
+
+    <div class="welcome-content">
+
+      <!-- BRAND -->
+      <div class="brand">
+
+        <div class="brand-icon">
+          V
+        </div>
+
+        <div>
+          <div class="brand-name">
+            Visitor Management System
+          </div>
+
+          <div class="brand-subtitle">
+            Safe People &nbsp;•&nbsp; Secure Workplace &nbsp;•&nbsp; Better Tomorrow
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- WELCOME -->
+      <div class="welcome-text">
+
+        <h1>Welcome!</h1>
+
+        <h2>Please register your visit</h2>
+
+        <p>
+          Help us make your visit smooth and secure.
+          Complete the form below with your details.
+        </p>
+
+      </div>
+
+
+      <!-- ILLUSTRATION -->
+      <div class="welcome-illustration">
+
+        <div class="illustration-window">
+
+          <div class="reception-sign">
+            RECEPTION
+          </div>
+
+          <div class="person person-left">
+            👩‍💼
+          </div>
+
+          <div class="person person-right">
+            🧑‍💼
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- BENEFITS -->
+      <div class="benefits">
+
+        <div class="benefit">
+
+          <div class="benefit-icon">
+            ✓
+          </div>
+
+          <div>
+            <h3>Secure Check-in</h3>
+            <p>Your safety is our priority</p>
+          </div>
+
+        </div>
+
+
+        <div class="benefit">
+
+          <div class="benefit-icon">
+            ◷
+          </div>
+
+          <div>
+            <h3>Quick & Easy</h3>
+            <p>Register in just a few steps</p>
+          </div>
+
+        </div>
+
+
+        <div class="benefit">
+
+          <div class="benefit-icon">
+            ▣
+          </div>
+
+          <div>
+            <h3>Smooth Entry</h3>
+            <p>Fast and organized visitor entry</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+
+  <!-- =====================================================
+       RIGHT FORM AREA
+       ===================================================== -->
+  <main class="form-panel">
+
+    <!-- DATE / TIME -->
+    <div class="top-date-time">
+
+      <span>
+        📅
+        {{ currentDate | date:'EEE, dd MMM yyyy' }}
+      </span>
+
+      <span>
+        ◷
+        {{ currentDate | date:'hh:mm a' }}
+      </span>
+
+    </div>
+
+
+    <div class="registration-card">
+
+
+      <!-- =================================================
+           HEADER
+           ================================================= -->
+      <div class="form-header">
+
+        <div class="header-main">
+
+          <div class="header-icon">
+            👤
+          </div>
+
+          <div>
+
+            <h2>
+              Visitor Registration
+            </h2>
+
+            <p>
+              Please fill in the details below to register your visit.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="divider"></div>
+
+      </div>
+
+
+      <!-- =================================================
+           ALERTS
+           ================================================= -->
+
+      <div
+        class="alert-message error-alert"
+        *ngIf="errorMessage"
+      >
+        <span class="alert-icon">!</span>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+
+      <div
+        class="alert-message success-alert"
+        *ngIf="successMessage"
+      >
+        <span class="alert-icon">✓</span>
+        <span>{{ successMessage }}</span>
+      </div>
+
+
+      <!-- =================================================
+           1. VISITOR TYPE & REGISTRATION TYPE
+           ================================================= -->
+
+      <section
+        class="form-section"
+        [formGroup]="visitForm"
+      >
+
+        <div class="section-heading">
+
+          <div class="section-number">
+            1
+          </div>
+
+          <h3>
+            Visitor Type & Registration Type
+          </h3>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- VISITOR TYPE -->
+          <div class="field-group">
+
+            <label for="visitorType">
+              Visitor Type
+              <span class="required">*</span>
+            </label>
+
+            <div
+              class="input-wrapper"
+              [class.input-error]="
+                isInvalid(visitForm, 'visitorType')
+              "
+            >
+
+              <span class="input-icon">
+                ♙
+              </span>
+
+              <select
+                id="visitorType"
+                formControlName="visitorType"
+              >
+
+                <option value="">
+                  Select Visitor Type
+                </option>
+
+                <option
+                  *ngFor="let type of visitorTypes"
+                  [value]="type.name"
+                >
+                  {{ type.name }}
+                </option>
+
+              </select>
+
+            </div>
+
+            <div
+              class="error-message"
+              *ngIf="
+                isInvalid(visitForm, 'visitorType')
+              "
+            >
+              Please select a visitor type.
+            </div>
+
+          </div>
+
+
+          <!-- REGISTRATION TYPE -->
+          <div class="field-group">
+
+            <label for="registrationType">
+              Registration Type
+              <span class="required">*</span>
+            </label>
+
+            <div
+              class="input-wrapper"
+              [class.input-error]="
+                isInvalid(visitForm, 'registrationType')
+              "
+            >
+
+              <span class="input-icon">
+                ▣
+              </span>
+
+              <select
+                id="registrationType"
+                formControlName="registrationType"
+              >
+
+                <option value="">
+                  Select Registration Type
+                </option>
+
+                <option
+                  *ngFor="let type of registrationTypes"
+                  [value]="type.name"
+                >
+                  {{ type.name }}
+                </option>
+
+              </select>
+
+            </div>
+
+            <div
+              class="error-message"
+              *ngIf="
+                isInvalid(visitForm, 'registrationType')
+              "
+            >
+              Please select a registration type.
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           2. PERSONAL DETAILS
+           ================================================= -->
+
+      <section
+        class="form-section"
+        [formGroup]="visitorForm"
+      >
+
+        <div class="section-heading">
+
+          <div class="section-number">
+            2
+          </div>
+
+          <h3>
+            Personal Details
+          </h3>
+
+        </div>
+
+
+        <!-- EXISTING VISITOR -->
+        <div
+          class="existing-visitor-banner"
+          *ngIf="existingVisitor"
+        >
+
+          <div class="existing-icon">
+            ✓
+          </div>
+
+          <div>
+
+            <strong>
+              Existing visitor found
+            </strong>
+
+            <p>
+              {{ existingVisitor.firstName }}
+              {{ existingVisitor.lastName }}
+              ·
+              {{ existingVisitor.email }}
+              ·
+              {{ existingVisitor.companyName || 'No company' }}
+            </p>
+
+            <small>
+              Existing visitor profile will be reused.
+              A new visit will be created for this visit.
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- FIRST NAME -->
+          <div class="field-group">
+
+            <label for="firstName">
+              First Name
+              <span class="required">*</span>
+            </label>
+
+            <div
+              class="input-wrapper"
+              [class.input-error]="
+                isInvalid(visitorForm, 'firstName')
+              "
+            >
+
+              <span class="input-icon">
+                ♙
+              </span>
+
+              <input
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                placeholder="Enter first name"/>
+                <!-- [readonly]="!!existingVisitor"
+              /> -->
+
+            </div>
+
+            <div
+              class="error-message"
+              *ngIf="
+                isInvalid(visitorForm, 'firstName')
+              "
+            >
+              First name is required.
+            </div>
+
+          </div>
+
+
+          <!-- LAST NAME -->
+          <div class="field-group">
+
+            <label for="lastName">
+              Last Name
+              <span class="required">*</span>
+            </label>
+
+            <div
+              class="input-wrapper"
+              [class.input-error]="
+                isInvalid(visitorForm, 'lastName')
+              "
+            >
+
+              <span class="input-icon">
+                ♙
+              </span>
+
+              <input
+                id="lastName"
+                type="text"
+                formControlName="lastName"
+                placeholder="Enter last name"/>
+                <!-- [readonly]="!!existingVisitor"
+              /> -->
+
+            </div>
+
+            <div
+              class="error-message"
+              *ngIf="
+                isInvalid(visitorForm, 'lastName')
+              "
+            >
+              Last name is required.
+            </div>
+
+          </div>
+
+<!-- EMAIL -->
+<div class="field-group">
+
+  <label for="email">
+    Email Address
+    <span class="required">*</span>
+  </label>
+
+  <div
+    class="input-wrapper"
+    [class.input-error]="isInvalid(visitorForm, 'email')"
+  >
+
+    <span class="input-icon">
+      @
+    </span>
+
+    <input
+      id="email"
+      type="email"
+      formControlName="email"
+      placeholder="example@domain.com"
+    />
+
+  </div>
+
+  <div
+    class="error-message"
+    *ngIf="isInvalid(visitorForm, 'email')"
+  >
+    Please enter a valid email address.
+  </div>
+
+</div>
+          <!-- MOBILE NUMBER -->
+          <div class="field-group">
+
+            <label for="mobileNumber">
+              Phone Number
+              <span class="required">*</span>
+            </label>
+
+            <div
+              class="input-wrapper"
+              [class.input-error]="
+                isInvalid(visitorForm, 'mobileNumber')
+              "
+            >
+
+              <span class="input-icon">
+                ☎
+              </span>
+
+              <input
+                id="mobileNumber"
+                type="tel"
+                formControlName="mobileNumber"
+                maxlength="10"
+                placeholder="9876543210"/>
+                <!-- [readonly]="!!existingVisitor"
+              /> -->
+
+            </div>
+
+            <div
+              class="error-message"
+              *ngIf="
+                isInvalid(visitorForm, 'mobileNumber')
+              "
+            >
+              Enter a valid 10-digit phone number.
+            </div>
+
+          </div>
+
+
+          <!-- COMPANY -->
+          <div class="field-group">
+
+            <label for="companyName">
+              Company / Organization
+              <span class="required">*</span>
+            </label>
+
+            <div
+              class="input-wrapper"
+              [class.input-error]="
+                isInvalid(visitorForm, 'companyName')
+              "
+            >
+
+              <span class="input-icon">
+                ▥
+              </span>
+
+              <input
+                id="companyName"
+                type="text"
+                formControlName="companyName"
+                placeholder="Enter company name"/>
+                <!-- [readonly]="!!existingVisitor"
+              /> -->
+
+            </div>
+
+            <div
+              class="error-message"
+              *ngIf="
+                isInvalid(visitorForm, 'companyName')
+              "
+            >
+              Company / Organization is required.
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           3. VISIT DETAILS
+           ================================================= -->
+
+      <section
+        class="form-section"
+        [formGroup]="visitForm"
+      >
+
+        <div class="section-heading">
+
+          <div class="section-number">
+            3
+          </div>
+
+          <h3>
+            Visit Details
+          </h3>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- PURPOSE -->
+          <div class="field-group">
+
+            <label for="purpose">
+              Purpose of Visit
+              <span class="required">*</span>
+            </label>
+
+            <div
+              class="input-wrapper"
+              [class.input-error]="
+                isInvalid(visitForm, 'purpose')
+              "
+            >
+
+              <span class="input-icon">
+                ▤
+              </span>
+
+              <select
+                id="purpose"
+                formControlName="purpose"
+              >
+
+                <option value="">
+                  Select Purpose
+                </option>
+
+                <option
+                  *ngFor="let purpose of purposes"
+                  [value]="purpose.name"
+                >
+                  {{ purpose.name }}
+                </option>
+
+              </select>
+
+            </div>
+
+            <div
+              class="error-message"
+              *ngIf="
+                isInvalid(visitForm, 'purpose')
+              "
+            >
+              Please select the purpose.
+            </div>
+
+          </div>
+
+
+          <!-- PERSON TO MEET -->
+          <div class="field-group">
+
+            <label for="hostId">
+              Person to Meet
+              <span class="required">*</span>
+            </label>
+
+            <div
+              class="input-wrapper"
+              [class.input-error]="
+                isInvalid(visitForm, 'hostId')
+              "
+            >
+
+              <span class="input-icon">
+                ♙
+              </span>
+
+              <select
+                id="hostId"
+                formControlName="hostId"
+                (change)="onEmployeeChange()"
+              >
+
+                <option [ngValue]="null">
+                  Select Employee
+                </option>
+
+                <option
+                  *ngFor="let employee of employees"
+                  [ngValue]="employee.id"
+                >
+                  {{ getEmployeeDisplayName(employee) }}
+                </option>
+
+              </select>
+
+            </div>
+
+            <div
+              class="error-message"
+              *ngIf="
+                isInvalid(visitForm, 'hostId')
+              "
+            >
+              Please select the person to meet.
+            </div>
+
+          </div>
+
+
+          <!-- DEPARTMENT -->
+          <div class="field-group">
+
+            <label for="departmentId">
+              Department
+            </label>
+
+            <div class="input-wrapper readonly-wrapper">
+
+              <span class="input-icon">
+                ▥
+              </span>
+
+              <select
+                id="departmentId"
+                formControlName="departmentId"
+              >
+
+                <option [ngValue]="null">
+                  Select Employee First
+                </option>
+
+                <option
+                  *ngFor="let employee of employees"
+                  [ngValue]="employee.department.id"
+                >
+                  {{ employee.department.departmentName }}
+                </option>
+
+              </select>
+
+            </div>
+
+            <small class="field-hint">
+              Automatically selected based on the person to meet.
+            </small>
+
+          </div>
+
+
+          <!-- EXPECTED ARRIVAL -->
+          <div class="field-group">
+
+            <label for="expectedArrivalAt">
+              Expected Arrival
+              <span class="required">*</span>
+            </label>
+
+            <div
+              class="input-wrapper"
+              [class.input-error]="
+                isInvalid(visitForm, 'expectedArrivalAt')
+              "
+            >
+
+              <span class="input-icon">
+                ◷
+              </span>
+
+              <input
+                id="expectedArrivalAt"
+                type="datetime-local"
+                formControlName="expectedArrivalAt"
+                [min]="minDateTime"
+              />
+
+            </div>
+
+            <div
+              class="error-message"
+              *ngIf="
+                isInvalid(visitForm, 'expectedArrivalAt')
+              "
+            >
+              Please select the expected arrival date and time.
+            </div>
+
+          </div>
+
+
+          <!-- EXPECTED DEPARTURE -->
+          <div class="field-group">
+
+            <label for="expectedDepartureAt">
+              Expected Departure
+              <span class="optional">
+                (Optional)
+              </span>
+            </label>
+
+            <div class="input-wrapper">
+
+              <span class="input-icon">
+                ◷
+              </span>
+
+              <input
+                id="expectedDepartureAt"
+                type="datetime-local"
+                formControlName="expectedDepartureAt"
+                [min]="minDateTime"
+              />
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           4. ADDITIONAL INFORMATION
+           ================================================= -->
+
+      <section
+        class="form-section"
+        [formGroup]="visitForm"
+      >
+
+        <div class="section-heading">
+
+          <div class="section-number">
+            4
+          </div>
+
+          <h3>
+            Additional Information
+            <span class="optional">
+              (Optional)
+            </span>
+          </h3>
+
+        </div>
+
+
+        <div class="field-group">
+
+          <label for="remarks">
+            Remarks / Special Notes
+          </label>
+
+          <div class="textarea-wrapper">
+
+            <textarea
+              id="remarks"
+              formControlName="remarks"
+              maxlength="1000"
+              rows="3"
+              placeholder="Any additional information..."
+            ></textarea>
+
+            <span class="character-count">
+              {{
+                visitForm.get('remarks')?.value?.length || 0
+              }}/1000
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           5. ID PROOF
+           ================================================= -->
+
+      <section
+        class="form-section"
+        [formGroup]="visitForm"
+      >
+
+        <div class="section-heading">
+
+          <div class="section-number">
+            5
+          </div>
+
+          <h3>
+            ID Proof
+            <span class="optional">
+              (Optional)
+            </span>
+          </h3>
+
+        </div>
+
+
+        <div class="verification-note">
+
+          <span class="note-icon">
+            i
+          </span>
+
+          <span>
+            ID proof is optional. If provided, it can be verified at the entrance.
+          </span>
+
+        </div>
+
+
+        <div class="id-grid">
+
+
+          <!-- ID TYPE -->
+          <div class="field-group">
+
+            <label for="proofType">
+              ID Type
+            </label>
+
+            <div class="input-wrapper">
+
+              <span class="input-icon">
+                ▣
+              </span>
+
+             <select
+  id="proofType"
+  formControlName="proofType"
+>
+  <option value="">Select ID Type</option>
+  <option value="AADHAAR">Aadhaar</option>
+  <option value="DRIVING_LICENSE">Driving License</option>
+  <option value="PASSPORT">Passport</option>
+  <option value="OTHER">Other</option>
+</select>
+
+            </div>
+
+          </div>
+
+
+          <!-- ID NUMBER -->
+          <div class="field-group">
+
+            <label for="proofNumber">
+              ID Number
+            </label>
+
+            <div class="input-wrapper">
+
+              <span class="input-icon">
+                #
+              </span>
+
+              <input
+                id="proofNumber"
+                type="text"
+                formControlName="proofNumber"
+                placeholder="Enter ID number"
+              />
+
+            </div>
+
+          </div>
+
+
+          <!-- UPLOAD -->
+          <div class="field-group">
+
+            <label>
+              Upload ID Proof
+            </label>
+
+            <label
+              class="upload-box"
+              for="proofImage"
+            >
+
+              <div class="upload-icon">
+                ↑
+              </div>
+
+              <div>
+
+                <strong>
+                  {{
+                    getSelectedFileName()
+                      || 'Upload ID Proof'
+                  }}
+                </strong>
+
+                <span>
+                  JPG, PNG, PDF · Max 5MB · Optional
+                </span>
+
+              </div>
+
+            </label>
+
+            <input
+              id="proofImage"
+              type="file"
+              hidden
+              accept=".jpg,.jpeg,.png,.pdf"
+              (change)="onFileSelected($event)"
+            />
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           ACTIONS
+           ================================================= -->
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="reset-button"
+          (click)="resetForm()"
+        >
+          ↻ &nbsp; Reset
+        </button>
+
+
+        <button
+          type="button"
+          class="submit-button"
+          (click)="submitRegistration()"
+          [disabled]="isCreatingVisitor || isCreatingVisit"
+        >
+
+          {{
+            isCreatingVisitor || isCreatingVisit
+              ? 'Processing...'
+              : '→  Submit Registration'
+          }}
+
+        </button>
+
+      </div>
+
+
+      <!-- =================================================
+           SUCCESS
+           ================================================= -->
+
+      <section
+        class="success-section"
+        *ngIf="registrationSuccess && createdVisit"
+      >
+
+        <div class="success-icon">
+          ✓
+        </div>
+
+        <h2>
+          Registration Successful!
+        </h2>
+
+        <p>
+          Your visit has been successfully registered.
+        </p>
+
+
+        <div class="success-details">
+
+
+          <!-- VISITOR -->
+          <div class="success-detail">
+
+            <span>
+              Visitor
+            </span>
+
+            <!-- <strong>
+              {{
+                existingVisitor
+                  ? existingVisitor.firstName + ' ' + existingVisitor.lastName
+                  : createdVisitor
+                    ? createdVisitor.firstName + ' ' + createdVisitor.lastName
+                    : ''
+              }}
+            </strong> -->
+
+            <strong>
+  {{ createdVisit?.firstName }} {{ createdVisit?.lastName }}
+</strong>
+
+          </div>
+
+
+          <!-- VISIT REFERENCE -->
+          <div class="success-detail">
+
+            <span>
+              Visit Reference
+            </span>
+
+            <strong>
+              {{ createdVisit.visitReference }}
+            </strong>
+
+          </div>
+
+
+          <!-- ARRIVAL -->
+          <div class="success-detail">
+
+            <span>
+              Expected Arrival
+            </span>
+
+            <strong>
+              {{
+                createdVisit.expectedArrivalAt
+                  | date:'dd MMM yyyy, hh:mm a'
+              }}
+            </strong>
+
+          </div>
+
+
+          <!-- DEPARTURE -->
+          <div
+            class="success-detail"
+            *ngIf="createdVisit.expectedDepartureAt"
+          >
+
+            <span>
+              Expected Departure
+            </span>
+
+            <strong>
+              {{
+                createdVisit.expectedDepartureAt
+                  | date:'dd MMM yyyy, hh:mm a'
+              }}
+            </strong>
+
+          </div>
+
+
+          <!-- STATUS -->
+          <div class="success-detail">
+
+            <span>
+              Status
+            </span>
+
+            <strong>
+              {{ createdVisit.status }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- VISIT REFERENCE / QR PLACEHOLDER -->
+        <div class="qr-placeholder">
+
+          <div class="qr-icon">
+            ▦
+          </div>
+
+          <div>
+
+            <strong>
+              Visit Reference
+            </strong>
+
+            <span>
+              {{ createdVisit.visitReference }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="submit-button another-visit-button"
+          (click)="createAnotherVisit()"
+        >
+          Create Another Visit
+        </button>
+
+      </section>
+
+
+    </div>
+
+  </main>
+
+</div>
