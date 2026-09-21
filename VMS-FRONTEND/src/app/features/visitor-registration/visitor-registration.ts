@@ -1,8 +1,5 @@
-
-
-import { Component, OnInit, inject,ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { Component, OnInit, inject,ChangeDetectorRef } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -10,21 +7,17 @@ import {
   Validators
 } from '@angular/forms';
 
-import {
-  RegistrationRequest,
-  RegistrationResponse
-} from '../../core/services/visit/visit.service';
-
-import { Visitor } from '../../core/models/visitor/visitor.model';
-import { VisitorType } from '../../core/models/visitor/visitor-type.model';
-import { RegistrationType } from '../../core/models/visitor/registration-type.model';
 import { Employee } from '../../core/models/employee/employee.model';
-import { Department } from '../../core/models/department/department.model';
+import {
+  ProofType,
+  RegistrationRequest,
+  RegistrationResponse,
+  RegistrationType,
+  VisitorType
+} from '../../core/models/registration/registration.model';
 
-import { VisitService } from '../../core/services/visit/visit.service';
 import { EmployeeService } from '../../core/services/employee/employee.service';
-import { DepartmentService } from '../../core/services/department/department.service';
-import { MasterDataService } from '../../core/services/masterdata/master-data.service';
+import { VisitService } from '../../core/services/visit/visit.service';
 
 @Component({
   selector: 'app-visitor-registration',
@@ -39,694 +32,474 @@ import { MasterDataService } from '../../core/services/masterdata/master-data.se
 export class VisitorRegistrationComponent implements OnInit {
 
   private readonly fb = inject(FormBuilder);
-
-  private readonly visitService = inject(VisitService);
   private readonly employeeService = inject(EmployeeService);
-  private readonly departmentService = inject(DepartmentService);
-  private readonly masterDataService = inject(MasterDataService);
-private readonly cdr=inject(ChangeDetectorRef);
-  currentDate = new Date();
-  minDateTime = this.formatDateTimeLocal(new Date());
+  private readonly visitService = inject(VisitService);
+private readonly cdr = inject(ChangeDetectorRef);
+  // --------------------------------------------------------------------------
+  // Backend enum values
+  // --------------------------------------------------------------------------
 
-  /*
-   * ============================================================
-   * FORMS
-   * ============================================================
-   */
+  readonly visitorTypes: readonly VisitorType[] = [
+    'GUEST',
+    'VISITOR',
+    'VENDOR'
+  ];
 
-  searchForm!: FormGroup;
-  visitorForm!: FormGroup;
-  visitForm!: FormGroup;
+  readonly registrationTypes: readonly RegistrationType[] = [
+    'PRE_REGISTRATION',
+    'ARRIVAL_REGISTRATION'
+  ];
 
-  /*
-   * ============================================================
-   * MASTER DATA
-   * ============================================================
-   */
+  readonly proofTypes: readonly ProofType[] = [
+    'AADHAAR',
+    'PASSPORT'
+  ];
 
-  visitorTypes: VisitorType[] = [];
-
-  registrationTypes: RegistrationType[] = [];
+  // --------------------------------------------------------------------------
+  // Backend data
+  // --------------------------------------------------------------------------
 
   employees: Employee[] = [];
 
-  departments: Department[] = [];
+  // --------------------------------------------------------------------------
+  // Reactive form
+  // --------------------------------------------------------------------------
 
-  purposes: {
-    id: number;
-    name: string;
-    isActive: boolean;
-  }[] = [];
+registrationForm: FormGroup = this.fb.group({
 
-  
-  existingVisitor: Visitor | null = null;
+  visitorType: [
+    '',
+    Validators.required
+  ],
 
-  createdVisitor: Visitor | null = null;
+  registrationType: [
+    '',
+    Validators.required
+  ],
 
-  /*
-   * ============================================================
-   * UI STATE
-   * ============================================================
-   */
+  firstName: [
+    '',
+    [
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(100)
+    ]
+  ],
 
-  isSearching = false;
+  lastName: [
+    '',
+    [
+      Validators.required,
+      Validators.maxLength(100)
+    ]
+  ],
 
-  searchCompleted = false;
+  email: [
+    '',
+    [
+      Validators.required,
+      Validators.email,
+      Validators.maxLength(254)
+    ]
+  ],
 
-  visitorNotFound = false;
+  mobileNumber: [
+    '',
+    [
+      Validators.required,
+      Validators.pattern(/^[6-9][0-9]{9}$/)
+    ]
+  ],
 
-  showCreateVisitorForm = false;
+  companyName: [
+    '',
+    Validators.maxLength(150)
+  ],
 
-  showVisitForm = false;
+  purpose: [
+    '',
+    [
+      Validators.required,
+      Validators.maxLength(500)
+    ]
+  ],
 
-  isCreatingVisitor = false;
+  hostId: [
+    '',
+    Validators.required
+  ],
 
-  isCreatingVisit = false;
+  departmentName: [
+    {
+      value: '',
+      disabled: true
+    }
+  ],
+
+  expectedArrivalAt: [
+    '',
+    Validators.required
+  ],
+
+  expectedDepartureAt: [
+    '',
+    Validators.required
+  ],
+
+  remarks: [
+    '',
+    Validators.maxLength(1000)
+  ],
+
+  // ID PROOF - REQUIRED
+  proofType: this.fb.control(
+    '',
+    {
+      validators: [Validators.required]
+    }
+  ),
+
+  proofNumber: this.fb.control(
+    '',
+    {
+      validators: [
+        Validators.required,
+        Validators.maxLength(100)
+      ]
+    }
+  ),
+
+  proofImage: this.fb.control<File | null>(
+    null,
+    {
+      validators: [Validators.required]
+    }
+  ),
+
+  // NDA - OPTIONAL
+  ndaDocument: this.fb.control<File | null>(
+    null
+  )
+
+});
+
+  // --------------------------------------------------------------------------
+  // UI state
+  // --------------------------------------------------------------------------
+
+  isLoadingEmployees = false;
+  isSubmitting = false;
 
   registrationSuccess = false;
 
   createdVisit: RegistrationResponse | null = null;
 
   errorMessage = '';
-
   successMessage = '';
 
-  /*
-   * ============================================================
-   * CONSTRUCTOR
-   * ============================================================
-   */
+  currentDate = new Date();
 
-  constructor() {
-    this.initializeForms();
-  }
+  minDateTime = this.getCurrentDateTime();
 
-  /*
-   * ============================================================
-   * INIT
-   * ============================================================
-   */
+  // --------------------------------------------------------------------------
+  // Lifecycle
+  // --------------------------------------------------------------------------
 
   ngOnInit(): void {
-    this.loadMasterData();
+    this.loadEmployees();
   }
 
-  /*
-   * ============================================================
-   * FORM INITIALIZATION
-   * ============================================================
-   */
+  // --------------------------------------------------------------------------
+  // Employee
+  // --------------------------------------------------------------------------
 
-  private initializeForms(): void {
+  private loadEmployees(): void {
 
-    /*
-     * Email search field.
-     */
-
-    this.searchForm = this.fb.group({
-      email: [
-        '',
-        [
-          Validators.required,
-          Validators.email,
-          Validators.maxLength(254)
-        ]
-      ]
-    });
-
-    /*
-     * Visitor profile.
-     */
-
-    this.visitorForm = this.fb.group({
-
-      firstName: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.maxLength(100)
-        ]
-      ],
-
-      lastName: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(1),
-          Validators.maxLength(100)
-        ]
-      ],
-
-      email: [
-        '',
-        [
-          Validators.required,
-          Validators.email,
-          Validators.maxLength(254)
-        ]
-      ],
-
-      mobileNumber: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern('^[6-9][0-9]{9}$')
-        ]
-      ],
-
-      companyName: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(150)
-        ]
-      ]
-    });
-
-    /*
-     * Visit details.
-     */
-
-    this.visitForm = this.fb.group({
-
-      visitorType: [
-        '',
-        Validators.required
-      ],
-
-      registrationType: [
-        '',
-        Validators.required
-      ],
-
-      purpose: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(500)
-        ]
-      ],
-
-      hostId: [
-        null,
-        Validators.required
-      ],
-
-      /*
-       * Department is automatically populated from the
-       * selected employee.
-       */
-
-      departmentId: [
-        {
-          value: null,
-          disabled: true
-        }
-      ],
-
-      expectedArrivalAt: [
-        '',
-        Validators.required
-      ],
-
-      /*
-       * Backend requires expectedDepartureTime.
-       */
-
-      expectedDepartureAt: [
-        '',
-        Validators.required
-      ],
-
-      remarks: [
-        '',
-        Validators.maxLength(1000)
-      ],
-
-      /*
-       * ID proof is optional.
-       */
-
-      proofType: [
-        ''
-      ],
-
-      proofNumber: [
-        '',
-        Validators.maxLength(100)
-      ],
-
-     
-
-      proofImage: [
-        null
-      ]
-    });
-  }
-
-  /*
-   * ============================================================
-   * MASTER DATA
-   * ============================================================
-   */
-
-  private loadMasterData(): void {
-
-    /*
-     * Visitor types
-     */
-
-    this.masterDataService
-      .getVisitorTypes()
-      .subscribe({
-        next: (types) => {
-          this.visitorTypes = types;
-        },
-
-        error: (error) => {
-          console.error(
-            'Unable to load visitor types:',
-            error
-          );
-
-          this.errorMessage =
-            'Unable to load visitor types.';
-        }
-      });
-
-    /*
-     * Registration types
-     */
-
-    this.masterDataService
-      .getRegistrationTypes()
-      .subscribe({
-        next: (types) => {
-          this.registrationTypes = types;
-        },
-
-        error: (error) => {
-          console.error(
-            'Unable to load registration types:',
-            error
-          );
-
-          this.errorMessage =
-            'Unable to load registration types.';
-        }
-      });
-
-    /*
-     * Purposes
-     */
-
-    this.masterDataService
-      .getPurposes()
-      .subscribe({
-        next: (purposes) => {
-          this.purposes = purposes;
-        },
-
-        error: (error) => {
-          console.error(
-            'Unable to load purposes:',
-            error
-          );
-
-          this.errorMessage =
-            'Unable to load visit purposes.';
-        }
-      });
-
-    /*
-     * Employees
-     */
-
-    this.employeeService
-      .getEmployees()
-      .subscribe({
-        next: (employees) => {
-          this.employees = employees;
-        },
-
-        error: (error) => {
-          console.error(
-            'Unable to load employees:',
-            error
-          );
-
-          this.errorMessage =
-            'Unable to load employees.';
-        }
-      });
-
-    /*
-     * Departments
-     */
-
-    this.departmentService
-      .getDepartments()
-      .subscribe({
-        next: (departments) => {
-          this.departments = departments;
-        },
-
-        error: (error) => {
-          console.error(
-            'Unable to load departments:',
-            error
-          );
-
-          this.errorMessage =
-            'Unable to load departments.';
-        }
-      });
-  }
-
-
-  searchVisitor(): void {
-
-    if (this.searchForm.invalid) {
-      this.searchForm.markAllAsTouched();
-      return;
-    }
-
-    const email =
-      this.searchForm
-        .get('email')
-        ?.value
-        ?.trim()
-        ?.toLowerCase();
-
-    if (!email) {
-      return;
-    }
-
-    /*
-     * IMPORTANT:
-     *
-     * Always clear the previous visitor state.
-     *
-     * This prevents the next/new visitor from accidentally
-     * inheriting existingVisitor from the previous registration.
-     */
-
-    this.existingVisitor = null;
-    this.createdVisitor = null;
-
-    this.isSearching = true;
-
-    this.searchCompleted = false;
-
-    this.visitorNotFound = false;
-
-    this.registrationSuccess = false;
-
-    this.createdVisit = null;
-
+    this.isLoadingEmployees = true;
     this.errorMessage = '';
 
-    this.successMessage = '';
+    this.employeeService.getEmployees().subscribe({
+      next: (employees) => {
 
-    /*
-     * Reset only the visitor form.
-     *
-     * Do not reset visitForm here.
-     */
+        this.employees = employees.filter(
+          employee => employee.status === 'ACTIVE'
+        );
 
-    this.visitorForm.reset();
+        this.isLoadingEmployees = false;
+      },
 
-    /*
-     * Put the email entered by the user into visitorForm.
-     */
+      error: (error) => {
 
-    this.visitorForm.patchValue({
-      email: email
+        console.error(
+          'Failed to load employees:',
+          error
+        );
+
+        this.isLoadingEmployees = false;
+
+        this.errorMessage =
+          error?.error?.message ??
+          'Unable to load employees.';
+      }
     });
-
-    /*
-     * No backend search is performed here because the current
-     * backend has no visitor lookup endpoint.
-     */
-
-    this.isSearching = false;
-
-    this.searchCompleted = true;
-
-    /*
-     * Show the visitor and visit sections.
-     */
-
-    this.showCreateVisitorForm = true;
-
-    this.showVisitForm = true;
   }
 
-  /*
-   * ============================================================
-   * CREATE VISITOR
-   * ============================================================
-   *
-   * Visitor creation is NOT performed separately.
-   *
-   * The final registration goes through POST /api/visits.
-   *
-   * This method is retained only because the existing HTML
-   * may reference it.
-   */
+  onEmployeeChange(): void {
 
-  createVisitor(): void {
+    const hostId =
+      this.registrationForm.get('hostId')?.value;
 
-    this.errorMessage =
-      'Visitor profiles are created automatically when the visit is registered.';
+    const employee =
+      this.employees.find(
+        item => item.id === hostId
+      );
+
+    this.registrationForm.patchValue({
+      departmentName:
+        employee?.department?.departmentName ?? ''
+    });
   }
 
-  /*
-   * ============================================================
-   * SUBMIT REGISTRATION
-   * ============================================================
-   */
+  getEmployeeDisplayName(employee: Employee): string {
+
+    return `${employee.employeeCode} — ${employee.firstName} ${employee.lastName}`;
+  }
+
+  // --------------------------------------------------------------------------
+  // Submit
+  // --------------------------------------------------------------------------
+
+  // submitRegistration(): void {
+
+  //   this.clearMessages();
+
+  //   if (this.registrationForm.invalid) {
+
+  //     this.registrationForm.markAllAsTouched();
+
+  //     this.errorMessage =
+  //       'Please complete all required fields.';
+
+  //     return;
+  //   }
+
+  //   const request =
+  //     this.buildRegistrationRequest();
+
+  //   if (!request) {
+  //     return;
+  //   }
+
+  //   this.isSubmitting = true;
+
+  //   this.visitService.register(request).subscribe({
+
+  //     next: (response) => {
+
+  //       this.createdVisit = response;
+
+  //       this.registrationSuccess = true;
+
+  //       this.isSubmitting = false;
+
+  //       this.successMessage =
+  //         response.message ||
+  //         'Visit registered successfully.';
+  //     },
+
+  //     error: (error) => {
+
+  //       console.error(
+  //         'Visit registration failed:',
+  //         error
+  //       );
+
+  //       this.isSubmitting = false;
+
+  //       this.handleRegistrationError(error);
+  //        this.cdr.detectChanges();
+  //     }
+  //   });
+  // }
 
   submitRegistration(): void {
 
-    this.errorMessage = '';
+  this.clearMessages();
 
-    this.successMessage = '';
+  if (this.registrationForm.invalid) {
+    this.registrationForm.markAllAsTouched();
 
-    /*
-     * Validate visitor details.
-     */
+    this.errorMessage =
+      'Please complete all required fields.';
 
-    if (this.visitorForm.invalid) {
-
-      this.visitorForm.markAllAsTouched();
-
-      this.errorMessage =
-        'Please complete the visitor details before submitting.';
-
-      return;
-    }
-
-    /*
-     * Validate visit details.
-     */
-
-    if (this.visitForm.invalid) {
-
-      this.visitForm.markAllAsTouched();
-
-      this.errorMessage =
-        'Please complete the visit details before submitting.';
-
-      return;
-    }
-
-    /*
-     * Proceed with registration.
-     */
-
-    this.createVisit();
+    return;
   }
 
-  /*
-   * ============================================================
-   * CREATE VISIT
-   * ============================================================
-   */
+  const request = this.buildRegistrationRequest();
 
-  createVisit(): void {
+  if (!request) {
+    return;
+  }
 
-    /*
-     * Validate visitor details.
-     */
+  this.isSubmitting = true;
 
-    if (this.visitorForm.invalid) {
+  this.visitService.register(request).subscribe({
 
-      this.visitorForm.markAllAsTouched();
+    next: (response: RegistrationResponse) => {
 
-      this.errorMessage =
-        'Please complete the visitor details before submitting.';
+      console.log('Registration successful:', response);
 
-      return;
+      this.createdVisit = response;
+      this.registrationSuccess = true;
+      this.isSubmitting = false;
+
+      this.successMessage =
+        response.message || 'Visit registered successfully.';
+
+      this.cdr.detectChanges();
+
+      console.log(
+        'registrationSuccess:',
+        this.registrationSuccess
+      );
+
+      console.log(
+        'createdVisit:',
+        this.createdVisit
+      );
+    },
+
+    error: (error) => {
+
+      console.error(
+        'Visit registration failed:',
+        error
+      );
+
+      this.isSubmitting = false;
+
+      this.handleRegistrationError(error);
+
+      this.cdr.detectChanges();
     }
 
-    /*
-     * Validate visit details.
-     */
+  });
+}
 
-    if (this.visitForm.invalid) {
+  onNdaFileSelected(event: Event): void {
 
-      this.visitForm.markAllAsTouched();
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
 
-      this.errorMessage =
-        'Please complete the visit details before submitting.';
+  if (!file) {
+    return;
+  }
 
-      return;
-    }
+  const maxSize = 5 * 1024 * 1024;
 
-    /*
-     * getRawValue() is important because departmentId is
-     * disabled.
-     */
+  if (file.size > maxSize) {
+    this.errorMessage = 'NDA file size must not exceed 5 MB.';
+    input.value = '';
+    return;
+  }
 
-    const visitorValue =
-      this.visitorForm.getRawValue();
+  if (file.type !== 'application/pdf') {
+    this.errorMessage = 'Only PDF files are allowed for NDA.';
+    input.value = '';
+    return;
+  }
 
-    const visitValue =
-      this.visitForm.getRawValue();
+  this.registrationForm.patchValue({
+    ndaDocument: file
+  });
 
-    /*
-     * Get arrival/departure values.
-     */
+  this.errorMessage = '';
+}
 
-    const arrivalDateTime =
-      visitValue.expectedArrivalAt;
+getSelectedNdaFileName(): string {
 
-    const departureDateTime =
-      visitValue.expectedDepartureAt;
+  const file =
+    this.registrationForm.get('ndaDocument')?.value;
 
-    if (!arrivalDateTime || !departureDateTime) {
+  return file instanceof File
+    ? file.name
+    : '';
+}
 
-      this.errorMessage =
-        'Expected arrival and departure time are required.';
+  // --------------------------------------------------------------------------
+  // Build backend request
+  // --------------------------------------------------------------------------
 
-      return;
-    }
+  private buildRegistrationRequest():
+    RegistrationRequest | null {
 
-    /*
-     * Convert datetime-local values into Date objects.
-     */
+    const value =
+      this.registrationForm.getRawValue();
 
     const arrival =
-      new Date(arrivalDateTime);
+      this.parseDateTime(value.expectedArrivalAt);
 
     const departure =
-      new Date(departureDateTime);
+      this.parseDateTime(value.expectedDepartureAt);
 
-    /*
-     * Validate dates.
-     */
-
-    if (
-      Number.isNaN(arrival.getTime()) ||
-      Number.isNaN(departure.getTime())
-    ) {
+    if (!arrival || !departure) {
 
       this.errorMessage =
-        'Please enter valid arrival and departure dates and times.';
+        'Please enter valid arrival and departure date and time.';
 
-      return;
+      return null;
     }
 
-    /*
-     * The backend RegistrationRequest contains one visitDate.
-     *
-     * Therefore arrival and departure must be on the same date.
-     */
-
-    const arrivalDate =
-      this.formatDate(arrival);
-
-    const departureDate =
-      this.formatDate(departure);
-
-    if (arrivalDate !== departureDate) {
-
-      this.errorMessage =
-        'Expected arrival and departure must be on the same date.';
-
-      return;
-    }
-
-    /*
-     * Departure must be after arrival.
-     */
-
-    if (departure.getTime() <= arrival.getTime()) {
+    if (departure <= arrival) {
 
       this.errorMessage =
         'Expected departure time must be after expected arrival time.';
 
-      return;
+      return null;
     }
 
-    /*
-     * Start loading state.
-     */
+    const visitDate =
+      this.formatDate(arrival);
 
-    this.isCreatingVisit = true;
+    if (
+      this.formatDate(departure) !== visitDate
+    ) {
 
-    this.errorMessage = '';
+      this.errorMessage =
+        'Expected arrival and departure must be on the same date.';
 
-    this.successMessage = '';
+      return null;
+    }
 
-    /*
-     * Build backend RegistrationRequest.
-     */
-
-    const visitData: RegistrationRequest = {
-
+    return {
       registrationType:
-        this.toBackendEnum(
-          visitValue.registrationType
-        ),
+        value.registrationType,
 
       visitorType:
-        this.toBackendEnum(
-          visitValue.visitorType
-        ),
+        value.visitorType,
 
       firstName:
-        visitorValue.firstName
-          ?.trim(),
+        value.firstName.trim(),
 
       lastName:
-        visitorValue.lastName
-          ?.trim(),
+        value.lastName.trim(),
 
       email:
-        visitorValue.email
-          ?.trim()
-          ?.toLowerCase(),
+        value.email.trim().toLowerCase(),
 
       mobileNumber:
-        visitorValue.mobileNumber
-          ?.trim(),
+        value.mobileNumber.trim(),
 
       companyName:
-        visitorValue.companyName
-          ?.trim(),
+        value.companyName.trim(),
 
       purpose:
-        visitValue.purpose
-          ?.trim(),
+        value.purpose.trim(),
 
       hostId:
-        Number(visitValue.hostId),
+        value.hostId,
 
-      visitDate:
-        arrivalDate,
+      visitDate,
 
       expectedArrivalTime:
         this.formatTime(arrival),
@@ -735,266 +508,69 @@ private readonly cdr=inject(ChangeDetectorRef);
         this.formatTime(departure),
 
       remarks:
-        visitValue.remarks
-          ?.trim() || null,
-
-      /*
-       * Backend ProofType accepts:
-       *
-       * OTHER
-       * DRIVING_LICENSE
-       * PASSPORT
-       * AADHAAR
-       */
+        value.remarks?.trim() || null,
 
       proofType:
-        visitValue.proofType
-          ? this.toBackendEnum(
-              visitValue.proofType
-            )
-          : null,
+        value.proofType || null,
 
       proofNumber:
-        visitValue.proofNumber
-          ?.trim() || null
+        value.proofNumber?.trim() || null
     };
-
-    console.log(
-      'Sending registration request:',
-      visitData
-    );
-
-    /*
-     * IMPORTANT:
-     *
-     * Only /api/visits is called.
-     *
-     * Existing visitor:
-     *     backend reuses visitor
-     *
-     * New visitor:
-     *     backend creates visitor
-     *
-     * Then backend creates the visit.
-     */
-
-    this.visitService
-      .createVisit(visitData)
-      .subscribe({
-
-        /*
-         * ======================================================
-         * SUCCESS
-         * ======================================================
-         */
-
-        next: (visit: RegistrationResponse) => {
-
-          console.log(
-            'Visit registration successful:',
-            visit
-          );
-
-          /*
-           * Stop loading immediately.
-           */
-
-          this.isCreatingVisit = false;
-
-          /*
-           * Store the COMPLETE backend response.
-           *
-           * This contains:
-           *
-           * firstName
-           * lastName
-           * email
-           * companyName
-           * visitReference
-           * expectedArrivalAt
-           * expectedDepartureAt
-           * status
-           * etc.
-           */
-
-          this.createdVisit = visit;
-
-          /*
-           * IMPORTANT:
-           *
-           * Set success state after createdVisit.
-           *
-           * The HTML uses:
-           *
-           * registrationSuccess && createdVisit
-           */
-
-          this.registrationSuccess = true;
-
-          /*
-           * Hide registration form.
-           */
-
-          this.showVisitForm = false;
-
-          this.showCreateVisitorForm = false;
-
-          /*
-           * Clear old visitor objects.
-           *
-           * The success page should use createdVisit instead.
-           */
-
-          this.existingVisitor = null;
-
-          this.createdVisitor = null;
-
-          /*
-           * Success message.
-           */
-
-          this.successMessage =
-            visit.message ||
-            'Visit registered successfully.';
-
-          this.errorMessage = '';
-          this.cdr.detectChanges();
-        },
-
-        /*
-         * ======================================================
-         * ERROR
-         * ======================================================
-         */
-
-        error: (error) => {
-
-          console.error(
-            'Visit registration failed:',
-            error
-          );
-
-          console.error(
-            'Backend response:',
-            error?.error
-          );
-
-          console.error(
-            'Backend message:',
-            error?.error?.message
-          );
-
-          /*
-           * Stop loading.
-           */
-
-          this.isCreatingVisit = false;
-
-          /*
-           * 409 - duplicate/conflict
-           */
-
-          if (error?.status === 409) {
-
-            this.errorMessage =
-              error?.error?.message ||
-              'A visitor with this email or mobile number already exists.';
-
-            return;
-          }
-
-          /*
-           * 400 - validation / JSON parsing error
-           */
-
-          if (error?.status === 400) {
-
-            this.errorMessage =
-              error?.error?.message ||
-              'Please check the visitor and visit details and try again.';
-
-            return;
-          }
-
-          /*
-           * Other errors.
-           */
-
-          this.errorMessage =
-            error?.error?.message ||
-            error?.message ||
-            'Unable to create visit. Please try again.';
-        }
-      });
   }
 
-  /*
-   * ============================================================
-   * EMPLOYEE → DEPARTMENT
-   * ============================================================
-   */
+  // --------------------------------------------------------------------------
+  // Error handling
+  // --------------------------------------------------------------------------
 
-  onEmployeeChange(): void {
+  private handleRegistrationError(error: any): void {
 
-    const employeeId =
-      Number(
-        this.visitForm
-          .get('hostId')
-          ?.value
-      );
+    if (error?.status === 409) {
 
-    if (!employeeId) {
-
-      this.visitForm.patchValue({
-        departmentId: null
-      });
+      this.errorMessage =
+        error?.error?.message ??
+        'A visitor with this email or mobile number already exists.';
 
       return;
     }
 
-    const employee =
-      this.employees.find(
-        employee =>
-          employee.id === employeeId
-      );
+    if (error?.status === 400) {
 
-    if (!employee) {
+      this.errorMessage =
+        error?.error?.message ??
+        'Please check the entered details.';
+
       return;
     }
 
-    this.visitForm.patchValue({
-      departmentId:
-        employee.departmentId
-    });
+    this.errorMessage =
+      error?.error?.message ??
+      'Unable to register the visit. Please try again.';
   }
 
-  /*
-   * ============================================================
-   * ID PROOF FILE
-   * ============================================================
-   */
+  // --------------------------------------------------------------------------
+  // ID proof
+  // --------------------------------------------------------------------------
 
   onFileSelected(event: Event): void {
 
     const input =
       event.target as HTMLInputElement;
 
-    if (
-      !input.files ||
-      input.files.length === 0
-    ) {
+    const file =
+      input.files?.[0];
+
+    if (!file) {
       return;
     }
-
-    const file =
-      input.files[0];
 
     const maxSize =
       5 * 1024 * 1024;
 
-    /*
-     * Maximum 5 MB.
-     */
+    const allowedTypes = [
+      'image/jpeg',
+      'image/png',
+      'application/pdf'
+    ];
 
     if (file.size > maxSize) {
 
@@ -1006,16 +582,6 @@ private readonly cdr=inject(ChangeDetectorRef);
       return;
     }
 
-    /*
-     * Allowed file types.
-     */
-
-    const allowedTypes = [
-      'image/jpeg',
-      'image/png',
-      'application/pdf'
-    ];
-
     if (!allowedTypes.includes(file.type)) {
 
       this.errorMessage =
@@ -1026,276 +592,150 @@ private readonly cdr=inject(ChangeDetectorRef);
       return;
     }
 
-    
-
-    this.visitForm.patchValue({
+    this.registrationForm.patchValue({
       proofImage: file
     });
 
     this.errorMessage = '';
   }
 
-  /*
-   * ============================================================
-   * GET SELECTED FILE NAME
-   * ============================================================
-   */
-
   getSelectedFileName(): string {
 
     const file =
-      this.visitForm
-        .get('proofImage')
-        ?.value;
+      this.registrationForm.get('proofImage')?.value;
 
-    return file
+    return file instanceof File
       ? file.name
       : '';
   }
 
-  /*
-   * ============================================================
-   * VALIDATION HELPER
-   * ============================================================
-   */
+  // --------------------------------------------------------------------------
+  // Form helpers
+  // --------------------------------------------------------------------------
 
-  isInvalid(
-    form: FormGroup,
-    controlName: string
-  ): boolean {
+  isInvalid(controlName: string): boolean {
 
     const control =
-      form.get(controlName);
+      this.registrationForm.get(controlName);
 
     return !!(
       control &&
       control.invalid &&
-      (
-        control.dirty ||
-        control.touched
-      )
+      (control.touched || control.dirty)
     );
   }
 
-  /*
-   * ============================================================
-   * EMPLOYEE DISPLAY
-   * ============================================================
-   */
-
-  getEmployeeDisplayName(
-    employee: Employee
-  ): string {
-
-    return `${employee.employeeId} — ${employee.fullName}`;
-  }
-
-  /*
-   * ============================================================
-   * DEPARTMENT DISPLAY
-   * ============================================================
-   */
-
-  getDepartmentName(
-    departmentId: number
-  ): string {
-
-    const department =
-      this.departments.find(
-        department =>
-          department.id === departmentId
-      );
-
-    return department?.name || '';
-  }
-
-  /*
-   * ============================================================
-   * RESET
-   * ============================================================
-   */
+  // --------------------------------------------------------------------------
+  // Reset
+  // --------------------------------------------------------------------------
 
   resetForm(): void {
 
-    this.searchForm.reset();
-
-    this.visitorForm.reset();
-
-    this.visitForm.reset();
-
-    /*
-     * Reset visitor state.
-     */
-
-    this.existingVisitor = null;
-
-    this.createdVisitor = null;
-
-    /*
-     * Reset visit response.
-     */
+    this.registrationForm.reset();
 
     this.createdVisit = null;
 
-    /*
-     * Reset UI state.
-     */
-
-    this.searchCompleted = false;
-
-    this.visitorNotFound = false;
-
-    this.showCreateVisitorForm = false;
-
-    this.showVisitForm = false;
-
     this.registrationSuccess = false;
 
-    this.isSearching = false;
+    this.isSubmitting = false;
 
-    this.isCreatingVisitor = false;
+    this.clearMessages();
 
-    this.isCreatingVisit = false;
-
-    this.errorMessage = '';
-
-    this.successMessage = '';
+    this.minDateTime =
+      this.getCurrentDateTime();
   }
-
-  /*
-   * ============================================================
-   * CREATE ANOTHER VISIT
-   * ============================================================
-   */
 
   createAnotherVisit(): void {
 
-    /*
-     * Remove previous success response.
-     */
+    this.resetForm();
+  }
 
-    this.createdVisit = null;
+  // --------------------------------------------------------------------------
+  // Messages
+  // --------------------------------------------------------------------------
 
-    this.registrationSuccess = false;
-
-    /*
-     * Clear visit details.
-     *
-     * Visitor details remain available so the same visitor
-     * can register another visit.
-     */
-
-    this.visitForm.reset();
-
-    /*
-     * Show visit form again.
-     */
-
-    this.showVisitForm = true;
-
-    this.showCreateVisitorForm = true;
-
-    this.successMessage = '';
+  private clearMessages(): void {
 
     this.errorMessage = '';
+    this.successMessage = '';
   }
 
-  /*
-   * ============================================================
-   * ENUM CONVERSION
-   * ============================================================
-   *
-   * Examples:
-   *
-   * Visitor
-   *      → VISITOR
-   *
-   * Pre-Registration
-   *      → PRE_REGISTRATION
-   *
-   * Driving License
-   *      → DRIVING_LICENSE
-   */
+  // --------------------------------------------------------------------------
+  // Date / time helpers
+  // --------------------------------------------------------------------------
 
-  private toBackendEnum(
+  private parseDateTime(
     value: string
-  ): string {
+  ): Date | null {
 
-    return value
-      ?.trim()
-      .toUpperCase()
-      .replace(/[\s-]+/g, '_');
+    if (!value) {
+      return null;
+    }
+
+    const date =
+      new Date(value);
+
+    return Number.isNaN(date.getTime())
+      ? null
+      : date;
   }
 
-  /*
-   * ============================================================
-   * FORMAT DATE
-   * ============================================================
-   */
-
-  private formatDate(
-    date: Date
-  ): string {
+  private formatDate(date: Date): string {
 
     const year =
       date.getFullYear();
 
     const month =
-      String(
-        date.getMonth() + 1
-      ).padStart(2, '0');
+      String(date.getMonth() + 1)
+        .padStart(2, '0');
 
     const day =
-      String(
-        date.getDate()
-      ).padStart(2, '0');
+      String(date.getDate())
+        .padStart(2, '0');
 
     return `${year}-${month}-${day}`;
   }
 
-  /*
-   * ============================================================
-   * FORMAT TIME
-   * ============================================================
-   */
-
-  private formatTime(
-    date: Date
-  ): string {
+  private formatTime(date: Date): string {
 
     const hours =
-      String(
-        date.getHours()
-      ).padStart(2, '0');
+      String(date.getHours())
+        .padStart(2, '0');
 
     const minutes =
-      String(
-        date.getMinutes()
-      ).padStart(2, '0');
+      String(date.getMinutes())
+        .padStart(2, '0');
 
-    return `${hours}:${minutes}:00`;
+    const seconds =
+      String(date.getSeconds())
+        .padStart(2, '0');
+
+    return `${hours}:${minutes}:${seconds}`;
   }
 
-  private formatDateTimeLocal(date: Date): string {
+  private getCurrentDateTime(): string {
 
-  const year = date.getFullYear();
+    const now = new Date();
 
-  const month = String(
-    date.getMonth() + 1
-  ).padStart(2, '0');
+    const year =
+      now.getFullYear();
 
-  const day = String(
-    date.getDate()
-  ).padStart(2, '0');
+    const month =
+      String(now.getMonth() + 1)
+        .padStart(2, '0');
 
-  const hours = String(
-    date.getHours()
-  ).padStart(2, '0');
+    const day =
+      String(now.getDate())
+        .padStart(2, '0');
 
-  const minutes = String(
-    date.getMinutes()
-  ).padStart(2, '0');
+    const hours =
+      String(now.getHours())
+        .padStart(2, '0');
 
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
+    const minutes =
+      String(now.getMinutes())
+        .padStart(2, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
 }
