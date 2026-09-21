@@ -10,14 +10,6 @@ import { VisitorListComponent } from './features/visitor-management/visitor-list
 
 export const routes: Routes = [
 
-  // ======================
-  // VISITOR MANAGEMENT
-  // ======================
-
-  {
-    path: 'visitor-registration',
-    component: VisitorRegistrationComponent
-  },
 
    // ======================
   // ADMIN
@@ -27,6 +19,10 @@ export const routes: Routes = [
   path: 'admin',
   component: AdminLayoutComponent,
   children: [
+    {
+    path: 'pre-registration',
+    component: VisitorRegistrationComponent
+    },
     {
       path: 'visitors',
       component: VisitorListComponent
@@ -40,7 +36,7 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: 'visitor-registration'
+    redirectTo: 'admin/pre-registration'
   }
 
 ];
