@@ -1,0 +1,196 @@
+<div class="visitor-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <div>
+      <h1>Visitors</h1>
+      <p>Manage and view registered visitors</p>
+    </div>
+
+    <button class="register-button" type="button">
+      + Register New Visitor
+    </button>
+
+  </div>
+
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+
+    <div class="summary-card">
+      <span class="card-label">Total Visitors</span>
+      <span class="card-value">128</span>
+    </div>
+
+    <div class="summary-card">
+      <span class="card-label">Today's Visits</span>
+      <span class="card-value">12</span>
+    </div>
+
+    <div class="summary-card">
+      <span class="card-label">Currently On-Premises</span>
+      <span class="card-value">5</span>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Search & Filters -->
+<div class="filter-card">
+
+  <!-- Search -->
+  <div class="search-field">
+    <label for="visitorSearch">Search</label>
+
+    <div class="search-input-wrapper">
+       <span class="search-icon">⌕</span>
+
+      <input
+        id="visitorSearch"
+        type="text"
+        placeholder="Name, email or mobile "
+        [(ngModel)]="searchText"
+      />
+    </div>
+  </div>
+
+
+  <!-- Visitor Type -->
+  <div class="filter-field">
+    <label for="visitorType">Visitor Type</label>
+
+     <select
+      id="visitorType"
+      [(ngModel)]="selectedVisitorType"
+    >
+      <option value="">All Types</option>
+      <option value="VISITOR">Visitor</option>
+      <option value="GUEST">Guest</option>
+      <option value="VENDOR">Vendor</option>
+    </select>
+  </div>
+
+
+  <!-- Status -->
+  <div class="filter-field">
+    <label for="visitorStatus">Status</label>
+
+    <select id="visitorStatus" [(ngModel)]="selectedStatus">
+      <option value="">All Statuses</option>
+      <option value="REGISTERED">Registered</option>
+      <option value="CHECKED_IN">Checked In</option>
+      <option value="CHECKED_OUT">Checked Out</option>
+      <option value="CANCELLED">Cancelled</option>
+      <option value="NO_SHOW">No Show</option>
+    </select>
+  </div>
+
+
+  <!-- Date -->
+  <div class="filter-field">
+    <label for="visitDate">Date</label>
+
+    <input
+      id="visitDate"
+      type="date"
+      [(ngModel)]="selectedDate"
+    />
+  </div>
+
+
+  <!-- Clear -->
+  <div class="clear-field">
+    <button
+      type="button"
+      class="clear-button"
+      (click)="clearFilters()"
+    >
+      Clear
+    </button>
+  </div>
+
+</div>
+
+<!-- Visitor Table -->
+<div class="visitor-table-card">
+
+  <div class="table-header">
+    <h2>Visitor Records</h2>
+    <span class="record-count">
+  {{ filteredVisitors.length }} records
+</span>
+  </div>
+
+  <div class="table-wrapper">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Mobile</th>
+          <th>Visitor Type</th>
+          <th>Company</th>
+          <th>Status</th>
+          <th>Last Visit</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+  @for (visitor of filteredVisitors; track visitor.id) {
+
+    <tr>
+
+      <td>{{ visitor.id }}</td>
+
+      <td>{{ visitor.name }}</td>
+
+      <td>{{ visitor.email }}</td>
+
+      <td>{{ visitor.mobile }}</td>
+
+      <td>{{ visitor.visitorType }}</td>
+
+      <td>{{ visitor.company }}</td>
+
+      <td>
+        <span
+          class="status"
+          [class.status-registered]="visitor.status === 'REGISTERED'"
+          [class.status-checked-in]="visitor.status === 'CHECKED_IN'"
+          [class.status-checked-out]="visitor.status === 'CHECKED_OUT'"
+          [class.status-cancelled]="visitor.status === 'CANCELLED'"
+          [class.status-no-show]="visitor.status === 'NO_SHOW'"
+        >
+          {{ visitor.status }}
+        </span>
+      </td>
+
+      <td>{{ visitor.visitDate }}</td>
+
+      <td>
+        <button
+          class="action-button"
+          type="button"
+        >
+          View
+        </button>
+      </td>
+
+    </tr>
+
+  }
+
+</tbody>
+
+    </table>
+
+  </div>
+
+</div>

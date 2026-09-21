@@ -1,0 +1,325 @@
+.visitor-page {
+  width: 100%;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.register-button {
+  border: none;
+  border-radius: 7px;
+
+  padding: 10px 16px;
+
+  background: #4f46e5;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.register-button:hover {
+  background: #4338ca;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  margin-top: 24px;
+}
+
+.summary-card {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  box-sizing: border-box;
+}
+
+.card-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.card-value {
+  font-size: 26px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.visitor-table-card {
+  margin-top: 24px;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  overflow: hidden;
+}
+
+/* Search & Filters */
+
+.filter-card {
+  margin-top: 24px;
+
+  padding: 18px 20px;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 16px;
+
+  align-items: end;
+
+  box-sizing: border-box;
+}
+
+.search-field,
+.filter-field,
+.clear-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-field label,
+.filter-field label {
+  margin-bottom: 6px;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.search-input-wrapper {
+  position: relative;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  height: 38px;
+
+  padding: 0 12px 0 34px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+
+  box-sizing: border-box;
+
+  font-size: 13px;
+  color: #111827;
+
+  outline: none;
+}
+
+.search-input-wrapper input:focus,
+.filter-field select:focus,
+.date-field input:focus {
+  border-color: #6366f1;
+}
+
+.search-icon {
+  position: absolute;
+
+  left: 11px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  font-size: 18px;
+  color: #9ca3af;
+
+  pointer-events: none;
+}
+
+.filter-field select,
+.date-field input {
+  height: 38px;
+
+  padding: 0 10px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+
+  background: #ffffff;
+
+  font-size: 13px;
+  color: #374151;
+
+  outline: none;
+
+  box-sizing: border-box;
+}
+
+.clear-button {
+  height: 38px;
+
+  padding: 0 16px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+
+  background: #ffffff;
+
+  color: #4b5563;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.clear-button:hover {
+  background: #f9fafb;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-header h2 {
+  margin: 0;
+
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.record-count {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f9fafb;
+}
+
+th {
+  padding: 12px 16px;
+
+  text-align: left;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+
+  white-space: nowrap;
+}
+
+td {
+  padding: 14px 16px;
+
+  border-top: 1px solid #f0f0f0;
+
+  font-size: 13px;
+  color: #374151;
+
+  white-space: nowrap;
+}
+
+tbody tr:hover {
+  background: #fafafa;
+}
+
+/* Status */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 9px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.status-registered {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+.status-checked-in {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.status-checked-out {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.status-cancelled {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.status-no-show {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+/* Action */
+
+.action-button {
+  border: none;
+  background: transparent;
+
+  color: #4f46e5;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.action-button:hover {
+  text-decoration: underline;
+}
