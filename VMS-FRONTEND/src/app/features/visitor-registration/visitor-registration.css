@@ -1,83 +1,81 @@
+/* =========================================================
+   GLOBAL
+========================================================= */
+
 * {
   box-sizing: border-box;
 }
 
-
-/* =========================================================
-   REGISTRATION PAGE
-   ========================================================= */
-
 .registration-page {
   width: 100%;
   background: #f4f7fc;
-  color: #14213d;
+  color: #111827;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 
 /* =========================================================
    FORM PANEL
-   ========================================================= */
+========================================================= */
 
 .form-panel {
-  position: relative;
   width: 100%;
   min-width: 0;
-
   padding: 0;
-
-  overflow: visible;
 }
 
 
 /* =========================================================
    DATE / TIME
-   ========================================================= */
+========================================================= */
 
 .top-date-time {
   width: 100%;
-  margin: 0 0 15px;
+  margin: 0 0 18px;
 
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 24px;
+  gap: 22px;
 
-  color: #193a82;
+  color: #64748b;
+
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .top-date-time span {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
 }
 
 
 /* =========================================================
    REGISTRATION CARD
-   ========================================================= */
+========================================================= */
 
 .registration-card {
   width: 100%;
   max-width: 1160px;
+
   margin: 0 auto;
+
+  padding: 26px 28px 24px;
 
   background: #ffffff;
 
-  border-radius: 13px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
 
   box-shadow:
-    0 8px 28px rgba(31, 63, 112, 0.08);
-
-  padding: 27px 28px 24px;
+    0 1px 2px rgba(15, 23, 42, 0.03);
 }
 
 
 /* =========================================================
    HEADER
-   ========================================================= */
+========================================================= */
 
 .form-header {
   width: 100%;
@@ -86,79 +84,82 @@
 .header-main {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 13px;
 }
 
 .header-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
+
   flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
+  border-radius: 9px;
 
-  background: #e8f1ff;
+  background: #eef2ff;
+  color: #4f46e5;
 
-  color: #2155c5;
-  font-size: 21px;
+  font-size: 19px;
 }
 
 .form-header h2 {
   margin: 0;
 
-  color: #101f3d;
+  color: #111827;
 
   font-size: 22px;
   line-height: 1.2;
-  font-weight: 700;
+  font-weight: 650;
+  letter-spacing: -0.2px;
 }
 
 .form-header p {
   margin: 5px 0 0;
 
-  color: #68778f;
+  color: #6b7280;
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .divider {
   height: 1px;
+
   margin-top: 18px;
 
-  background: #dfe6f0;
+  background: #e5e7eb;
 }
 
 
 /* =========================================================
    ALERTS
-   ========================================================= */
+========================================================= */
 
 .alert-message {
   display: flex;
   align-items: center;
   gap: 9px;
 
-  margin-top: 15px;
+  margin-top: 16px;
   padding: 10px 13px;
 
-  border-radius: 6px;
+  border-radius: 7px;
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .error-alert {
-  background: #fff3f3;
-  border: 1px solid #ffd4d4;
-  color: #c53030;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
 }
 
 .success-alert {
-  background: #eefaf2;
-  border: 1px solid #ccebd7;
-  color: #208447;
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  color: #047857;
 }
 
 .alert-icon {
@@ -169,85 +170,99 @@
   align-items: center;
   justify-content: center;
 
+  flex-shrink: 0;
+
   border-radius: 50%;
 
+  font-size: 11px;
   font-weight: 700;
 }
 
 
 /* =========================================================
    FORM SECTIONS
-   ========================================================= */
+========================================================= */
 
 .form-section {
-  padding: 18px 0;
+  padding: 20px 0;
 
-  border-bottom: 1px solid #e1e7f0;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .form-section:last-of-type {
   border-bottom: none;
 }
 
+
+/* =========================================================
+   SECTION HEADING
+========================================================= */
+
 .section-heading {
   display: flex;
   align-items: center;
   gap: 10px;
 
-  margin-bottom: 14px;
+  margin-bottom: 15px;
 }
 
 .section-number {
-  width: 29px;
-  height: 29px;
+  width: 28px;
+  height: 28px;
+
   flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
+  border-radius: 7px;
 
-  background: #e7f0ff;
-  color: #1853c6;
+  background: #eef2ff;
+  color: #4f46e5;
 
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 650;
 }
 
 .section-heading h3 {
   margin: 0;
 
-  color: #152642;
+  color: #111827;
 
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .optional {
-  color: #8490a4;
+  color: #9ca3af;
+
   font-size: 11px;
   font-weight: 500;
+}
+
+.required {
+  color: #dc2626;
 }
 
 
 /* =========================================================
    FORM GRID
-   ========================================================= */
+========================================================= */
 
 .form-grid {
   display: grid;
 
   grid-template-columns: 1fr 1fr;
 
-  column-gap: 25px;
-  row-gap: 13px;
+  column-gap: 20px;
+  row-gap: 15px;
 }
 
 
 /* =========================================================
    FIELD
-   ========================================================= */
+========================================================= */
 
 .field-group {
   min-width: 0;
@@ -258,54 +273,56 @@
 
   margin-bottom: 6px;
 
-  color: #172642;
+  color: #374151;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-}
-
-.required {
-  color: #e23b3b;
 }
 
 
 /* =========================================================
    INPUT WRAPPER
-   ========================================================= */
+========================================================= */
 
 .input-wrapper {
   width: 100%;
-  height: 40px;
+  height: 39px;
 
   display: flex;
   align-items: center;
 
-  border: 1px solid #c7d4e7;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
 
   background: #ffffff;
 
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.input-wrapper:hover {
+  border-color: #b8bec8;
 }
 
 .input-wrapper:focus-within {
-  border-color: #3264cf;
+  border-color: #6366f1;
 
   box-shadow:
-    0 0 0 3px rgba(50, 100, 207, 0.08);
+    0 0 0 3px rgba(99, 102, 241, 0.08);
 }
 
 .input-icon {
-  width: 39px;
+  width: 38px;
+
   flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  color: #1552c4;
+  color: #6366f1;
 
   font-size: 13px;
 }
@@ -317,21 +334,21 @@
 
   min-width: 0;
 
+  padding: 0 10px 0 0;
+
   border: none;
   outline: none;
 
   background: transparent;
 
-  padding: 0 11px 0 0;
-
-  color: #2c3d59;
+  color: #374151;
 
   font-family: inherit;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .input-wrapper input::placeholder {
-  color: #8190a7;
+  color: #9ca3af;
 }
 
 .input-wrapper select {
@@ -339,38 +356,45 @@
 }
 
 .input-wrapper select option {
-  color: #263852;
+  color: #374151;
 }
 
 
 /* =========================================================
    INPUT ERROR
-   ========================================================= */
+========================================================= */
 
 .input-error {
-  border-color: #ed6262;
+  border-color: #ef4444;
   background: #fffafa;
+}
+
+.input-error:focus-within {
+  border-color: #ef4444;
+
+  box-shadow:
+    0 0 0 3px rgba(239, 68, 68, 0.08);
 }
 
 .error-message {
   margin-top: 4px;
 
-  color: #d73c3c;
+  color: #dc2626;
 
-  font-size: 9px;
+  font-size: 10px;
 }
 
 
 /* =========================================================
    READONLY
-   ========================================================= */
+========================================================= */
 
 .readonly-wrapper {
-  background: #f7f9fc;
+  background: #f8fafc;
 }
 
-.readonly-wrapper select {
-  color: #66778f;
+.readonly-wrapper input {
+  color: #6b7280;
 }
 
 .field-hint {
@@ -378,15 +402,15 @@
 
   margin-top: 4px;
 
-  color: #8491a5;
+  color: #9ca3af;
 
-  font-size: 9px;
+  font-size: 10px;
 }
 
 
 /* =========================================================
    EMAIL SEARCH
-   ========================================================= */
+========================================================= */
 
 .email-search-row {
   margin-top: 5px;
@@ -396,12 +420,13 @@
   padding: 0;
 
   border: none;
+
   background: transparent;
 
-  color: #2258c7;
+  color: #4f46e5;
 
   font-family: inherit;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
 
   cursor: pointer;
@@ -419,35 +444,36 @@
 
 /* =========================================================
    EXISTING VISITOR BANNER
-   ========================================================= */
+========================================================= */
 
 .existing-visitor-banner {
   display: flex;
   align-items: center;
   gap: 12px;
 
-  margin-bottom: 14px;
+  margin-bottom: 15px;
   padding: 12px 14px;
 
-  border: 1px solid #cce6d5;
+  border: 1px solid #bbf7d0;
   border-radius: 7px;
 
-  background: #f1fbf4;
+  background: #f0fdf4;
 }
 
 .existing-icon {
   width: 30px;
   height: 30px;
+
   flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
+  border-radius: 7px;
 
-  background: #d8f2df;
-  color: #25854b;
+  background: #dcfce7;
+  color: #16a34a;
 
   font-size: 13px;
   font-weight: 700;
@@ -456,7 +482,7 @@
 .existing-visitor-banner strong {
   display: block;
 
-  color: #216b3f;
+  color: #166534;
 
   font-size: 11px;
 }
@@ -464,13 +490,13 @@
 .existing-visitor-banner p {
   margin: 3px 0;
 
-  color: #49675a;
+  color: #4b5563;
 
   font-size: 10px;
 }
 
 .existing-visitor-banner small {
-  color: #698173;
+  color: #6b7280;
 
   font-size: 9px;
 }
@@ -478,7 +504,7 @@
 
 /* =========================================================
    TEXTAREA
-   ========================================================= */
+========================================================= */
 
 .remarks-field {
   width: 100%;
@@ -489,45 +515,52 @@
 
   width: 100%;
 
-  border: 1px solid #c7d4e7;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
 
   background: #ffffff;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.textarea-wrapper:hover {
+  border-color: #b8bec8;
 }
 
 .textarea-wrapper:focus-within {
-  border-color: #3264cf;
+  border-color: #6366f1;
 
   box-shadow:
-    0 0 0 3px rgba(50, 100, 207, 0.08);
+    0 0 0 3px rgba(99, 102, 241, 0.08);
 }
 
 .textarea-wrapper textarea {
   width: 100%;
 
-  min-height: 67px;
+  min-height: 72px;
 
   display: block;
 
   resize: vertical;
 
+  padding: 10px 11px 23px;
+
   border: none;
   outline: none;
-
-  padding: 10px 11px 22px;
-
   border-radius: 6px;
 
   background: transparent;
 
-  color: #263852;
+  color: #374151;
 
   font-family: inherit;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .textarea-wrapper textarea::placeholder {
-  color: #8290a6;
+  color: #9ca3af;
 }
 
 .character-count {
@@ -536,15 +569,15 @@
   right: 9px;
   bottom: 6px;
 
-  color: #8b98aa;
+  color: #9ca3af;
 
-  font-size: 8px;
+  font-size: 9px;
 }
 
 
 /* =========================================================
    ID GRID
-   ========================================================= */
+========================================================= */
 
 .id-grid {
   display: grid;
@@ -559,47 +592,43 @@
 
 /* =========================================================
    UPLOAD BOX
-   ========================================================= */
+========================================================= */
 
 .upload-box {
-  height: 40px;
-  min-height: 40px;
-
   width: 100%;
+  height: 39px;
+  min-height: 39px;
 
   display: flex !important;
 
   align-items: center;
   justify-content: center;
 
-  gap: 10px;
+  gap: 9px;
 
   margin: 0 !important;
+  padding: 7px 11px;
 
-  padding: 9px 12px;
-
-  border: 1.5px dashed #7ba2ed;
-
+  border: 1px dashed #a5b4fc;
   border-radius: 7px;
 
-  background: #fbfdff;
+  background: #fafbff;
 
   cursor: pointer;
 
   transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .upload-box:hover {
-  background: #f1f6ff;
-
-  border-color: #3264cf;
+  background: #eef2ff;
+  border-color: #6366f1;
 }
 
 .upload-icon {
-  width: 32px;
-  height: 32px;
+  width: 27px;
+  height: 27px;
 
   flex-shrink: 0;
 
@@ -607,31 +636,30 @@
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
+  border-radius: 6px;
 
-  background: #e7f0ff;
+  background: #eef2ff;
+  color: #4f46e5;
 
-  color: #2158c7;
-
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .upload-box strong {
   display: block;
 
-  color: #18396f;
+  color: #374151;
 
   font-size: 10px;
 
   text-align: center;
 }
 
-.upload-box span {
+.upload-box small {
   display: block;
 
-  margin-top: 3px;
+  margin-top: 2px;
 
-  color: #7b899e;
+  color: #9ca3af;
 
   font-size: 8px;
 
@@ -641,7 +669,7 @@
 
 /* =========================================================
    EXISTING ID NOTE
-   ========================================================= */
+========================================================= */
 
 .existing-id-note {
   display: flex;
@@ -652,9 +680,9 @@
 
   border-radius: 6px;
 
-  background: #eef8f2;
+  background: #f0fdf4;
 
-  color: #34704c;
+  color: #166534;
 
   font-size: 10px;
 }
@@ -662,6 +690,7 @@
 .existing-id-note .note-icon {
   width: 21px;
   height: 21px;
+
   flex-shrink: 0;
 
   display: flex;
@@ -670,9 +699,9 @@
 
   border-radius: 50%;
 
-  background: #d5efdd;
+  background: #dcfce7;
 
-  color: #24804a;
+  color: #16a34a;
 
   font-weight: 700;
 }
@@ -680,22 +709,24 @@
 
 /* =========================================================
    VERIFICATION NOTE
-   ========================================================= */
+========================================================= */
 
 .verification-note {
   display: flex;
   align-items: center;
   gap: 9px;
 
-  margin-top: 12px;
+  margin-top: 11px;
+  margin-bottom: 13px;
 
   padding: 9px 12px;
 
-  border-radius: 6px;
+  border: 1px solid #e0e7ff;
+  border-radius: 7px;
 
-  background: #eaf4ff;
+  background: #f5f7ff;
 
-  color: #1752ae;
+  color: #4f46e5;
 
   font-size: 10px;
 }
@@ -703,6 +734,7 @@
 .note-icon {
   width: 20px;
   height: 20px;
+
   flex-shrink: 0;
 
   display: flex;
@@ -711,9 +743,9 @@
 
   border-radius: 50%;
 
-  background: #d4e8ff;
+  background: #e0e7ff;
 
-  color: #1955b7;
+  color: #4f46e5;
 
   font-size: 10px;
   font-weight: 700;
@@ -722,7 +754,7 @@
 
 /* =========================================================
    FORM ACTIONS
-   ========================================================= */
+========================================================= */
 
 .form-actions {
   display: flex;
@@ -732,72 +764,88 @@
 
   gap: 10px;
 
-  margin-top: 18px;
+  margin-top: 20px;
+  padding-top: 17px;
 
-  padding-top: 16px;
-
-  border-top: 1px solid #e1e7f0;
+  border-top: 1px solid #e5e7eb;
 }
 
-.reset-button,
-.submit-button {
-  height: 40px;
 
-  padding: 0 21px;
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.secondary-button,
+.primary-button {
+  height: 38px;
+
+  padding: 0 17px;
 
   border-radius: 6px;
 
   font-family: inherit;
 
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
 
   cursor: pointer;
 
   transition:
-    background 0.2s ease,
-    transform 0.2s ease;
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
 }
 
-.reset-button {
-  border: 1px solid #b8c7dc;
+.secondary-button {
+  border: 1px solid #d1d5db;
 
   background: #ffffff;
 
-  color: #42607f;
+  color: #4b5563;
 }
 
-.reset-button:hover {
-  background: #f5f8fc;
+.secondary-button:hover:not(:disabled) {
+  background: #f9fafb;
+
+  border-color: #9ca3af;
+
+  color: #111827;
 }
 
-.submit-button {
-  border: none;
+.primary-button {
+  border: 1px solid #4f46e5;
 
-  background: #2858d6;
+  background: #4f46e5;
 
   color: #ffffff;
 
   box-shadow:
-    0 4px 10px rgba(40, 88, 214, 0.20);
+    0 2px 5px rgba(79, 70, 229, 0.15);
 }
 
-.submit-button:hover:not(:disabled) {
-  background: #204bc1;
+.primary-button:hover:not(:disabled) {
+  background: #4338ca;
+
+  border-color: #4338ca;
+
+  box-shadow:
+    0 4px 9px rgba(79, 70, 229, 0.18);
 
   transform: translateY(-1px);
 }
 
-.submit-button:disabled {
-  opacity: 0.65;
-
+.secondary-button:disabled,
+.primary-button:disabled {
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
 
 /* =========================================================
    SUCCESS
-   ========================================================= */
+========================================================= */
 
 .success-section {
   padding: 42px 20px;
@@ -806,8 +854,8 @@
 }
 
 .success-icon {
-  width: 62px;
-  height: 62px;
+  width: 58px;
+  height: 58px;
 
   margin: 0 auto 15px;
 
@@ -817,28 +865,28 @@
 
   border-radius: 50%;
 
-  background: #e7f8ed;
+  background: #ecfdf5;
+  color: #059669;
 
-  color: #25894d;
-
-  font-size: 27px;
+  font-size: 25px;
   font-weight: 700;
 }
 
 .success-section h2 {
   margin: 0;
 
-  color: #172642;
+  color: #111827;
 
   font-size: 21px;
+  font-weight: 650;
 }
 
 .success-section > p {
   margin: 7px 0 22px;
 
-  color: #718096;
+  color: #6b7280;
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .success-details {
@@ -854,13 +902,12 @@
 }
 
 .success-detail {
-  padding: 11px;
+  padding: 12px;
 
-  border: 1px solid #e0e7f1;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
 
-  border-radius: 6px;
-
-  background: #f9fbfe;
+  background: #f8fafc;
 
   text-align: left;
 }
@@ -870,24 +917,29 @@
 
   margin-bottom: 4px;
 
-  color: #8190a7;
+  color: #9ca3af;
 
-  font-size: 8px;
+  font-size: 9px;
+  font-weight: 500;
 
   text-transform: uppercase;
 }
 
 .success-detail strong {
-  color: #293b57;
+  color: #374151;
 
-  font-size: 10px;
+  font-size: 11px;
 }
+
+
+/* =========================================================
+   QR PLACEHOLDER
+========================================================= */
 
 .qr-placeholder {
   max-width: 320px;
 
   margin: 0 auto 20px;
-
   padding: 14px;
 
   display: flex;
@@ -897,23 +949,22 @@
 
   gap: 10px;
 
-  border: 1px dashed #9bb7eb;
-
+  border: 1px dashed #a5b4fc;
   border-radius: 7px;
 
-  background: #f7faff;
+  background: #fafbff;
 }
 
 .qr-icon {
-  color: #2858d6;
+  color: #4f46e5;
 
-  font-size: 32px;
+  font-size: 30px;
 }
 
 .qr-placeholder strong {
   display: block;
 
-  color: #24385b;
+  color: #374151;
 
   font-size: 10px;
 }
@@ -923,7 +974,7 @@
 
   margin-top: 3px;
 
-  color: #66758d;
+  color: #6b7280;
 
   font-size: 9px;
 }
@@ -938,7 +989,7 @@
 
 /* =========================================================
    LARGE SCREENS
-   ========================================================= */
+========================================================= */
 
 @media (min-width: 1500px) {
 
@@ -947,11 +998,6 @@
 
     padding: 30px 32px 26px;
   }
-
-  /*
-   * Do not add padding to .form-panel here.
-   * The parent .admin-content already controls page spacing.
-   */
 
   .form-header h2 {
     font-size: 24px;
@@ -966,7 +1012,7 @@
   }
 
   .input-wrapper {
-    height: 43px;
+    height: 41px;
   }
 
   .input-wrapper input,
@@ -978,7 +1024,7 @@
 
 /* =========================================================
    TABLET
-   ========================================================= */
+========================================================= */
 
 @media (max-width: 1100px) {
 
@@ -998,7 +1044,7 @@
 
 /* =========================================================
    SMALL TABLET
-   ========================================================= */
+========================================================= */
 
 @media (max-width: 850px) {
 
@@ -1006,10 +1052,6 @@
     display: block;
   }
 
-  /*
-   * Keep the registration page aligned with other
-   * AdminLayout pages. Do not add another outer padding layer.
-   */
   .form-panel {
     min-height: auto;
     padding: 0;
@@ -1027,15 +1069,13 @@
 
 /* =========================================================
    MOBILE
-   ========================================================= */
+========================================================= */
 
 @media (max-width: 650px) {
 
-  .form-panel {
-    padding: 0;
-  }
-
   .top-date-time {
+    justify-content: flex-start;
+
     font-size: 10px;
 
     gap: 12px;
@@ -1081,8 +1121,8 @@
     flex-direction: column-reverse;
   }
 
-  .reset-button,
-  .submit-button {
+  .secondary-button,
+  .primary-button {
     width: 100%;
   }
 }
