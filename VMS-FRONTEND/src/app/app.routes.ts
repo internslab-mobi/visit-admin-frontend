@@ -8,6 +8,12 @@ import { AdminLayoutComponent }
 
 import { VisitorListComponent } from './features/visitor-management/visitor-list/visitor-list';
 
+import { EmployeeListComponent }
+  from './features/employee-management/employee-list/employee-list';
+
+import { DepartmentListComponent }
+  from './features/department-management/department-list/department-list';
+
 export const routes: Routes = [
 
    {
@@ -34,6 +40,14 @@ export const routes: Routes = [
     {
       path: 'visitors',
       component: VisitorListComponent
+    },
+    {
+      path: 'employees',
+      component: EmployeeListComponent
+    },
+    {
+      path: 'departments',
+      component: DepartmentListComponent
     }
   ]
 },

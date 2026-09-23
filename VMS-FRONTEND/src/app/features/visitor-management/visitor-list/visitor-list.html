@@ -195,48 +195,27 @@
 
   <div class="pagination">
 
-  <div class="pagination-info">
-    Showing
-    <strong>{{ startRecord }}</strong>
-    -
-    <strong>{{ endRecord }}</strong>
-    of
-    <strong>{{ filteredVisitors.length }}</strong>
-    records
-  </div>
+  <button
+    type="button"
+    class="pagination-button"
+    (click)="previousPage()"
+    [disabled]="currentPage === 1"
+  >
+    Previous
+  </button>
 
-  <div class="pagination-controls">
+  <span class="pagination-page">
+    Page {{ currentPage }} of {{ totalPages }}
+  </span>
 
-    <button
-      type="button"
-      class="pagination-button"
-      [disabled]="currentPage === 1"
-      (click)="previousPage()"
-    >
-      ‹
-    </button>
-
-    @for (page of [].constructor(totalPages); track $index) {
-      <button
-        type="button"
-        class="pagination-button"
-        [class.active]="currentPage === $index + 1"
-        (click)="goToPage($index + 1)"
-      >
-        {{ $index + 1 }}
-      </button>
-    }
-
-    <button
-      type="button"
-      class="pagination-button"
-      [disabled]="currentPage === totalPages"
-      (click)="nextPage()"
-    >
-      ›
-    </button>
-
-  </div>
+  <button
+    type="button"
+    class="pagination-button"
+    (click)="nextPage()"
+    [disabled]="currentPage === totalPages"
+  >
+    Next
+  </button>
 
 </div>
 

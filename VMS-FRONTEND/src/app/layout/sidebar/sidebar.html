@@ -24,12 +24,12 @@
   class="nav-item"
 >
         <span class="nav-icon">♙</span>
-        <span>Visitors</span>
+        <span>Visits</span>
     </a>
 
     <a href="#" class="nav-item">
       <span class="nav-icon">▣</span>
-      <span>Visits</span>
+      <span>Visitors</span>
     </a>
 
     <a href="#" class="nav-item">
@@ -37,15 +37,25 @@
       <span>Blacklist</span>
     </a>
 
-    <a href="#" class="nav-item">
-      <span class="nav-icon">♙</span>
-      <span>Employees</span>
-    </a>
+    <a
+  routerLink="/admin/employees"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  class="nav-item"
+>
+  <span class="nav-icon">♙</span>
+  <span>Employees</span>
+</a>
 
-    <a href="#" class="nav-item">
-      <span class="nav-icon">▦</span>
-      <span>Departments</span>
-    </a>
+    <a
+  routerLink="/admin/departments"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  class="nav-item"
+>
+  <span class="nav-icon">▦</span>
+  <span>Departments</span>
+</a>
 
     <a href="#" class="nav-item">
       <span class="nav-icon">▥</span>
