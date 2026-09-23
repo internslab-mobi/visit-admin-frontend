@@ -1,0 +1,118 @@
+<div class="employee-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>Employees</h1>
+      <p>Manage and view employees</p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-section">
+
+  <div class="filter-group">
+    <label for="employeeName">Name</label>
+    <input
+      id="employeeName"
+      type="text"
+      placeholder="Search by name"
+      [(ngModel)]="employeeName"
+      (input)="searchEmployees()">
+  </div>
+
+  <div class="filter-group">
+    <label for="employeeCode">Employee Code</label>
+    <input
+      id="employeeCode"
+      type="text"
+      placeholder="Search by code"
+      [(ngModel)]="employeeCode"
+      (input)="searchEmployees()">
+  </div>
+
+  <div class="filter-group">
+    <label for="department">Department</label>
+    <input
+      id="department"
+      type="text"
+      placeholder="Search by department"
+      [(ngModel)]="department"
+      (input)="searchEmployees()">
+  </div>
+
+  <div class="filter-group">
+    <label for="designation">Designation</label>
+    <input
+      id="designation"
+      type="text"
+      placeholder="Search by designation"
+      [(ngModel)]="designation"
+      (input)="searchEmployees()">
+  </div>
+
+  <button type="button" (click)="clearFilters()">
+    Clear
+  </button>
+
+</div>
+
+  <!-- Employee Table -->
+  <div class="table-section">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Employee ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Mobile</th>
+          <th>Department</th>
+          <th>Designation</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (employee of paginatedEmployees; track employee.id) {
+            <tr>
+                <td>{{ employee.id }}</td>
+                <td>{{ employee.firstName }} {{ employee.lastName }}</td>
+                <td>{{ employee.email }}</td>
+                <td>{{ employee.mobileNumber }}</td>
+                <td>{{ employee.department.departmentName }}</td>
+                <td>{{ employee.designation }}</td>
+                <td>{{ employee.status }}</td>
+            </tr>
+        }
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+
+  <button
+    type="button"
+    (click)="previousPage()"
+    [disabled]="currentPage === 1">
+    Previous
+  </button>
+
+  <span>
+    Page {{ currentPage }} of {{ totalPages }}
+  </span>
+
+  <button
+    type="button"
+    (click)="nextPage()"
+    [disabled]="currentPage === totalPages">
+    Next
+  </button>
+
+</div>
+
+</div>

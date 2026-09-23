@@ -1,0 +1,167 @@
+.employee-page {
+  padding: 24px;
+}
+
+/* Page Header */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+
+/* Filter Section */
+
+.filter-section {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 18px;
+  margin-bottom: 24px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.filter-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.filter-group input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.filter-group input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+
+/* Filter Buttons */
+
+.filter-section button {
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.filter-section button:first-of-type {
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.filter-section button:last-of-type {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+}
+
+
+/* Employee Table */
+
+.table-section {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-section th {
+  padding: 14px 16px;
+  text-align: left;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.table-section td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #374151;
+  font-size: 14px;
+}
+
+.table-section tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-section tbody tr:hover {
+  background: #f9fafb;
+}
+
+
+/* Pagination */
+
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.pagination button {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #f9fafb;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 14px;
+  color: #374151;
+}
