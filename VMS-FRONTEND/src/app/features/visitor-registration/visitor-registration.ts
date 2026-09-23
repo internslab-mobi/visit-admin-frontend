@@ -262,7 +262,7 @@ registrationForm: FormGroup = this.fb.group({
 
   getEmployeeDisplayName(employee: Employee): string {
 
-    return `${employee.employeeCode} — ${employee.firstName} ${employee.lastName}`;
+    return `${employee.id} — ${employee.firstName} ${employee.lastName}`;
   }
 
   // --------------------------------------------------------------------------
