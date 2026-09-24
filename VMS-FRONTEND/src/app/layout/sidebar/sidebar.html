@@ -1,67 +1,133 @@
 <aside class="sidebar">
 
   <div class="brand">
-    <div class="brand-title">VMS</div>
-    <div class="brand-subtitle">Visitor Management</div>
+
+    <div class="brand-title">
+      VMS
+    </div>
+
+    <div class="brand-subtitle">
+      Visitor Management
+    </div>
+
   </div>
+
 
   <nav class="navigation">
 
+    <!-- Pre-Registration -->
     <a
-  routerLink="/admin/pre-registration"
-  routerLinkActive="active"
-  [routerLinkActiveOptions]="{ exact: true }"
-  class="nav-item"
+      routerLink="/admin/pre-registration"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-item"
     >
-        <span class="nav-icon">✚</span>
-        <span>Pre-Registration</span>
+
+      <span class="nav-icon">✚</span>
+
+      <span>
+        Pre-Registration
+      </span>
+
     </a>
 
+
+    <!-- Visits -->
     <a
-  routerLink="/admin/visitors"
-  routerLinkActive="active"
-  [routerLinkActiveOptions]="{ exact: true }"
-  class="nav-item"
->
-        <span class="nav-icon">♙</span>
-        <span>Visits</span>
+      routerLink="/admin/visits"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-item"
+    >
+
+      <span class="nav-icon">♙</span>
+
+      <span>
+        Visits
+      </span>
+
     </a>
 
-    <a href="#" class="nav-item">
+
+    <!-- Visitors -->
+    <a
+      routerLink="/admin/visitors"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-item"
+    >
+
       <span class="nav-icon">▣</span>
-      <span>Visitors</span>
+
+      <span>
+        Visitors
+      </span>
+
     </a>
 
-    <a href="#" class="nav-item">
+
+    <!-- Blacklist -->
+    <a
+      href="#"
+      class="nav-item"
+    >
+
       <span class="nav-icon">⊘</span>
-      <span>Blacklist</span>
+
+      <span>
+        Blacklist
+      </span>
+
     </a>
 
-    <a
-  routerLink="/admin/employees"
-  routerLinkActive="active"
-  [routerLinkActiveOptions]="{ exact: true }"
-  class="nav-item"
->
-  <span class="nav-icon">♙</span>
-  <span>Employees</span>
-</a>
 
+    <!-- Employees -->
     <a
-  routerLink="/admin/departments"
-  routerLinkActive="active"
-  [routerLinkActiveOptions]="{ exact: true }"
-  class="nav-item"
->
-  <span class="nav-icon">▦</span>
-  <span>Departments</span>
-</a>
+      routerLink="/admin/employees"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-item"
+    >
 
-    <a href="#" class="nav-item">
+      <span class="nav-icon">♙</span>
+
+      <span>
+        Employees
+      </span>
+
+    </a>
+
+
+    <!-- Departments -->
+    <a
+      routerLink="/admin/departments"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-item"
+    >
+
+      <span class="nav-icon">▦</span>
+
+      <span>
+        Departments
+      </span>
+
+    </a>
+
+
+    <!-- Reports -->
+    <a
+      href="#"
+      class="nav-item"
+    >
+
       <span class="nav-icon">▥</span>
-      <span>Reports</span>
-    </a>
 
+      <span>
+        Reports
+      </span>
+
+    </a>
 
   </nav>
 

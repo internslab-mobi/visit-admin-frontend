@@ -1126,3 +1126,202 @@
     width: 100%;
   }
 }
+/* =================================
+   DOCUMENT UPLOAD
+================================= */
+
+.documents-upload-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Selected document list */
+
+.selected-documents {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.document-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 14px;
+
+  background: #f8fafc;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+
+  transition: all 0.2s ease;
+}
+
+.document-item:hover {
+  border-color: #b9c7d9;
+}
+
+/* File information */
+
+.document-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  min-width: 0;
+}
+
+.document-icon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eef4ff;
+  border-radius: 8px;
+
+  font-size: 18px;
+
+  flex-shrink: 0;
+}
+
+.document-details {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.document-details strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  max-width: 500px;
+}
+
+.document-details small {
+  margin-top: 3px;
+
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Remove button */
+
+.remove-document-btn {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+  color: #64748b;
+
+  font-size: 22px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  flex-shrink: 0;
+}
+
+.remove-document-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Add document button */
+
+.add-document-box {
+  width: 100%;
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  border: 1.5px dashed #b8c5d6;
+  border-radius: 10px;
+
+  background: #fafcff;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  box-sizing: border-box;
+}
+
+.add-document-box:hover {
+  border-color: #7c8fa8;
+  background: #f5f8fc;
+}
+
+.add-document-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #eef4ff;
+  color: #2563eb;
+
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.add-document-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-document-text strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.add-document-text small {
+  margin-top: 3px;
+
+  font-size: 12px;
+  color: #64748b;
+}
+
+
+/* =================================
+   RESPONSIVE
+================================= */
+
+@media (max-width: 768px) {
+
+  .document-details strong {
+    max-width: 220px;
+  }
+
+  .add-document-box {
+    justify-content: flex-start;
+    padding: 12px 16px;
+  }
+}
