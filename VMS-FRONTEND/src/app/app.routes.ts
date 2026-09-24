@@ -6,7 +6,7 @@ import { VisitorRegistrationComponent }
 import { AdminLayoutComponent }
   from './layout/admin-layout/admin-layout';
 
-import { VisitorListComponent } from './features/visitor-management/visitor-list/visitor-list';
+import { VisitListComponent } from './features/visit-management/visit-list/visit-list';
 
 import { EmployeeListComponent }
   from './features/employee-management/employee-list/employee-list';
@@ -31,7 +31,7 @@ export const routes: Routes = [
     },
     {
       path: 'visitors',
-      component: VisitorListComponent
+      component: VisitListComponent
     },
     {
       path: 'employees',

@@ -8,10 +8,10 @@
 
 
 /* =========================================================
-   VISITOR PAGE
+   VISIT PAGE
 ========================================================= */
 
-.visitor-page {
+.visit-page {
   width: 100%;
 }
 
@@ -348,10 +348,10 @@
 
 
 /* =========================================================
-   VISITOR TABLE CARD
+   VISIT TABLE CARD
 ========================================================= */
 
-.visitor-table-card {
+.visit-table-card {
   margin-top: 22px;
 
   overflow: hidden;
@@ -580,10 +580,6 @@ td:nth-child(8) {
    PAGINATION
 ========================================================= */
 
-/* =========================================================
-   PAGINATION
-========================================================= */
-
 .pagination {
   min-height: 58px;
 
@@ -645,6 +641,7 @@ td:nth-child(8) {
 
   cursor: not-allowed;
 }
+
 
 /* =========================================================
    RESPONSIVE — TABLET
@@ -730,17 +727,14 @@ td:nth-child(8) {
   }
 
   .pagination {
-  min-height: auto;
+    min-height: auto;
 
-  padding: 13px 15px;
+    padding: 13px 15px;
 
-  justify-content: center;
+    justify-content: center;
 
-  gap: 12px;
+    gap: 12px;
+  }
+
 }
 
-  .pagination-controls {
-  width: 100%;
-  justify-content: flex-end;
-}
-}

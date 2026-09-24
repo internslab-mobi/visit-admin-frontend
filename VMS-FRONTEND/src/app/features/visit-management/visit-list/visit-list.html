@@ -1,0 +1,331 @@
+<div class="visit-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <div>
+      <h1>Visits</h1>
+      <p>Manage and view registered visits</p>
+    </div>
+
+    <button
+      class="register-button"
+      type="button"
+      routerLink="/admin/pre-registration"
+    >
+      + Register New Visitor
+    </button>
+
+  </div>
+
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+
+    <div class="summary-card">
+      <span class="card-label">Total Visits</span>
+      <span class="card-value">{{ totalVisits }}</span>
+    </div>
+
+    <div class="summary-card">
+      <span class="card-label">Today's Visits</span>
+      <span class="card-value">{{ todayVisits }}</span>
+    </div>
+
+    <div class="summary-card">
+      <span class="card-label">Currently On-Premises</span>
+      <span class="card-value">{{ checkedInVisits }}</span>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- Search & Filters -->
+<div class="filter-card">
+
+  <!-- Search -->
+  <div class="search-field">
+
+    <label for="visitSearch">
+      Search
+    </label>
+
+    <div class="search-input-wrapper">
+
+      <span class="search-icon">⌕</span>
+
+      <input
+        id="visitSearch"
+        type="text"
+        placeholder="Name, email, mobile or visit ID"
+        [(ngModel)]="searchText"
+        (ngModelChange)="onFilterChange()"
+      />
+
+    </div>
+
+  </div>
+
+
+  <!-- Visitor Type -->
+  <div class="filter-field">
+
+    <label for="visitorType">
+      Visitor Type
+    </label>
+
+    <select
+      id="visitorType"
+      [(ngModel)]="selectedVisitorType"
+      (ngModelChange)="onFilterChange()"
+    >
+
+      <option value="">
+        All Types
+      </option>
+
+      <option value="VISITOR">
+        Visitor
+      </option>
+
+      <option value="GUEST">
+        Guest
+      </option>
+
+      <option value="VENDOR">
+        Vendor
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <!-- Status -->
+  <div class="filter-field">
+
+    <label for="visitStatus">
+      Status
+    </label>
+
+    <select
+      id="visitStatus"
+      [(ngModel)]="selectedStatus"
+      (ngModelChange)="onFilterChange()"
+    >
+
+      <option value="">
+        All Statuses
+      </option>
+
+      <option value="REGISTERED">
+        Registered
+      </option>
+
+      <option value="CHECKED_IN">
+        Checked In
+      </option>
+
+      <option value="CHECKED_OUT">
+        Checked Out
+      </option>
+
+      <option value="CANCELLED">
+        Cancelled
+      </option>
+
+      <option value="NO_SHOW">
+        No Show
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <!-- Date -->
+  <div class="filter-field">
+
+    <label for="visitDate">
+      Date
+    </label>
+
+    <input
+      id="visitDate"
+      type="date"
+      [(ngModel)]="selectedDate"
+      (ngModelChange)="onFilterChange()"
+    />
+
+  </div>
+
+
+  <!-- Clear -->
+  <div class="clear-field">
+
+    <button
+      type="button"
+      class="clear-button"
+      (click)="clearFilters()"
+    >
+      Clear
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- Visit Table -->
+<div class="visit-table-card">
+
+  <!-- Table Header -->
+  <div class="table-header">
+
+    <h2>
+      Visit Records
+    </h2>
+
+    <span class="record-count">
+      {{ filteredVisits.length }} records
+    </span>
+
+  </div>
+
+
+  <!-- Table -->
+  <div class="table-wrapper">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Visit ID</th>
+
+          <th>Name</th>
+
+          <th>Email</th>
+
+          <th>Mobile</th>
+
+          <th>Visitor Type</th>
+
+          <th>Company</th>
+
+          <th>Status</th>
+
+          <th>Visit Date</th>
+
+          <th>Actions</th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @for (visit of paginatedVisits; track visit.id) {
+
+          <tr>
+
+            <td>
+              {{ visit.id }}
+            </td>
+
+            <td>
+              {{ visit.name }}
+            </td>
+
+            <td>
+              {{ visit.email }}
+            </td>
+
+            <td>
+              {{ visit.mobile }}
+            </td>
+
+            <td>
+              {{ visit.visitorType }}
+            </td>
+
+            <td>
+              {{ visit.company }}
+            </td>
+
+            <td>
+
+              <span
+                class="status"
+                [class.status-registered]="visit.status === 'REGISTERED'"
+                [class.status-checked-in]="visit.status === 'CHECKED_IN'"
+                [class.status-checked-out]="visit.status === 'CHECKED_OUT'"
+                [class.status-cancelled]="visit.status === 'CANCELLED'"
+                [class.status-no-show]="visit.status === 'NO_SHOW'"
+              >
+                {{ getStatusLabel(visit.status) }}
+              </span>
+
+            </td>
+
+            <td>
+              {{ visit.visitDate }}
+            </td>
+
+            <td>
+
+              <button
+                class="action-button"
+                type="button"
+              >
+                View
+              </button>
+
+            </td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- Pagination -->
+  <div class="pagination">
+
+    <button
+      type="button"
+      class="pagination-button"
+      (click)="previousPage()"
+      [disabled]="currentPage === 1"
+    >
+      Previous
+    </button>
+
+
+    <span class="pagination-page">
+      Page {{ currentPage }} of {{ totalPages }}
+    </span>
+
+
+    <button
+      type="button"
+      class="pagination-button"
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages || totalPages === 0"
+    >
+      Next
+    </button>
+
+  </div>
+
+</div>
+
