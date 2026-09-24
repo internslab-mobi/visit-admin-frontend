@@ -16,10 +16,18 @@ import { DepartmentListComponent }
 
 export const routes: Routes = [
 
+   {
+    path: '',
+    loadComponent: () =>
+      import('./features/landing/landing').then(
+        m => m.Landing
+      )
+  },
 
-   // ======================
+
+     
   // ADMIN
-  // ======================
+    
 
   {
   path: 'admin',
@@ -44,9 +52,9 @@ export const routes: Routes = [
   ]
 },
 
-  // ======================
+    
   // UNKNOWN ROUTES
-  // ======================
+    
 
   {
     path: '**',

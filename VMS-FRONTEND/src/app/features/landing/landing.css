@@ -1,0 +1,625 @@
+/* =================================
+   LANDING PAGE
+================================= */
+
+.landing-page {
+  position: relative;
+
+  width: 100%;
+  height: 100vh;
+  min-height: 650px;
+
+  overflow: hidden;
+}
+
+
+/* =================================
+   FULL SCREEN BACKGROUND IMAGE
+================================= */
+
+.background-image {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  z-index: 0;
+}
+
+
+/* =================================
+   NO WHITE OVERLAY
+================================= */
+
+.left-overlay {
+  display: none;
+}
+
+
+/* =================================
+   CONTENT
+================================= */
+
+.landing-content {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+  height: 100%;
+
+  box-sizing: border-box;
+
+  padding-left: 5.5%;
+  padding-top: 8%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* =================================
+   BRAND
+================================= */
+
+.brand-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+
+/* Small purple line above VMS */
+
+.brand-line {
+  width: 40px;
+  height: 3px;
+
+  margin-bottom: 12px;
+
+  background: linear-gradient(
+    90deg,
+    #6d63ff,
+    #9b4dff
+  );
+
+  border-radius: 10px;
+}
+
+
+/* VMS */
+
+.brand-name {
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 30px;
+  font-weight: 700;
+
+  color: #ffffff;
+
+  line-height: 1;
+}
+
+
+/* VISITOR MANAGEMENT SYSTEM */
+
+.brand-subtitle {
+  margin-top: 24px;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  letter-spacing: 4px;
+
+  color: rgba(255, 255, 255, 0.9);
+}
+
+
+/* =================================
+   HERO
+================================= */
+
+.hero-section {
+  margin-top: 42px;
+}
+
+
+/* Main heading */
+
+.hero-section h1 {
+  margin: 0;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: clamp(52px, 5vw, 80px);
+
+  font-weight: 700;
+
+  line-height: 0.98;
+
+  letter-spacing: -3px;
+
+  color: #ffffff;
+}
+
+
+/* EVERY VISITOR */
+
+.hero-section h1 {
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+
+/* MATTERS ! */
+
+.hero-section h1 span {
+  background: linear-gradient(
+    90deg,
+    #4f8cff 0%,
+    #5c5cf2 45%,
+    #7628e8 100%
+  );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+
+  text-shadow: none;
+}
+
+
+/* =================================
+   DESCRIPTION
+================================= */
+
+.description {
+  width: 390px;
+  max-width: 90%;
+
+  margin-top: 26px;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 18px;
+  font-weight: 400;
+
+  line-height: 1.5;
+
+  color: rgba(255, 255, 255, 0.92);
+
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+
+/* =================================
+   FEATURES
+================================= */
+
+.features {
+  display: flex;
+
+  gap: 34px;
+
+  margin-top: 28px;
+}
+
+
+.feature {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  min-width: 70px;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  color: #ffffff;
+
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Feature icon box */
+
+.feature-icon {
+  width: 50px;
+  height: 50px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 8px;
+
+  border-radius: 13px;
+
+  background: rgba(82, 100, 170, 0.48);
+
+  color: #6273ff;
+
+  font-size: 22px;
+
+  backdrop-filter: blur(6px);
+
+  -webkit-backdrop-filter: blur(6px);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+
+/* =================================
+   GET STARTED BUTTON
+================================= */
+
+.get-started-btn {
+  width: 238px;
+  height: 68px;
+
+  margin-top: 32px;
+
+  padding: 7px 9px 7px 30px;
+
+  border: none;
+
+  border-radius: 16px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  cursor: pointer;
+
+  color: #ffffff;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+  background: linear-gradient(
+    110deg,
+    #4059f2,
+    #5233ee
+  );
+
+  box-shadow:
+    0 12px 28px rgba(65, 73, 225, 0.35);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+/* Button hover */
+
+.get-started-btn:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 16px 34px rgba(65, 73, 225, 0.5);
+}
+
+
+/* Button arrow */
+
+.arrow-circle {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.16);
+
+  color: #ffffff;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 23px;
+
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.get-started-btn:hover .arrow-circle {
+  background: rgba(255, 255, 255, 0.22);
+
+  transform: translateX(2px);
+}
+
+
+/* =================================
+   BOTTOM TAGLINE
+================================= */
+
+.bottom-tagline {
+  position: absolute;
+
+  left: 5.5%;
+
+  bottom: 8%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+
+/* Purple line */
+
+.bottom-line {
+  width: 40px;
+  height: 3px;
+
+  background: linear-gradient(
+    90deg,
+    #6d63ff,
+    #9b4dff
+  );
+
+  border-radius: 5px;
+}
+
+
+/* PEOPLE · PLACES · PROGRESS */
+
+.bottom-tagline span {
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  letter-spacing: 3px;
+
+  color: rgba(255, 255, 255, 0.9);
+
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+
+/* =================================
+   MOBILE
+================================= */
+
+@media (max-width: 768px) {
+
+  .landing-page {
+    min-height: 700px;
+  }
+
+
+  /* Background */
+
+  .background-image {
+    object-position: 65% center;
+  }
+
+
+  /* IMPORTANT:
+     No white overlay on mobile either
+  */
+
+  .left-overlay {
+    display: none;
+  }
+
+
+  /* Content */
+
+  .landing-content {
+    padding: 40px 28px;
+  }
+
+
+  /* Brand */
+
+  .brand-line {
+    width: 32px;
+    height: 3px;
+
+    margin-bottom: 10px;
+  }
+
+  .brand-name {
+    font-size: 27px;
+  }
+
+  .brand-subtitle {
+    margin-top: 18px;
+
+    font-size: 11px;
+
+    letter-spacing: 2.5px;
+  }
+
+
+  /* Hero */
+
+  .hero-section {
+    margin-top: 35px;
+  }
+
+  .hero-section h1 {
+    font-size: 48px;
+
+    line-height: 0.98;
+
+    letter-spacing: -2px;
+  }
+
+
+  /* Description */
+
+  .description {
+    width: 330px;
+
+    max-width: 100%;
+
+    margin-top: 22px;
+
+    font-size: 16px;
+
+    line-height: 1.45;
+  }
+
+
+  /* Features */
+
+  .features {
+    gap: 18px;
+
+    margin-top: 24px;
+  }
+
+  .feature {
+    min-width: 62px;
+
+    font-size: 13px;
+  }
+
+  .feature-icon {
+    width: 44px;
+    height: 44px;
+
+    font-size: 19px;
+
+    border-radius: 11px;
+  }
+
+
+  /* Button */
+
+  .get-started-btn {
+    width: 210px;
+    height: 62px;
+
+    margin-top: 28px;
+
+    padding-left: 24px;
+
+    font-size: 16px;
+
+    border-radius: 14px;
+  }
+
+  .arrow-circle {
+    width: 40px;
+    height: 40px;
+
+    font-size: 21px;
+  }
+
+
+  /* Bottom */
+
+  .bottom-tagline {
+    left: 28px;
+
+    bottom: 30px;
+  }
+
+  .bottom-line {
+    width: 32px;
+  }
+
+  .bottom-tagline span {
+    font-size: 10px;
+
+    letter-spacing: 2px;
+  }
+}
+
+
+/* =================================
+   SMALL MOBILE
+================================= */
+
+@media (max-width: 480px) {
+
+  .landing-content {
+    padding: 30px 22px;
+  }
+
+  .brand-name {
+    font-size: 25px;
+  }
+
+  .brand-subtitle {
+    font-size: 9px;
+
+    letter-spacing: 2px;
+  }
+
+  .hero-section {
+    margin-top: 30px;
+  }
+
+  .hero-section h1 {
+    font-size: 40px;
+  }
+
+  .description {
+    font-size: 15px;
+  }
+
+  .features {
+    gap: 12px;
+  }
+
+  .feature {
+    min-width: 58px;
+
+    font-size: 12px;
+  }
+
+  .feature-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .get-started-btn {
+    width: 200px;
+    height: 60px;
+  }
+
+  .bottom-tagline {
+    left: 22px;
+
+    bottom: 22px;
+  }
+}
