@@ -163,6 +163,8 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
     passportNumber: this.fb.control<string | null>(null),
 
+    validity: this.fb.control<string | null>(null),
+
     // ------------------------------------------------------------------------
     // Documents
     // ------------------------------------------------------------------------
@@ -716,11 +718,27 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
           ? String(value.remarks).trim()
           : null,
 
-      proofType,
+      nationality:
+    nationality as Nationality,
+      aadharNumber: value.aadhaarNumber
+    ? String(value.aadhaarNumber).trim()
+    : null,
 
-      proofNumber
+  panNumber: value.panNumber
+    ? String(value.panNumber).trim()
+    : null,
+
+  passportNumber: value.passportNumber
+    ? String(value.passportNumber).trim()
+    : null,
+
+
+  validity: value.validity
+  ? String(value.validity)
+  : null,
     };
 
+    
     return request;
   }
 

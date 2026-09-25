@@ -909,6 +909,47 @@
     </section>
 
 
+    <!-- ===================================================
+     VENDOR - VALIDITY
+     =================================================== -->
+
+<div
+  class="field-group"
+  *ngIf="
+    registrationForm.get('visitorType')?.value === 'VENDOR'
+  "
+>
+
+  <label for="validity">
+    Validity
+    <span class="required">*</span>
+  </label>
+
+  <div
+    class="input-wrapper"
+    [class.input-error]="isInvalid('validity')"
+  >
+
+    <span class="input-icon">
+      📅
+    </span>
+
+    <input
+      id="validity"
+      type="datetime-local"
+      formControlName="validity"
+    />
+
+  </div>
+
+  <div
+    *ngIf="isInvalid('validity')"
+    class="error-message"
+  >
+    Please select the vendor validity date and time.
+  </div>
+
+</div>
     <!-- =====================================================
          6. DOCUMENTS
          ===================================================== -->
