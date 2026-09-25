@@ -14,7 +14,7 @@
 
 
 /* =================================
-   FULL SCREEN BACKGROUND IMAGE
+   BACKGROUND IMAGE
 ================================= */
 
 .background-image {
@@ -42,24 +42,25 @@
 
 
 /* =================================
-   CONTENT
+   MAIN CONTENT
 ================================= */
 
 .landing-content {
-  position: relative;
+  position: absolute;
 
   z-index: 2;
 
-  width: 100%;
-  height: 100%;
+  left: 5.2%;
+  top: 12%;
+
+  width: 680px;
 
   box-sizing: border-box;
 
-  padding-left: 5.5%;
-  padding-top: 8%;
-
   display: flex;
   flex-direction: column;
+
+  padding: 0;
 }
 
 
@@ -69,12 +70,14 @@
 
 .brand-section {
   display: flex;
+
   flex-direction: column;
+
   align-items: flex-start;
 }
 
 
-/* Small purple line above VMS */
+/* Purple line */
 
 .brand-line {
   width: 40px;
@@ -100,25 +103,37 @@
   font-size: 30px;
   font-weight: 700;
 
+  line-height: 1;
+
   color: #ffffff;
 
-  line-height: 1;
+  white-space: nowrap;
+
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 
-/* VISITOR MANAGEMENT SYSTEM */
+/* Subtitle */
 
 .brand-subtitle {
-  margin-top: 24px;
+  margin-top: 22px;
 
   font-family: Georgia, "Times New Roman", serif;
 
   font-size: 14px;
   font-weight: 600;
 
+  line-height: 1.2;
+
   letter-spacing: 4px;
 
   color: rgba(255, 255, 255, 0.9);
+
+  white-space: nowrap;
+
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -127,38 +142,41 @@
 ================================= */
 
 .hero-section {
-  margin-top: 42px;
+  margin-top: 38px;
 }
 
 
-/* Main heading */
+/* Heading */
 
 .hero-section h1 {
   margin: 0;
 
   font-family: Georgia, "Times New Roman", serif;
 
-  font-size: clamp(52px, 5vw, 80px);
+  /*
+     Keeps the heading controlled
+     instead of using vw.
+  */
+  font-size: 76px;
 
   font-weight: 700;
 
-  line-height: 0.98;
+  line-height: 0.96;
 
   letter-spacing: -3px;
 
   color: #ffffff;
-}
 
+  white-space: nowrap;
 
-/* EVERY VISITOR */
-
-.hero-section h1 {
   text-shadow:
     0 2px 12px rgba(0, 0, 0, 0.25);
 }
 
 
-/* MATTERS ! */
+/* =================================
+   MATTERS GRADIENT
+================================= */
 
 .hero-section h1 span {
   background: linear-gradient(
@@ -183,16 +201,18 @@
 
 .description {
   width: 390px;
-  max-width: 90%;
 
-  margin-top: 26px;
+  margin: 24px 0 0 0;
+
+  padding: 0;
 
   font-family: Georgia, "Times New Roman", serif;
 
   font-size: 18px;
+
   font-weight: 400;
 
-  line-height: 1.5;
+  line-height: 1.45;
 
   color: rgba(255, 255, 255, 0.92);
 
@@ -208,9 +228,13 @@
 .features {
   display: flex;
 
+  align-items: flex-start;
+
   gap: 34px;
 
-  margin-top: 28px;
+  width: 330px;
+
+  margin-top: 25px;
 }
 
 
@@ -221,6 +245,8 @@
 
   align-items: center;
 
+  justify-content: flex-start;
+
   min-width: 70px;
 
   font-family: Georgia, "Times New Roman", serif;
@@ -229,6 +255,8 @@
 
   font-weight: 700;
 
+  line-height: 1.2;
+
   color: #ffffff;
 
   text-shadow:
@@ -236,7 +264,7 @@
 }
 
 
-/* Feature icon box */
+/* Feature icon */
 
 .feature-icon {
   width: 50px;
@@ -258,7 +286,6 @@
   font-size: 22px;
 
   backdrop-filter: blur(6px);
-
   -webkit-backdrop-filter: blur(6px);
 
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -276,9 +303,11 @@
   width: 238px;
   height: 68px;
 
-  margin-top: 32px;
+  margin-top: 29px;
 
   padding: 7px 9px 7px 30px;
+
+  box-sizing: border-box;
 
   border: none;
 
@@ -315,7 +344,7 @@
 }
 
 
-/* Button hover */
+/* Hover */
 
 .get-started-btn:hover {
   transform: translateY(-3px);
@@ -325,11 +354,15 @@
 }
 
 
-/* Button arrow */
+/* =================================
+   ARROW
+================================= */
 
 .arrow-circle {
   width: 42px;
   height: 42px;
+
+  flex-shrink: 0;
 
   display: flex;
 
@@ -366,9 +399,10 @@
 .bottom-tagline {
   position: absolute;
 
-  left: 5.5%;
+  left: 5.2%;
+  bottom: 5.5%;
 
-  bottom: 8%;
+  z-index: 3;
 
   display: flex;
 
@@ -394,7 +428,7 @@
 }
 
 
-/* PEOPLE · PLACES · PROGRESS */
+/* Tagline */
 
 .bottom-tagline span {
   font-family: Georgia, "Times New Roman", serif;
@@ -403,12 +437,129 @@
 
   font-weight: 600;
 
+  line-height: 1.2;
+
   letter-spacing: 3px;
 
   color: rgba(255, 255, 255, 0.9);
 
+  white-space: nowrap;
+
   text-shadow:
     0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+
+/* =================================
+   SHORT DESKTOP SCREENS
+================================= */
+
+@media (min-width: 769px) and (max-height: 800px) {
+
+  .landing-content {
+    top: 8%;
+  }
+
+  .brand-name {
+    font-size: 27px;
+  }
+
+  .brand-subtitle {
+    margin-top: 18px;
+
+    font-size: 12px;
+  }
+
+  .hero-section {
+    margin-top: 28px;
+  }
+
+  .hero-section h1 {
+    font-size: 64px;
+  }
+
+  .description {
+    margin-top: 18px;
+
+    font-size: 16px;
+  }
+
+  .features {
+    margin-top: 20px;
+  }
+
+  .feature-icon {
+    width: 44px;
+    height: 44px;
+
+    font-size: 20px;
+  }
+
+  .get-started-btn {
+    width: 220px;
+    height: 60px;
+
+    margin-top: 22px;
+  }
+
+  .arrow-circle {
+    width: 38px;
+    height: 38px;
+  }
+
+  .bottom-tagline {
+    bottom: 4%;
+  }
+}
+
+
+/* =================================
+   TABLET
+================================= */
+
+@media (max-width: 1100px) and (min-width: 769px) {
+
+  .landing-content {
+    left: 5%;
+    top: 10%;
+
+    width: 600px;
+  }
+
+  .brand-name {
+    font-size: 28px;
+  }
+
+  .brand-subtitle {
+    font-size: 12px;
+
+    letter-spacing: 3px;
+  }
+
+  .hero-section {
+    margin-top: 32px;
+  }
+
+  .hero-section h1 {
+    font-size: 64px;
+
+    letter-spacing: -2px;
+  }
+
+  .description {
+    width: 350px;
+
+    font-size: 17px;
+  }
+
+  .features {
+    gap: 26px;
+  }
+
+  .bottom-tagline {
+    left: 5%;
+    bottom: 4%;
+  }
 }
 
 
@@ -419,7 +570,7 @@
 @media (max-width: 768px) {
 
   .landing-page {
-    min-height: 700px;
+    min-height: 650px;
   }
 
 
@@ -430,19 +581,24 @@
   }
 
 
-  /* IMPORTANT:
-     No white overlay on mobile either
-  */
+  /* No overlay */
 
   .left-overlay {
     display: none;
   }
 
 
-  /* Content */
+  /* Main content */
 
   .landing-content {
-    padding: 40px 28px;
+    position: absolute;
+
+    left: 28px;
+    top: 35px;
+
+    width: calc(100% - 56px);
+
+    height: auto;
   }
 
 
@@ -465,13 +621,15 @@
     font-size: 11px;
 
     letter-spacing: 2.5px;
+
+    white-space: normal;
   }
 
 
   /* Hero */
 
   .hero-section {
-    margin-top: 35px;
+    margin-top: 30px;
   }
 
   .hero-section h1 {
@@ -480,6 +638,8 @@
     line-height: 0.98;
 
     letter-spacing: -2px;
+
+    white-space: normal;
   }
 
 
@@ -487,10 +647,9 @@
 
   .description {
     width: 330px;
-
     max-width: 100%;
 
-    margin-top: 22px;
+    margin-top: 20px;
 
     font-size: 16px;
 
@@ -501,9 +660,11 @@
   /* Features */
 
   .features {
+    width: auto;
+
     gap: 18px;
 
-    margin-top: 24px;
+    margin-top: 22px;
   }
 
   .feature {
@@ -528,7 +689,7 @@
     width: 210px;
     height: 62px;
 
-    margin-top: 28px;
+    margin-top: 25px;
 
     padding-left: 24px;
 
@@ -550,7 +711,7 @@
   .bottom-tagline {
     left: 28px;
 
-    bottom: 30px;
+    bottom: 25px;
   }
 
   .bottom-line {
@@ -572,8 +733,12 @@
 @media (max-width: 480px) {
 
   .landing-content {
-    padding: 30px 22px;
+    left: 22px;
+    top: 28px;
+
+    width: calc(100% - 44px);
   }
+
 
   .brand-name {
     font-size: 25px;
@@ -585,17 +750,22 @@
     letter-spacing: 2px;
   }
 
+
   .hero-section {
-    margin-top: 30px;
+    margin-top: 27px;
   }
 
   .hero-section h1 {
     font-size: 40px;
+
+    letter-spacing: -1.5px;
   }
+
 
   .description {
     font-size: 15px;
   }
+
 
   .features {
     gap: 12px;
@@ -610,16 +780,29 @@
   .feature-icon {
     width: 42px;
     height: 42px;
+
+    font-size: 18px;
   }
+
 
   .get-started-btn {
     width: 200px;
     height: 60px;
   }
 
+
   .bottom-tagline {
     left: 22px;
+    bottom: 20px;
+  }
 
-    bottom: 22px;
+  .bottom-line {
+    width: 32px;
+  }
+
+  .bottom-tagline span {
+    font-size: 9px;
+
+    letter-spacing: 1.8px;
   }
 }

@@ -1,0 +1,793 @@
+<div class="visitor-page">
+
+  <!-- ================================
+       PAGE HEADER
+  ================================= -->
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="page-icon">
+        👤
+      </div>
+
+      <div>
+
+        <h1>Visitors</h1>
+
+        <p>
+          Manage and view all registered visitors
+        </p>
+
+      </div>
+
+    </div>
+
+
+   
+
+    <button
+      class="register-button"
+      type="button"
+      routerLink="/admin/pre-registration"
+    >
+      + Register New Visitor
+    </button>
+
+   
+
+  </div>
+
+
+  <!-- ================================
+       SUMMARY
+  ================================= -->
+
+  <!-- <div class="summary-section">
+
+    <div class="summary-card">
+
+      <div class="summary-icon">
+        ♙
+      </div>
+
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          Registered Visitors
+        </span>
+
+        <span class="summary-value">
+          {{ totalVisitors }}
+        </span>
+
+        <span class="summary-description">
+          Visitors currently registered in the system
+        </span>
+
+      </div>
+
+    </div>
+
+  </div> -->
+
+
+  <!-- ================================
+       FILTER CARD
+  ================================= -->
+
+  <div class="filter-card">
+
+    <div class="filter-header">
+
+      <div>
+
+        <h3>
+          Visitor Directory
+        </h3>
+
+        <p>
+          Search, filter and sort registered visitors
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="clear-button"
+        (click)="clearFilters()"
+      >
+        Clear
+      </button>
+
+    </div>
+
+
+    <div class="filter-grid">
+
+
+      <!-- ================================
+           SEARCH
+      ================================= -->
+
+      <div class="filter-field search-field">
+
+        <label for="visitorSearch">
+          Search Visitors
+        </label>
+
+        <div class="search-input-wrapper">
+
+          <span class="search-icon">
+            ⌕
+          </span>
+
+
+          <input
+            id="visitorSearch"
+            type="text"
+            placeholder="Name, email, mobile, company or visitor ID"
+            [(ngModel)]="searchText"
+            (ngModelChange)="onFilterChange()"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================
+           VISITOR TYPE
+      ================================= -->
+
+      <div class="filter-field">
+
+        <label for="visitorType">
+          Visitor Type
+        </label>
+
+
+        <select
+          id="visitorType"
+          [(ngModel)]="selectedVisitorType"
+          (ngModelChange)="onFilterChange()"
+        >
+
+          <option value="">
+            All Types
+          </option>
+
+          <option value="VISITOR">
+            Visitor
+          </option>
+
+          <option value="GUEST">
+            Guest
+          </option>
+
+          <option value="VENDOR">
+            Vendor
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- ================================
+           FROM DATE
+      ================================= -->
+
+      <div class="filter-field">
+
+        <label for="fromDate">
+          From Date
+        </label>
+
+
+        <input
+          id="fromDate"
+          type="date"
+          [(ngModel)]="fromDate"
+          (ngModelChange)="onFilterChange()"
+        />
+
+      </div>
+
+
+      <!-- ================================
+           TO DATE
+      ================================= -->
+
+      <div class="filter-field">
+
+        <label for="toDate">
+          To Date
+        </label>
+
+
+        <input
+          id="toDate"
+          type="date"
+          [(ngModel)]="toDate"
+          (ngModelChange)="onFilterChange()"
+        />
+
+      </div>
+
+
+      <!-- ================================
+           SORT BY
+      ================================= -->
+
+      <div class="filter-field">
+
+        <label for="sortBy">
+          Sort By
+        </label>
+
+
+        <select
+          id="sortBy"
+          [(ngModel)]="sortBy"
+          (ngModelChange)="onSortChange()"
+        >
+
+          <option value="lastVisitDate">
+            Last Visit
+          </option>
+
+          <option value="name">
+            Name
+          </option>
+
+          <option value="company">
+            Company
+          </option>
+
+          <option value="visitorType">
+            Visitor Type
+          </option>
+
+          <option value="id">
+            Visitor ID
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- ================================
+           SORT ORDER
+      ================================= -->
+
+      <div class="filter-field">
+
+        <label for="sortDirection">
+          Order
+        </label>
+
+
+        <select
+          id="sortDirection"
+          [(ngModel)]="sortDirection"
+          (ngModelChange)="onSortChange()"
+        >
+
+          <option value="desc">
+            Descending
+          </option>
+
+          <option value="asc">
+            Ascending
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================
+       TABLE CARD
+  ================================= -->
+
+  <div class="visitor-table-card">
+
+
+    <!-- ================================
+         TABLE HEADER
+    ================================= -->
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          Visitor Records
+        </h2>
+
+        <p>
+
+          {{ filteredVisitors.length }}
+
+          visitor{{
+
+            filteredVisitors.length === 1
+              ? ''
+              : 's'
+
+          }}
+
+          found
+
+        </p>
+
+      </div>
+
+
+      <div class="record-badge">
+
+        {{ filteredVisitors.length }}
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================
+         TABLE
+    ================================= -->
+
+    <div class="table-wrapper">
+
+      <table>
+
+
+        <!-- TABLE HEAD -->
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Visitor
+            </th>
+
+            <th>
+              Contact
+            </th>
+
+            <th>
+              Company
+            </th>
+
+            <th>
+              Type
+            </th>
+
+            <th>
+              Last Visit
+            </th>
+
+            <th>
+              Visitor ID
+            </th>
+
+            <th>
+              Actions
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <!-- TABLE BODY -->
+
+        <tbody>
+
+
+          @for (
+            visitor of paginatedVisitors;
+            track visitor.id
+          ) {
+
+
+            <tr>
+
+
+              <!-- ================================
+                   VISITOR
+              ================================= -->
+
+              <td>
+
+                <div class="visitor-cell">
+
+
+                  <div class="avatar">
+
+                    {{ visitor.name
+                      .charAt(0)
+                      .toUpperCase()
+                    }}
+
+                  </div>
+
+
+                  <div class="visitor-info">
+
+                    <span class="visitor-name">
+
+                      {{ visitor.name }}
+
+                    </span>
+
+
+                    <span class="visitor-email">
+
+                      {{ visitor.email }}
+
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <!-- ================================
+                   CONTACT
+              ================================= -->
+
+              <td>
+
+                <div class="contact-cell">
+
+                  <span class="mobile-number">
+
+                    {{ visitor.mobile }}
+
+                  </span>
+
+
+                  <span class="contact-label">
+
+                    Mobile
+
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <!-- ================================
+                   COMPANY
+              ================================= -->
+
+              <td>
+
+                <span
+                  class="company-name"
+                  [class.no-company]="
+                    visitor.company === '-'
+                  "
+                >
+
+                  {{ visitor.company }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ================================
+                   VISITOR TYPE
+              ================================= -->
+
+              <td>
+
+
+                @if (
+                  visitor.visitorType !== '-'
+                ) {
+
+
+                  <span
+                    class="visitor-type"
+
+                    [class.type-visitor]="
+                      visitor.visitorType === 'VISITOR'
+                    "
+
+                    [class.type-guest]="
+                      visitor.visitorType === 'GUEST'
+                    "
+
+                    [class.type-vendor]="
+                      visitor.visitorType === 'VENDOR'
+                    "
+                  >
+
+                    {{ getVisitorTypeLabel(
+                         visitor.visitorType
+                       ) }}
+
+                  </span>
+
+
+                } @else {
+
+
+                  <span class="no-type">
+
+                    -
+
+                  </span>
+
+
+                }
+
+
+              </td>
+
+
+              <!-- ================================
+                   LAST VISIT
+              ================================= -->
+
+              <td>
+
+
+                <div class="visit-date-cell">
+
+
+                  <span class="visit-date">
+
+                    {{ formatVisitDate(
+                         visitor.lastVisitDate
+                       ) }}
+
+                  </span>
+
+
+                  @if (
+                    visitor.lastVisitDate
+                  ) {
+
+                    <span class="visit-time">
+
+                      {{ formatVisitTime(
+                           visitor.lastVisitDate
+                         ) }}
+
+                    </span>
+
+                  }
+
+
+                </div>
+
+              </td>
+
+
+              <!-- ================================
+                   VISITOR ID
+              ================================= -->
+
+              <td>
+
+                <span class="visitor-id">
+
+                  {{ visitor.id }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ================================
+                   ACTION
+              ================================= -->
+
+              <td>
+
+                <button
+                  class="action-button"
+                  type="button"
+                >
+
+                  View
+
+                </button>
+
+              </td>
+
+
+            </tr>
+
+
+          }
+
+
+          <!-- ================================
+               EMPTY STATE
+          ================================= -->
+
+          @if (
+            paginatedVisitors.length === 0
+          ) {
+
+
+            <tr>
+
+              <td
+                colspan="7"
+                class="empty-cell"
+              >
+
+                <div class="empty-state">
+
+
+                  <div class="empty-icon">
+
+                    ♙
+
+                  </div>
+
+
+                  <h3>
+
+                    No visitors found
+
+                  </h3>
+
+
+                  <p>
+
+                    Try changing your search
+                    or filter criteria.
+
+                  </p>
+
+
+                  <button
+                    type="button"
+                    class="empty-clear-button"
+                    (click)="clearFilters()"
+                  >
+
+                    Clear Filters
+
+                  </button>
+
+
+                </div>
+
+              </td>
+
+            </tr>
+
+
+          }
+
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- ================================
+         PAGINATION
+    ================================= -->
+
+    <div class="pagination">
+
+
+      <div class="pagination-info">
+
+        Showing
+
+        <strong>
+
+          {{ startRecord }}
+
+        </strong>
+
+        -
+
+        <strong>
+
+          {{ endRecord }}
+
+        </strong>
+
+        of
+
+        <strong>
+
+          {{ filteredVisitors.length }}
+
+        </strong>
+
+        visitors
+
+      </div>
+
+
+      <div class="pagination-controls">
+
+
+        <button
+          type="button"
+          class="pagination-button"
+
+          (click)="previousPage()"
+
+          [disabled]="
+            currentPage === 1
+          "
+        >
+
+          ← Previous
+
+        </button>
+
+
+        <span class="pagination-page">
+
+          Page
+
+          <strong>
+
+            {{ currentPage }}
+
+          </strong>
+
+          of
+
+          <strong>
+
+            {{ totalPages || 1 }}
+
+          </strong>
+
+        </span>
+
+
+        <button
+          type="button"
+          class="pagination-button"
+
+          (click)="nextPage()"
+
+          [disabled]="
+            currentPage === totalPages ||
+            totalPages === 0
+          "
+        >
+
+          Next →
+
+        </button>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -9,7 +9,12 @@ export type RegistrationType =
 
 export type ProofType =
   | 'AADHAAR'
-  | 'PASSPORT';
+  | 'PASSPORT'
+  | 'PAN';
+
+export type Nationality =
+  | 'DOMESTIC'
+  | 'INTERNATIONAL';
 
 
 export interface RegistrationRequest {
@@ -30,9 +35,11 @@ export interface RegistrationRequest {
   expectedDepartureTime: string;
 
   remarks: string | null;
-
-  proofType: ProofType | null;
-  proofNumber: string | null;
+nationality: Nationality;
+ aadharNumber: string | null;
+  panNumber: string | null;
+  passportNumber: string | null;
+   validity: string | null;
 }
 
 

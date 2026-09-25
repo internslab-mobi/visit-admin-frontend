@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { VisitorRegistrationComponent }
-  from './features/visitor-registration/visitor-registration';
+  from './features/visitor-management/visitor-registration/visitor-registration';
 
 import { AdminLayoutComponent }
   from './layout/admin-layout/admin-layout';
@@ -14,9 +14,14 @@ import { EmployeeListComponent }
 import { DepartmentListComponent }
   from './features/department-management/department-list/department-list';
 
+<<<<<<< HEAD
 import { Blacklist } from './features/blacklist/blacklist';
 
 import { BlacklistDetails } from './features/blacklist-details/blacklist-details';
+=======
+import { VisitorListComponent }
+  from './features/visitor-management/visitor-list/visitor-list';
+>>>>>>> 24fc546e616fd0b0f9c302562cc23d42bf66eb74
 
 export const routes: Routes = [
 
@@ -42,9 +47,15 @@ export const routes: Routes = [
     component: VisitorRegistrationComponent
     },
     {
-      path: 'visitors',
+      path: 'visits',
       component: VisitListComponent
     },
+     {
+        path: 'visitors',
+
+        component: VisitorListComponent
+      },
+
     {
       path: 'employees',
       component: EmployeeListComponent
