@@ -32,7 +32,12 @@
       <span>Visitors</span>
     </a>
 
-    <a href="#" class="nav-item">
+    <a
+  routerLink="/admin/blacklist"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  class="nav-item"
+>
       <span class="nav-icon">⊘</span>
       <span>Blacklist</span>
     </a>

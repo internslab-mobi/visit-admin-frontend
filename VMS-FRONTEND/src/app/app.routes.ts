@@ -14,6 +14,10 @@ import { EmployeeListComponent }
 import { DepartmentListComponent }
   from './features/department-management/department-list/department-list';
 
+import { Blacklist } from './features/blacklist/blacklist';
+
+import { BlacklistDetails } from './features/blacklist-details/blacklist-details';
+
 export const routes: Routes = [
 
    {
@@ -48,13 +52,20 @@ export const routes: Routes = [
     {
       path: 'departments',
       component: DepartmentListComponent
+    },
+    {
+      path: 'blacklist',
+      component: Blacklist
+    },
+    {
+      path: 'blacklist/:id',
+      component: BlacklistDetails
     }
   ]
 },
 
     
   // UNKNOWN ROUTES
-    
 
   {
     path: '**',
