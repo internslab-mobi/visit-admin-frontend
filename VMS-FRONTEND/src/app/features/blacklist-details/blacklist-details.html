@@ -1,0 +1,228 @@
+<div class="blacklist-details-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <button
+      class="back-button"
+      type="button"
+      routerLink="/admin/blacklist">
+      ← Back to Blacklist
+    </button>
+
+    <div class="page-title">
+      <h1>Blacklist Details</h1>
+      <p>View blacklist record information</p>
+    </div>
+
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="details-card">
+    <p>Loading blacklist details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!isLoading && errorMessage" class="details-card">
+    <p class="error-message">{{ errorMessage }}</p>
+  </div>
+
+  <!-- Actual Blacklist Details -->
+  <ng-container *ngIf="!isLoading && blacklist as record">
+
+    <!-- Blacklist Information -->
+    <div class="details-card">
+
+      <div class="card-header">
+        <h2>Blacklist Information</h2>
+
+        <span
+          class="status-badge"
+          [class.active]="record.status === 'ACTIVE'"
+          [class.revoked]="record.status === 'REMOVED'">
+
+          {{ record.status === 'REMOVED' ? 'REVOKED' : record.status }}
+
+        </span>
+      </div>
+
+      <div class="details-grid">
+
+        <div class="detail-item">
+          <label>Blacklist ID</label>
+          <p>{{ record.id }}</p>
+        </div>
+
+        <div class="detail-item">
+          <label>Added On</label>
+          <p>{{ record.createdAt | date:'dd MMM yyyy' }}</p>
+        </div>
+
+        <div class="detail-item">
+          <label>Added By</label>
+          <p>{{ record.createdBy }}</p>
+        </div>
+
+      </div>
+
+      <div class="reason-section">
+        <label>Reason</label>
+        <p>{{ record.reason }}</p>
+      </div>
+
+    </div>
+
+    <!-- Visitor Information -->
+    <div class="details-card">
+
+      <div class="card-header">
+        <h2>Visitor Information</h2>
+      </div>
+
+      <div class="details-grid">
+
+        <div class="detail-item">
+          <label>Visitor ID</label>
+          <p>{{ record.visitorId }}</p>
+        </div>
+
+        <div class="detail-item">
+          <label>Visitor Name</label>
+          <p>{{ record.visitorName }}</p>
+        </div>
+
+        <div class="detail-item">
+          <label>Email</label>
+          <p>{{record.email || "Not available"}}</p>
+        </div>
+
+        <div class="detail-item">
+          <label>Phone</label>
+          <p>{{record.mobileNumber || "Not available"}}</p>
+        </div>
+
+        <div class="detail-item">
+          <label>Company</label>
+          <p>{{ record.companyName || "Not available" }}
+          </p>
+        </div>
+
+        <div class="detail-item">
+          <label>Visitor Type</label>
+          <p>{{record.visitorType || "Not available"}}</p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Blacklist Verification -->
+    <div class="details-card">
+
+      <div class="card-header">
+        <h2>Blacklist Verification</h2>
+      </div>
+
+      <div class="details-grid">
+
+        <div class="detail-item">
+          <label>Nationality</label>
+          <p>{{ record.nationality }}</p>
+        </div>
+
+        <div class="detail-item">
+          <label>Matching Documents</label>
+
+          <div class="document-list">
+            <span class="document-badge">
+              Not available
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="verification-note">
+        <span class="note-icon">ⓘ</span>
+        <p>
+          Documents used for blacklist verification are not included
+          in the current API response. Original document numbers and
+          blind-index values are not displayed for security reasons.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Blacklist Actions -->
+    <div class="details-actions">
+
+      <button
+        *ngIf="isAdmin && record.status === 'ACTIVE'"
+        class="revoke-button"
+        type="button"
+        (click)="openRevokeConfirmation()">
+
+        Revoke Blacklist
+
+      </button>
+
+    </div>
+
+  </ng-container>
+
+</div>
+
+<!-- Revoke Confirmation Dialog -->
+<div
+  class="modal-overlay"
+  *ngIf="showRevokeConfirmation">
+
+  <div
+    class="confirmation-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="revoke-dialog-title">
+
+    <div class="dialog-header">
+      <h2 id="revoke-dialog-title">
+        Revoke Blacklist?
+      </h2>
+    </div>
+
+    <div class="dialog-body">
+      <p>
+        Are you sure you want to revoke this visitor's blacklist status?
+      </p>
+
+      <p class="warning-text">
+        The visitor will no longer be marked as blacklisted.
+        The blacklist record will be retained for audit purposes.
+      </p>
+    </div>
+
+    <div class="dialog-actions">
+
+      <button
+        type="button"
+        class="cancel-button"
+        (click)="cancelRevoke()">
+
+        Cancel
+
+      </button>
+
+      <button
+        type="button"
+        class="confirm-revoke-button"
+        (click)="confirmRevoke()">
+
+        Confirm Revoke
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

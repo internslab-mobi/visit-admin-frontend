@@ -1,0 +1,214 @@
+
+<div class="blacklist-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>Blacklist</h1>
+      <p>Manage and view blacklisted visitors</p>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+
+    <div class="summary-card">
+      <div class="card-label">Total</div>
+      <div class="card-value">
+        {{ blacklistRecords.length }}
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="card-label">Active</div>
+      <div class="card-value">
+        {{ getActiveCount() }}
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="card-label">Removed</div>
+      <div class="card-value">
+        {{ getRemovedCount() }}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-section">
+
+    <div class="filter-group">
+      <label for="visitorName">Visitor Name</label>
+      <input
+        id="visitorName"
+        type="text"
+        placeholder="Search by visitor name"
+        [(ngModel)]="visitorNameFilter"
+        (ngModelChange)="currentPage = 1"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label for="visitorId">Visitor ID</label>
+      <input
+        id="visitorId"
+        type="text"
+        placeholder="Search by visitor ID"
+        [(ngModel)]="visitorIdFilter"
+        (ngModelChange)="currentPage = 1"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label for="reason">Reason</label>
+      <input
+        id="reason"
+        type="text"
+        placeholder="Search by reason"
+        [(ngModel)]="reasonFilter"
+        (ngModelChange)="currentPage = 1"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label for="status">Status</label>
+      <select
+        id="status"
+        [(ngModel)]="statusFilter"
+        (ngModelChange)="currentPage = 1"
+      >
+        <option value="">All Status</option>
+        <option value="ACTIVE">Active</option>
+        <option value="REMOVED">Removed</option>
+      </select>
+    </div>
+
+    <button
+      type="button"
+      class="clear-button"
+      (click)="clearFilters()"
+    >
+      Clear
+    </button>
+
+  </div>
+
+  <!-- Loading / Empty / Table -->
+  @if (isLoading) {
+
+    <div class="state-container">
+      <p>Loading blacklist records...</p>
+    </div>
+
+  } @else if (blacklistRecords.length === 0) {
+
+    <div class="state-container">
+      <p>No blacklisted visitors found.</p>
+    </div>
+
+  } @else if (filteredRecords.length === 0) {
+
+    <div class="state-container">
+      <p>No blacklist records match the selected filters.</p>
+    </div>
+
+  } @else {
+
+    <!-- Blacklist Table -->
+    <div class="table-section">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Blacklist ID</th>
+            <th>Visitor ID</th>
+            <th>Visitor Name</th>
+            <th>Reason</th>
+            <th>Added On</th>
+            <th>Added By</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (record of paginatedRecords; track record.id) {
+
+            <tr>
+
+              <td>{{ record.id }}</td>
+
+              <td>{{ record.visitorId }}</td>
+
+              <td>{{ record.visitorName }}</td>
+
+              <td>{{ record.reason }}</td>
+
+              <td>{{ record.createdAt }}</td>
+
+              <td>{{ record.createdBy }}</td>
+
+              <td>
+                <span
+                  class="status-badge"
+                  [class.active]="record.status === 'ACTIVE'"
+                  [class.removed]="record.status === 'REMOVED'"
+                >
+                  {{ record.status }}
+                </span>
+              </td>
+
+              <td>
+                <!-- Navigate to the selected blacklist details -->
+                <button
+                  type="button"
+                  class="view-button"
+                  [routerLink]="['/admin/blacklist', record.id]"
+                >
+                  View
+                </button>
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="currentPage === 1"
+        (click)="previousPage()"
+      >
+        Previous
+      </button>
+
+      <span class="page-info">
+        {{ currentPage }} of {{ totalPages }}
+      </span>
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="currentPage === totalPages"
+        (click)="nextPage()"
+      >
+        Next
+      </button>
+
+    </div>
+
+  }
+
+</div>
