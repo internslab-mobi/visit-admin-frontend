@@ -14,14 +14,11 @@ import { EmployeeListComponent }
 import { DepartmentListComponent }
   from './features/department-management/department-list/department-list';
 
-<<<<<<< HEAD
 import { Blacklist } from './features/blacklist/blacklist';
 
 import { BlacklistDetails } from './features/blacklist-details/blacklist-details';
-=======
 import { VisitorListComponent }
   from './features/visitor-management/visitor-list/visitor-list';
->>>>>>> 24fc546e616fd0b0f9c302562cc23d42bf66eb74
 
 export const routes: Routes = [
 
