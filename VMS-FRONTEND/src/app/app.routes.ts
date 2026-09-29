@@ -16,11 +16,11 @@ import { EmployeeListComponent }
 import { DepartmentListComponent }
   from './features/department-management/department-list/department-list';
 
-import { Blacklist }
-  from './features/blacklist/blacklist';
+import { Blacklist } from './features/blacklist/blacklist';
 
-import { BlacklistDetails }
-  from './features/blacklist-details/blacklist-details';
+import { BlacklistDetails } from './features/blacklist-details/blacklist-details';
+import { VisitorListComponent }
+  from './features/visitor-management/visitor-list/visitor-list';
 
 export const routes: Routes = [
 
@@ -54,7 +54,7 @@ export const routes: Routes = [
       // Visitors
       {
         path: 'visitors',
-        component: VisitListComponent
+        component: VisitorListComponent
       },
 
       // Employees
