@@ -1,3 +1,4 @@
+
 import { Routes } from '@angular/router';
 
 import { VisitorRegistrationComponent }
@@ -6,7 +7,8 @@ import { VisitorRegistrationComponent }
 import { AdminLayoutComponent }
   from './layout/admin-layout/admin-layout';
 
-import { VisitListComponent } from './features/visit-management/visit-list/visit-list';
+import { VisitListComponent }
+  from './features/visit-management/visit-list/visit-list';
 
 import { EmployeeListComponent }
   from './features/employee-management/employee-list/employee-list';
@@ -14,18 +16,16 @@ import { EmployeeListComponent }
 import { DepartmentListComponent }
   from './features/department-management/department-list/department-list';
 
-<<<<<<< HEAD
-import { Blacklist } from './features/blacklist/blacklist';
+import { Blacklist }
+  from './features/blacklist/blacklist';
 
-import { BlacklistDetails } from './features/blacklist-details/blacklist-details';
-=======
-import { VisitorListComponent }
-  from './features/visitor-management/visitor-list/visitor-list';
->>>>>>> 24fc546e616fd0b0f9c302562cc23d42bf66eb74
+import { BlacklistDetails }
+  from './features/blacklist-details/blacklist-details';
 
 export const routes: Routes = [
 
-   {
+  // LANDING PAGE
+  {
     path: '',
     loadComponent: () =>
       import('./features/landing/landing').then(
@@ -33,51 +33,58 @@ export const routes: Routes = [
       )
   },
 
-
-     
   // ADMIN
-    
-
   {
-  path: 'admin',
-  component: AdminLayoutComponent,
-  children: [
-    {
-    path: 'pre-registration',
-    component: VisitorRegistrationComponent
-    },
-    {
-      path: 'visits',
-      component: VisitListComponent
-    },
-     {
-        path: 'visitors',
+    path: 'admin',
+    component: AdminLayoutComponent,
+    children: [
 
-        component: VisitorListComponent
+      // Pre-Registration
+      {
+        path: 'pre-registration',
+        component: VisitorRegistrationComponent
       },
 
-    {
-      path: 'employees',
-      component: EmployeeListComponent
-    },
-    {
-      path: 'departments',
-      component: DepartmentListComponent
-    },
-    {
-      path: 'blacklist',
-      component: Blacklist
-    },
-    {
-      path: 'blacklist/:id',
-      component: BlacklistDetails
-    }
-  ]
-},
+      // Visits
+      {
+        path: 'visits',
+        component: VisitListComponent
+      },
 
-    
+      // Visitors
+      {
+        path: 'visitors',
+        component: VisitListComponent
+      },
+
+      // Employees
+      {
+        path: 'employees',
+        component: EmployeeListComponent
+      },
+
+      // Departments
+      {
+        path: 'departments',
+        component: DepartmentListComponent
+      },
+
+      // Blacklist
+      {
+        path: 'blacklist',
+        component: Blacklist
+      },
+
+      // Blacklist Details
+      {
+        path: 'blacklist/:id',
+        component: BlacklistDetails
+      }
+
+    ]
+  },
+
   // UNKNOWN ROUTES
-
   {
     path: '**',
     redirectTo: 'admin/pre-registration'

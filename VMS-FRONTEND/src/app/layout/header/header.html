@@ -1,20 +1,63 @@
+
 <header class="admin-header">
 
-  <div class="header-spacer"></div>
+  <!-- Left: Page Context -->
+  <div class="header-context">
 
+    <div class="header-breadcrumb">
+      <span class="breadcrumb-root">VMS</span>
+
+      <svg viewBox="0 0 24 24"
+           fill="none"
+           stroke="currentColor"
+           stroke-width="2"
+           stroke-linecap="round"
+           stroke-linejoin="round">
+        <path d="m9 18 6-6-6-6"/>
+      </svg>
+
+      <span class="breadcrumb-current">Management Console</span>
+    </div>
+
+    <div class="header-welcome">
+      Visitor Management System
+    </div>
+
+  </div>
+
+
+  <!-- Right: Header Actions -->
   <div class="header-actions">
 
     <!-- Notifications -->
-    <button class="notification-button" type="button">
-      <span class="notification-icon">♢</span>
-      <span class="notification-badge">3</span>
+    <button
+      class="notification-button"
+      type="button"
+      aria-label="Notifications"
+      title="Notifications"
+      disabled
+    >
+      <svg viewBox="0 0 24 24"
+           fill="none"
+           stroke="currentColor"
+           stroke-width="1.8"
+           stroke-linecap="round"
+           stroke-linejoin="round">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+        <path d="M10 21h4"/>
+      </svg>
     </button>
 
-    <!-- Admin Profile -->
+
+    <!-- Vertical Divider -->
+    <div class="header-divider"></div>
+
+
+    <!-- User Profile -->
     <div class="admin-profile">
 
       <div class="profile-avatar">
-        A
+        <span>A</span>
       </div>
 
       <div class="profile-info">
@@ -22,7 +65,18 @@
         <span class="profile-role">Administrator</span>
       </div>
 
-      <span class="dropdown-icon">⌄</span>
+      <svg
+        class="dropdown-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m7 10 5 5 5-5"/>
+      </svg>
 
     </div>
 

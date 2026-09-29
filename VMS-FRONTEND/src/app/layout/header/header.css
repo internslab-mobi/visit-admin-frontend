@@ -1,120 +1,359 @@
+
+/* ============================================
+   VMS — Premium Application Header
+============================================ */
+
+:host {
+  display: block;
+  flex-shrink: 0;
+  width: 100%;
+  z-index: 10;
+}
+
 .admin-header {
-  height: 64px;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+  position: relative;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 24px;
+  width: 100%;
+  height: 76px;
+  min-height: 76px;
+
+  padding: 0 32px;
+
   box-sizing: border-box;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e8edf5;
+
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
 
-.header-spacer {
-  flex: 1;
+
+/* ============================================
+   Header Context
+============================================ */
+
+.header-context {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+
+  min-width: 0;
 }
+
+.header-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #94a3b8;
+
+  font-size: 11px;
+  font-weight: 550;
+  letter-spacing: 0.15px;
+}
+
+.header-breadcrumb svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+
+  color: #cbd5e1;
+}
+
+.breadcrumb-root {
+  color: #64748b;
+}
+
+.breadcrumb-current {
+  color: #2563eb;
+  font-weight: 650;
+}
+
+.header-welcome {
+  color: #172033;
+
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.35px;
+  line-height: 1.3;
+}
+
+
+/* ============================================
+   Header Actions
+============================================ */
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 24px;
+  justify-content: flex-end;
+  gap: 20px;
+
+  flex-shrink: 0;
 }
 
-/* Notification */
+
+/* ============================================
+   Notification Button
+============================================ */
 
 .notification-button {
   position: relative;
 
-  border: none;
-  background: transparent;
-
-  width: 36px;
-  height: 36px;
-
-  cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
+
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 1px solid #e8edf5;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #64748b;
+
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
 }
 
-.notification-icon {
-  font-size: 20px;
-  color: #4b5563;
+.notification-button svg {
+  width: 20px;
+  height: 20px;
 }
 
-.notification-badge {
-  position: absolute;
-
-  top: 2px;
-  right: 1px;
-
-  min-width: 16px;
-  height: 16px;
-
-  padding: 0 4px;
-
-  border-radius: 10px;
-
-  background: #ef4444;
-  color: #ffffff;
-
-  font-size: 10px;
-  font-weight: 600;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.notification-button:disabled {
+  cursor: default;
+  opacity: 0.75;
 }
 
-/* Admin profile */
+
+/* ============================================
+   Header Divider
+============================================ */
+
+.header-divider {
+  width: 1px;
+  height: 34px;
+  flex-shrink: 0;
+
+  background: #e8edf5;
+}
+
+
+/* ============================================
+   Admin Profile
+============================================ */
 
 .admin-profile {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 
-  cursor: pointer;
+  min-width: 0;
+
+  padding: 5px 0 5px 2px;
+
+  border: none;
+  background: transparent;
+
+  cursor: default;
 }
 
+
+/* ============================================
+   Profile Avatar
+============================================ */
+
 .profile-avatar {
-  width: 36px;
-  height: 36px;
-
-  border-radius: 50%;
-
-  background: #eef2ff;
-  color: #4f46e5;
-
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 14px;
-  font-weight: 600;
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+
+  border-radius: 14px;
+
+  background: linear-gradient(
+    145deg,
+    #dbeafe 0%,
+    #bfdbfe 100%
+  );
+
+  border: 1px solid #bfdbfe;
+
+  color: #1d4ed8;
+
+  box-shadow:
+    0 2px 5px rgba(37, 99, 235, 0.07);
 }
+
+.profile-avatar span {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+
+/* ============================================
+   Profile Information
+============================================ */
 
 .profile-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  justify-content: center;
+  gap: 5px;
+
+  min-width: 0;
 }
 
 .profile-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #111827;
+  max-width: 160px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: #172033;
+
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.2;
 }
 
 .profile-role {
+  color: #94a3b8;
+
   font-size: 11px;
-  color: #6b7280;
+  font-weight: 550;
+  line-height: 1.2;
 }
 
+
+/* ============================================
+   Profile Dropdown Indicator
+============================================ */
+
 .dropdown-icon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+
   margin-left: 4px;
 
-  font-size: 18px;
-  color: #6b7280;
+  color: #94a3b8;
+}
+
+
+/* ============================================
+   Responsive Header
+============================================ */
+
+@media (max-width: 1024px) {
+  .admin-header {
+    height: 70px;
+    min-height: 70px;
+
+    padding: 0 24px;
+  }
+
+  .header-actions {
+    gap: 15px;
+  }
+}
+
+
+/* ============================================
+   Mobile Header
+============================================ */
+
+@media (max-width: 650px) {
+  .admin-header {
+    height: 66px;
+    min-height: 66px;
+
+    padding: 0 14px;
+  }
+
+  .header-context {
+    gap: 4px;
+  }
+
+  .header-breadcrumb {
+    font-size: 10px;
+    gap: 5px;
+  }
+
+  .header-welcome {
+    font-size: 13px;
+    letter-spacing: -0.2px;
+  }
+
+  .header-actions {
+    gap: 10px;
+  }
+
+  .notification-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .notification-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .header-divider {
+    height: 28px;
+  }
+
+  .admin-profile {
+    gap: 0;
+  }
+
+  .profile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+  }
+
+  .profile-avatar span {
+    font-size: 14px;
+  }
+
+  .profile-info,
+  .dropdown-icon {
+    display: none;
+  }
+}
+
+
+/* ============================================
+   Accessibility
+============================================ */
+
+.notification-button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notification-button {
+    transition: none;
+  }
 }
