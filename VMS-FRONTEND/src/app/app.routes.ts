@@ -24,6 +24,9 @@ import { BlacklistDetails } from './features/blacklist-details/blacklist-details
 import { VisitorListComponent }
   from './features/visitor-management/visitor-list/visitor-list';
 
+import { VisitDetailsComponent }
+  from './features/visitor-management/visit-details/visit-details';
+
 export const routes: Routes = [
 
   // LANDING PAGE
@@ -51,6 +54,11 @@ export const routes: Routes = [
       {
         path: 'visits',
         component: VisitListComponent
+      },
+
+      {
+        path: 'visits/:visitId',
+        component: VisitDetailsComponent
       },
 
       // Visitors
