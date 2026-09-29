@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import {Router, RouterLink } from '@angular/router';
 import {
   VisitorService,
   VisitorResponse
@@ -51,7 +51,7 @@ export class VisitorListComponent implements OnInit {
 
   private readonly changeDetectorRef =
     inject(ChangeDetectorRef);
-
+private readonly router = inject(Router);
 
   visitorRecords: VisitorRecord[] = [];
 
@@ -359,7 +359,15 @@ export class VisitorListComponent implements OnInit {
 
   }
 
+editVisitor(visitorId: string): void {
 
+  this.router.navigate([
+    '/admin/visitors',
+    visitorId,
+    'edit'
+  ]);
+
+}
   /* ================================
      PAGINATION
   ================================= */

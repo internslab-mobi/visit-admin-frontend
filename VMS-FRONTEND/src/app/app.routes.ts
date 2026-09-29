@@ -3,6 +3,8 @@ import { Routes } from '@angular/router';
 import { VisitorRegistrationComponent }
   from './features/visitor-management/visitor-registration/visitor-registration';
 
+import { VisitorEditComponent }
+  from './features/visitor-management/visitor-edit/visitor-edit';
 import { AdminLayoutComponent }
   from './layout/admin-layout/admin-layout';
 
@@ -52,6 +54,11 @@ export const routes: Routes = [
 
         component: VisitorListComponent
       },
+      {
+  path: 'visitors/:visitorId/edit',
+  component: VisitorEditComponent
+},
+      
 
     {
       path: 'employees',
