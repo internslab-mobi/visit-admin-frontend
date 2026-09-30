@@ -2,6 +2,9 @@ export type Nationality =
   | 'DOMESTIC'
   | 'INTERNATIONAL';
 
+  export interface AddVisitorToBlacklistRequest {
+  reason: string;
+}
 export type BlacklistStatus =
   | 'ACTIVE'
   | 'REMOVED';
