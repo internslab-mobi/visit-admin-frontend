@@ -9,6 +9,8 @@ import {
   RegistrationResponse
 } from '../../models/registration/registration.model';
 
+import { VisitDetailResponse } from '../../models/visit/visit-detail.model';
+
 
 export interface VisitDashboardResponse {
 
@@ -68,5 +70,13 @@ export class VisitService {
     }
   );
 }
+
+  getVisitDetails(
+      visitId: string
+    ): Observable<VisitDetailResponse> {
+      return this.http.get<VisitDetailResponse>(
+        `${this.apiUrl}/${visitId}`
+      );
+    }
 
 }
