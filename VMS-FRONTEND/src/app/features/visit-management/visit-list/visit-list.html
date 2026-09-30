@@ -68,6 +68,30 @@
 
   </div>
 
+  <!-- Order By -->
+<div class="filter-field">
+
+  <label for="visitOrder">
+    Order By
+  </label>
+
+  <select
+    id="visitOrder"
+    [(ngModel)]="sortDirection"
+    (ngModelChange)="onFilterChange()"
+  >
+    <option value="DESC">
+      Descending
+    </option>
+
+    <option value="ASC">
+      Ascending
+    </option>
+
+  </select>
+
+</div>
+
 
   <!-- Visitor Type -->
   <div class="filter-field">
@@ -160,6 +184,18 @@
     />
 
   </div>
+
+  <div class="filter-field">
+  <label for="visitSort">Sort By</label>
+  <select id="visitSort"
+          [(ngModel)]="sortBy"
+          (ngModelChange)="onFilterChange()">
+    <option value="id">Visit ID</option>
+    <option value="name">Name</option>
+    <option value="company">Company</option>
+    <option value="visitDate">Visit Date</option>
+  </select>
+</div>
 
 
   <!-- Clear -->
@@ -279,11 +315,12 @@
             <td>
 
               <button
-                class="action-button"
-                type="button"
-              >
-                View
-              </button>
+                  class="action-button"
+                  type="button"
+                  [routerLink]="['/admin/visits', visit.id]"
+                >
+                  View
+                </button>
 
             </td>
 

@@ -9,6 +9,8 @@ import {
   RegistrationResponse
 } from '../../models/registration/registration.model';
 
+import { VisitDetailResponse } from '../../models/visit/visit-detail.model';
+
 
 export interface VisitDashboardResponse {
 
@@ -54,11 +56,27 @@ export class VisitService {
   }
 
 
-  getDashboardVisits(): Observable<VisitDashboardResponse[]> {
+  getDashboardVisits(
+  sortDirection: 'ASC' | 'DESC',
+  sortBy: 'id' | 'name' | 'company' | 'visitDate'
+): Observable<VisitDashboardResponse[]> {
+  return this.http.get<VisitDashboardResponse[]>(
+    this.apiUrl,
+    {
+      params: {
+        sortDirection,
+        sortBy
+      }
+    }
+  );
+}
 
-    return this.http.get<VisitDashboardResponse[]>(
-      this.apiUrl
-    );
-  }
+  getVisitDetails(
+      visitId: string
+    ): Observable<VisitDetailResponse> {
+      return this.http.get<VisitDetailResponse>(
+        `${this.apiUrl}/${visitId}`
+      );
+    }
 
 }
