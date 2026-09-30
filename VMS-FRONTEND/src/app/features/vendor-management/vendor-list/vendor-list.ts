@@ -14,9 +14,9 @@ import {
 } from '../../../core/services/vendor/vendor.service';
 
 
-/* =========================================================
-   VENDOR RECORD
-========================================================= */
+
+  //  VENDOR RECORD
+
 
 interface VendorRecord {
 
@@ -37,9 +37,9 @@ interface VendorRecord {
 }
 
 
-/* =========================================================
-   COMPONENT
-========================================================= */
+
+  //  COMPONENT
+
 
 @Component({
 
@@ -59,9 +59,9 @@ interface VendorRecord {
 export class VendorListComponent implements OnInit {
 
 
-  /* =====================================================
-     SERVICES
-  ===================================================== */
+  
+    //  SERVICES
+  
 
   private readonly vendorService =
     inject(VendorService);
@@ -73,9 +73,9 @@ export class VendorListComponent implements OnInit {
     inject(Router);
 
 
-  /* =====================================================
-     STATE
-  ===================================================== */
+  
+    //  STATE
+  
 
   vendorRecords: VendorRecord[] = [];
 
@@ -84,9 +84,9 @@ export class VendorListComponent implements OnInit {
   errorMessage = '';
 
 
-  /* =====================================================
-     FILTERS
-  ===================================================== */
+  
+    //  FILTERS
+  
 
   searchText = '';
 
@@ -95,27 +95,27 @@ export class VendorListComponent implements OnInit {
   toDate = '';
 
 
-  /* =====================================================
-     SORTING
-  ===================================================== */
+  
+    //  SORTING
+  
 
   sortBy = 'name';
 
   sortDirection: 'asc' | 'desc' = 'asc';
 
 
-  /* =====================================================
-     PAGINATION
-  ===================================================== */
+  
+    //  PAGINATION
+  
 
   currentPage = 1;
 
   pageSize = 10;
 
 
-  /* =====================================================
-     INITIALIZATION
-  ===================================================== */
+  
+    //  INITIALIZATION
+  
 
   ngOnInit(): void {
 
@@ -124,9 +124,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     LOAD VENDORS
-  ===================================================== */
+  
+    //  LOAD VENDORS
+  
 
   private loadVendors(): void {
 
@@ -185,9 +185,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     MAP API RESPONSE
-  ===================================================== */
+  
+    //  MAP API RESPONSE
+  
 
   private mapToVendorRecord(
     vendor: VendorResponse
@@ -217,9 +217,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     FILTER + SORT
-  ===================================================== */
+  
+    //  FILTER + SORT
+  
 
   get filteredVendors(): VendorRecord[] {
 
@@ -233,9 +233,9 @@ export class VendorListComponent implements OnInit {
       this.vendorRecords.filter(vendor => {
 
 
-        /* -------------------------
-           SEARCH
-        ------------------------- */
+        
+          //  SEARCH
+        
 
         const matchesSearch =
 
@@ -275,9 +275,9 @@ export class VendorListComponent implements OnInit {
             .includes(search);
 
 
-        /* -------------------------
-           FROM DATE
-        ------------------------- */
+        
+          //  FROM DATE
+        
 
         const matchesFromDate =
 
@@ -292,9 +292,9 @@ export class VendorListComponent implements OnInit {
           );
 
 
-        /* -------------------------
-           TO DATE
-        ------------------------- */
+        
+          //  TO DATE
+        
 
         const matchesToDate =
 
@@ -322,9 +322,9 @@ export class VendorListComponent implements OnInit {
       });
 
 
-    /* =====================================================
-       SORTING
-    ===================================================== */
+    
+      //  SORTING
+    
 
     vendors.sort((a, b) => {
 
@@ -402,9 +402,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     PAGINATION
-  ===================================================== */
+  
+    //  PAGINATION
+  
 
   get paginatedVendors(): VendorRecord[] {
 
@@ -471,9 +471,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     FILTER CHANGE
-  ===================================================== */
+  
+    //  FILTER CHANGE
+  
 
   onFilterChange(): void {
 
@@ -482,9 +482,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     SORT CHANGE
-  ===================================================== */
+  
+    //  SORT CHANGE
+  
 
   onSortChange(): void {
 
@@ -493,9 +493,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     PREVIOUS PAGE
-  ===================================================== */
+  
+    //  PREVIOUS PAGE
+  
 
   previousPage(): void {
 
@@ -508,9 +508,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     NEXT PAGE
-  ===================================================== */
+  
+    //  NEXT PAGE
+  
 
   nextPage(): void {
 
@@ -526,9 +526,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     CLEAR FILTERS
-  ===================================================== */
+  
+    //  CLEAR FILTERS
+  
 
   clearFilters(): void {
 
@@ -547,9 +547,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     TOTAL
-  ===================================================== */
+  
+    //  TOTAL
+  
 
   get totalVendors(): number {
 
@@ -558,9 +558,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     VALIDITY STATUS
-  ===================================================== */
+  
+    //  VALIDITY STATUS
+  
 
   getValidityStatus(
     validity: string | null
@@ -587,9 +587,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     VALIDITY STATUS CLASS
-  ===================================================== */
+  
+    //  VALIDITY STATUS CLASS
+  
 
   getValidityStatusClass(
     validity: string | null
@@ -603,9 +603,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     DATE FORMAT
-  ===================================================== */
+  
+    //  DATE FORMAT
+  
 
   formatValidity(
     validity: string | null
@@ -633,9 +633,9 @@ export class VendorListComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     VIEW VENDOR
-  ===================================================== */
+  
+    //  VIEW VENDOR
+  
 
   viewVendor(
     vendorId: string

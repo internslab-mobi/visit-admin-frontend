@@ -45,9 +45,9 @@ import { ProofDocumentService } from '../../../core/services/proof-document/proo
 })
 export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
-  // --------------------------------------------------------------------------
+  
   // Services
-  // --------------------------------------------------------------------------
+  
 
   private readonly fb = inject(FormBuilder);
   private readonly employeeService = inject(EmployeeService);
@@ -56,16 +56,16 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
 
 
-  // --------------------------------------------------------------------------
+  
   // Backend data
-  // --------------------------------------------------------------------------
+  
 
   employees: Employee[] = [];
 
 
-  // --------------------------------------------------------------------------
+  
   // Reactive form
-  // --------------------------------------------------------------------------
+  
 
   registrationForm: FormGroup = this.fb.group({
 
@@ -180,9 +180,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   });
 
 
-  // --------------------------------------------------------------------------
+  
   // UI state
-  // --------------------------------------------------------------------------
+  
 
   isLoadingEmployees = false;
   isSubmitting = false;
@@ -203,9 +203,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
 
-  // --------------------------------------------------------------------------
+  
   // Lifecycle
-  // --------------------------------------------------------------------------
+  
 
   ngOnInit(): void {
 
@@ -264,9 +264,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  // --------------------------------------------------------------------------
+  
   // Employee
-  // --------------------------------------------------------------------------
+  
 
   private loadEmployees(): void {
 
@@ -338,9 +338,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  // --------------------------------------------------------------------------
+  
   // Nationality / Proof
-  // --------------------------------------------------------------------------
+  
 
   onNationalityChange(): void {
 
@@ -400,9 +400,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  // --------------------------------------------------------------------------
+  
   // Submit
-  // --------------------------------------------------------------------------
+  
 
   submitRegistration(): void {
 
@@ -520,9 +520,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  // --------------------------------------------------------------------------
+  
   // Proof Document Upload
-  // --------------------------------------------------------------------------
+  
 
   private uploadProofDocuments(
     response: RegistrationResponse,
@@ -628,9 +628,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  // --------------------------------------------------------------------------
+  
   // Documents
-  // --------------------------------------------------------------------------
+  
 
   onDocumentsSelected(event: Event): void {
 
@@ -803,9 +803,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  // --------------------------------------------------------------------------
+  
   // Build backend request
-  // --------------------------------------------------------------------------
+  
 
   private buildRegistrationRequest():
     RegistrationRequest | null {
@@ -1029,9 +1029,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  // --------------------------------------------------------------------------
+  
   // Error handling
-  // --------------------------------------------------------------------------
+  
 
   private handleRegistrationError(
     error: any
@@ -1063,9 +1063,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  // --------------------------------------------------------------------------
+  
   // Form helpers
-  // --------------------------------------------------------------------------
+  
 
   isInvalid(
     controlName: string
@@ -1088,9 +1088,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  // --------------------------------------------------------------------------
+  
   // Reset
-  // --------------------------------------------------------------------------
+  
 
   resetForm(): void {
 
@@ -1131,9 +1131,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  // --------------------------------------------------------------------------
+  
   // Messages
-  // --------------------------------------------------------------------------
+  
 
   private clearMessages(): void {
 
@@ -1143,9 +1143,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  // --------------------------------------------------------------------------
+  
   // Date / time helpers
-  // --------------------------------------------------------------------------
+  
 
   private parseDateTime(
     value: string
