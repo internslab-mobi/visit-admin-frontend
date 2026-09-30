@@ -54,11 +54,19 @@ export class VisitService {
   }
 
 
-  getDashboardVisits(): Observable<VisitDashboardResponse[]> {
-
-    return this.http.get<VisitDashboardResponse[]>(
-      this.apiUrl
-    );
-  }
+  getDashboardVisits(
+  sortDirection: 'ASC' | 'DESC',
+  sortBy: 'id' | 'name' | 'company' | 'visitDate'
+): Observable<VisitDashboardResponse[]> {
+  return this.http.get<VisitDashboardResponse[]>(
+    this.apiUrl,
+    {
+      params: {
+        sortDirection,
+        sortBy
+      }
+    }
+  );
+}
 
 }
