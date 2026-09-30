@@ -19,8 +19,9 @@ import { DepartmentListComponent }
 import { Blacklist } from './features/blacklist/blacklist';
 
 import { BlacklistDetails } from './features/blacklist-details/blacklist-details';
-import { VisitorListComponent }
-  from './features/visitor-management/visitor-list/visitor-list';
+import { VisitorListComponent }  from './features/visitor-management/visitor-list/visitor-list';
+
+import { VendorListComponent } from './features/vendor-management/vendor-list/vendor-list';
 
 export const routes: Routes = [
 
@@ -58,7 +59,10 @@ export const routes: Routes = [
   path: 'visitors/:visitorId/edit',
   component: VisitorEditComponent
 },
-      
+      {
+  path: 'vendors',
+  component: VendorListComponent
+},
 
     {
       path: 'employees',
