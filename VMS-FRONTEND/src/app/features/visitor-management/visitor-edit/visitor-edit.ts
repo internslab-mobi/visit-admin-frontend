@@ -6,6 +6,9 @@ import {
 } from '@angular/core';
 
 import {
+  BlacklistService
+} from '../../../core/services/blacklist/blacklist.service';
+import {
   FormsModule
 } from '@angular/forms';
 
@@ -55,6 +58,7 @@ export class VisitorEditComponent implements OnInit {
   private readonly changeDetectorRef =
     inject(ChangeDetectorRef);
 
+    private readonly blacklistService = inject(BlacklistService);
 
   /* =====================================================
      STATE
@@ -513,33 +517,191 @@ private loadDocuments(): void {
      BLACKLIST
   ===================================================== */
 
+  // addToBlacklist(): void {
+
+  //   /*
+  //    * We'll connect this to your existing
+  //    * blacklist API next.
+  //    */
+
+  //   console.log(
+  //     'Add visitor to blacklist:',
+  //     this.visitorId
+  //   );
+
+  // }
+
   addToBlacklist(): void {
 
-    /*
-     * We'll connect this to your existing
-     * blacklist API next.
-     */
-
-    console.log(
-      'Add visitor to blacklist:',
-      this.visitorId
-    );
-
+  if (!this.visitorId || this.blacklisted) {
+    return;
   }
 
+  const reason = window.prompt(
+    'Enter the reason for blacklisting this visitor:'
+  );
+
+  if (reason === null) {
+    return;
+  }
+
+  if (!reason.trim()) {
+    this.errorMessage = 'Blacklist reason is required.';
+    this.successMessage = '';
+    return;
+  }
+
+  this.errorMessage = '';
+  this.successMessage = '';
+
+  const request = {
+    reason: reason.trim(),
+    createdBy: 'HR' // will replace this once logging is connected 
+  };
+
+  this.blacklistService
+    .addExistingVisitorToBlacklist(
+      this.visitorId,
+      request
+    )
+    .subscribe({
+      next: (response) => {
+
+        console.log(
+          'Visitor added to blacklist:',
+          response
+        );
+
+        this.blacklist = response;
+        this.blacklisted = true;
+
+        this.successMessage =
+          'Visitor has been added to the blacklist successfully.';
+
+        this.changeDetectorRef.markForCheck();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Failed to add visitor to blacklist:',
+          error
+        );
+
+        this.errorMessage =
+          error?.error?.message ??
+          'Failed to add visitor to blacklist.';
+
+        this.successMessage = '';
+
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+
+  // this.blacklistService
+  // .addExistingVisitorToBlacklist(
+  //   this.visitorId,
+  //   request
+  // )
+  // .subscribe({
+  //   next: (response) => {
+  //     this.blacklist = response;
+  //     this.blacklisted = true;
+
+  //     this.successMessage =
+  //       'Visitor has been added to the blacklist successfully.';
+
+  //     this.changeDetectorRef.markForCheck();
+  //   },
+  //   error: (error) => {
+  //     console.error(
+  //       'Failed to add visitor to blacklist:',
+  //       error
+  //     );
+
+  //     this.errorMessage =
+  //       error?.error?.message ??
+  //       'Failed to add visitor to blacklist.';
+
+  //     this.successMessage = '';
+
+  //     this.changeDetectorRef.markForCheck();
+  //   }
+  // });
+}
+
+
+  // removeFromBlacklist(): void {
+
+  //   /*
+  //    * We'll connect this to your existing
+  //    * blacklist API next.
+  //    */
+
+  //   console.log(
+  //     'Remove visitor from blacklist:',
+  //     this.visitorId
+  //   );
+
+  // }
 
   removeFromBlacklist(): void {
 
-    /*
-     * We'll connect this to your existing
-     * blacklist API next.
-     */
-
-    console.log(
-      'Remove visitor from blacklist:',
-      this.visitorId
-    );
-
+  if (!this.blacklist?.id) {
+    this.errorMessage =
+      'Blacklist record was not found.';
+    return;
   }
+
+  const confirmed = window.confirm(
+    'Are you sure you want to remove this visitor from the blacklist?'
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  this.errorMessage = '';
+  this.successMessage = '';
+
+  this.blacklistService
+    .removeFromBlacklist(
+      this.blacklist.id,
+      'HR'
+    )
+    .subscribe({
+      next: (response) => {
+
+        console.log(
+          'Visitor removed from blacklist:',
+          response
+        );
+
+        this.blacklisted = false;
+        this.blacklist = null;
+
+        this.successMessage =
+          'Visitor has been removed from the blacklist successfully.';
+
+        this.changeDetectorRef.markForCheck();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Failed to remove visitor from blacklist:',
+          error
+        );
+
+        this.errorMessage =
+          error?.error?.message ??
+          'Failed to remove visitor from blacklist.';
+
+        this.successMessage = '';
+
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+}
 
 }

@@ -49,6 +49,9 @@ export class VisitListComponent implements OnInit {
   currentPage = 1;
   pageSize = 10;
 
+  sortDirection: 'ASC' | 'DESC' = 'DESC';
+  sortBy: 'id' | 'name' | 'company' | 'visitDate' = 'id';
+
 
   ngOnInit(): void {
 
@@ -59,7 +62,10 @@ export class VisitListComponent implements OnInit {
 
   private loadVisits(): void {
 
-    this.visitService.getDashboardVisits()
+    this.visitService.getDashboardVisits(
+  this.sortDirection,
+  this.sortBy
+)
       .subscribe({
 
         next: (visits) => {
@@ -294,9 +300,11 @@ export class VisitListComponent implements OnInit {
 
   onFilterChange(): void {
 
-    this.currentPage = 1;
+  this.currentPage = 1;
 
-  }
+  this.loadVisits();
+
+}
 
 
   clearFilters(): void {
