@@ -1,8 +1,15 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject
+} from '@angular/core';
 
-import { DepartmentService } from '../../../core/services/department/department.service';
-import { Department } from '../../../core/models/department/department.model';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { DepartmentService } from '../../../../core/services/department/department.service';
+import { Department } from '../../../../core/models/department/department.model';
 
 @Component({
   selector: 'app-department-list',
@@ -13,8 +20,14 @@ import { Department } from '../../../core/models/department/department.model';
 })
 export class DepartmentListComponent implements OnInit {
 
-  private readonly departmentService = inject(DepartmentService);
-  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly departmentService =
+    inject(DepartmentService);
+
+  private readonly cdr =
+    inject(ChangeDetectorRef);
+
+  private readonly router =
+    inject(Router);
 
   departments: Department[] = [];
   filteredDepartments: Department[] = [];
@@ -47,26 +60,36 @@ export class DepartmentListComponent implements OnInit {
     });
   }
 
+  addDepartment(): void {
+    this.router.navigate([
+      '/admin/departments/add'
+    ]);
+  }
+
   searchDepartments(): void {
-    const name = this.departmentName.trim().toLowerCase();
-    const code = this.departmentCode.trim().toLowerCase();
+    const name =
+      this.departmentName.trim().toLowerCase();
 
-    this.filteredDepartments = this.departments.filter(department => {
+    const code =
+      this.departmentCode.trim().toLowerCase();
 
-      const matchesName =
-        !name ||
-        department.departmentName
-          .toLowerCase()
-          .includes(name);
+    this.filteredDepartments =
+      this.departments.filter(department => {
 
-      const matchesCode =
-        !code ||
-        department.departmentCode
-          .toLowerCase()
-          .includes(code);
+        const matchesName =
+          !name ||
+          department.departmentName
+            .toLowerCase()
+            .includes(name);
 
-      return matchesName && matchesCode;
-    });
+        const matchesCode =
+          !code ||
+          department.departmentCode
+            .toLowerCase()
+            .includes(code);
+
+        return matchesName && matchesCode;
+      });
 
     this.currentPage = 1;
     this.updatePagination();
@@ -76,7 +99,8 @@ export class DepartmentListComponent implements OnInit {
     this.departmentName = '';
     this.departmentCode = '';
 
-    this.filteredDepartments = this.departments;
+    this.filteredDepartments =
+      this.departments;
 
     this.currentPage = 1;
     this.updatePagination();
@@ -86,22 +110,30 @@ export class DepartmentListComponent implements OnInit {
     this.totalPages = Math.max(
       1,
       Math.ceil(
-        this.filteredDepartments.length / this.pageSize
+        this.filteredDepartments.length /
+        this.pageSize
       )
     );
 
     const startIndex =
-      (this.currentPage - 1) * this.pageSize;
+      (this.currentPage - 1) *
+      this.pageSize;
 
     const endIndex =
       startIndex + this.pageSize;
 
     this.paginatedDepartments =
-      this.filteredDepartments.slice(startIndex, endIndex);
+      this.filteredDepartments.slice(
+        startIndex,
+        endIndex
+      );
   }
 
   goToPage(page: number): void {
-    if (page < 1 || page > this.totalPages) {
+    if (
+      page < 1 ||
+      page > this.totalPages
+    ) {
       return;
     }
 
@@ -110,10 +142,14 @@ export class DepartmentListComponent implements OnInit {
   }
 
   previousPage(): void {
-    this.goToPage(this.currentPage - 1);
+    this.goToPage(
+      this.currentPage - 1
+    );
   }
 
   nextPage(): void {
-    this.goToPage(this.currentPage + 1);
+    this.goToPage(
+      this.currentPage + 1
+    );
   }
 }

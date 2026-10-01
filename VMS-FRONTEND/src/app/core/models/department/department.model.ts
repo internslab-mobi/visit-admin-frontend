@@ -4,3 +4,8 @@ export interface Department {
   departmentName: string;
   status: string;
 }
+
+export interface DepartmentCreateRequest {
+  departmentCode: string;
+  departmentName: string;
+}

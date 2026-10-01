@@ -1,8 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { EmployeeService } from '../../../core/services/employee/employee.service';
-import { Employee } from '../../../core/models/employee/employee.model';
+import { Router } from '@angular/router';
+
+import { EmployeeService } from '../../../../core/services/employee/employee.service';
+import { Employee } from '../../../../core/models/employee/employee.model';
 
 @Component({
   selector: 'app-employee-list',
@@ -15,6 +17,7 @@ export class EmployeeListComponent implements OnInit {
 
   private readonly employeeService = inject(EmployeeService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
 
   employees: Employee[] = [];
   filteredEmployees: Employee[] = [];
@@ -87,6 +90,12 @@ export class EmployeeListComponent implements OnInit {
     this.currentPage = 1;
     this.updatePagination();
   }
+
+  addEmployee(): void {
+  this.router.navigate([
+    '/admin/employees/add'
+  ]);
+}
 
   clearFilters(): void {
     this.employeeName = '';

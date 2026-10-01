@@ -39,6 +39,59 @@
   line-height: 1.5;
 }
 
+.add-employee-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 42px;
+  padding: 0 18px;
+
+  border: 1px solid #2459df;
+  border-radius: 10px;
+
+  background: linear-gradient(
+    135deg,
+    #285A8E,
+    #1f4f7d
+  );
+
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 10px rgba(40, 90, 142, 0.22);
+
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.add-employee-button:hover {
+  background: linear-gradient(
+    135deg,
+    #316b9f,
+    #245c8d
+  );
+
+  box-shadow:
+    0 6px 14px rgba(40, 90, 142, 0.28);
+
+  transform: translateY(-1px);
+}
+
+.add-employee-button:active {
+  transform: translateY(0);
+  box-shadow:
+    0 3px 8px rgba(40, 90, 142, 0.2);
+}
+
 /* =========================================
    FILTER CARD
 ========================================= */

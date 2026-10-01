@@ -19,9 +19,51 @@
 
 .page-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 22px;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.add-department-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid #2459df;
+  border-radius: 9px;
+  background: linear-gradient(
+    135deg,
+    #285a8e,
+    #1f4770
+  );
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow:
+    0 4px 10px rgba(40, 90, 142, 0.20);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.add-department-button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 14px rgba(40, 90, 142, 0.27);
+}
+
+@media (max-width: 700px) {
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .add-department-button {
+    width: 100%;
+  }
 }
 
 .page-header h1 {

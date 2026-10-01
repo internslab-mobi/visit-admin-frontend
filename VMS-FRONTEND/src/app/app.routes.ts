@@ -13,10 +13,10 @@ import { VisitListComponent }
   from './features/visit-management/visit-list/visit-list';
 
 import { EmployeeListComponent }
-  from './features/employee-management/employee-list/employee-list';
+  from './features/employee/employee-management/employee-list/employee-list';
 
 import { DepartmentListComponent }
-  from './features/department-management/department-list/department-list';
+  from './features/department/department-management/department-list/department-list';
 
 import { Blacklist } from './features/blacklist/blacklist';
 
@@ -26,6 +26,12 @@ import { VisitorListComponent }
 
 import { VisitDetailsComponent }
   from './features/visitor-management/visit-details/visit-details';
+
+import { DepartmentAddComponent }
+  from './features/department/department-add/department-add';
+
+import { EmployeeAddComponent }
+  from './features/employee/employee-add/employee-add';
 
 export const routes: Routes = [
 
@@ -74,15 +80,23 @@ export const routes: Routes = [
 
       // Employees
       {
-        path: 'employees',
-        component: EmployeeListComponent
-      },
+  path: 'employees',
+  component: EmployeeListComponent
+},
+{
+  path: 'employees/add',
+  component: EmployeeAddComponent
+},
 
       // Departments
       {
-        path: 'departments',
-        component: DepartmentListComponent
-      },
+  path: 'departments',
+  component: DepartmentListComponent
+},
+{
+  path: 'departments/add',
+  component: DepartmentAddComponent
+},
 
       // Blacklist
       {

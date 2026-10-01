@@ -1,13 +1,18 @@
 /* ============================================
-   VMS — Premium Navy Application Header
+   VMS — Application Header
 ============================================ */
 
 :host {
   display: block;
-  flex-shrink: 0;
+  flex: 0 0 auto;
   width: 100%;
   z-index: 10;
 }
+
+
+/* ============================================
+   Main Header
+============================================ */
 
 .admin-header {
   position: relative;
@@ -21,66 +26,83 @@
   min-height: 76px;
 
   padding: 0 32px;
-
   box-sizing: border-box;
 
-  background: #0f1b35;
-
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  /* header */
+  background: linear-gradient(135deg, #285A8E, #4682B4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
   font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
 
 
 /* ============================================
-   Header Context
+   Application Branding
 ============================================ */
 
-.header-context {
+.header-brand {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 6px;
+  align-items: center;
 
+  gap: 11px;
+
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.header-brand-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-brand-logo img {
+  width: 120%;
+  height: 120%;
+  object-fit: contain;
+  display: block;
+}
+
+.header-brand-logo svg {
+  width: 28px;
+  height: 28px;
+}
+
+.header-brand-text {
   min-width: 0;
 }
 
-.header-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  color: #94a3b8;
-
-  font-size: 11px;
-  font-weight: 550;
-  letter-spacing: 0.15px;
-}
-
-.header-breadcrumb svg {
-  width: 13px;
-  height: 13px;
-  flex-shrink: 0;
-
-  color: #64748b;
-}
-
-.breadcrumb-root {
-  color: #cbd5e1;
-}
-
-.breadcrumb-current {
-  color: #ffffff;
-  font-weight: 650;
-}
-
-.header-welcome {
+.header-brand-title {
   color: #ffffff;
 
-  font-size: 17px;
-  font-weight: 750;
-  letter-spacing: -0.35px;
-  line-height: 1.3;
+  font-size: 21px;
+  font-weight: 800;
+
+  line-height: 1.1;
+  letter-spacing: -0.6px;
+}
+
+.header-brand-title span {
+  color: #60a5fa;
+}
+
+.header-brand-subtitle {
+  margin-top: 4px;
+
+  color: #aebbd0;
+
+  font-size: 10px;
+  font-weight: 500;
+
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+
+  white-space: nowrap;
 }
 
 
@@ -92,6 +114,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+
   gap: 20px;
 
   flex-shrink: 0;
@@ -111,15 +134,17 @@
 
   width: 42px;
   height: 42px;
+
   flex-shrink: 0;
 
   padding: 0;
 
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 12px;
 
-  background: rgba(255, 255, 255, 0.06);
-  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
+
+  color: #dbe4f0;
 
   transition:
     background 160ms ease,
@@ -133,8 +158,10 @@
 }
 
 .notification-button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.10);
+
+  border-color: rgba(255, 255, 255, 0.25);
+
   color: #ffffff;
 }
 
@@ -151,9 +178,10 @@
 .header-divider {
   width: 1px;
   height: 34px;
+
   flex-shrink: 0;
 
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 
@@ -164,6 +192,7 @@
 .admin-profile {
   display: flex;
   align-items: center;
+
   gap: 12px;
 
   min-width: 0;
@@ -188,6 +217,7 @@
 
   width: 43px;
   height: 43px;
+
   flex-shrink: 0;
 
   border-radius: 14px;
@@ -203,12 +233,13 @@
   color: #1d4ed8;
 
   box-shadow:
-    0 2px 5px rgba(0, 0, 0, 0.12);
+    0 2px 5px rgba(0, 0, 0, 0.10);
 }
 
 .profile-avatar span {
   font-size: 16px;
   font-weight: 800;
+
   letter-spacing: -0.3px;
 }
 
@@ -221,6 +252,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   gap: 5px;
 
   min-width: 0;
@@ -237,14 +269,16 @@
 
   font-size: 13px;
   font-weight: 750;
+
   line-height: 1.2;
 }
 
 .profile-role {
-  color: #cbd5e1;
+  color: #c2cedd;
 
   font-size: 11px;
   font-weight: 550;
+
   line-height: 1.2;
 }
 
@@ -256,11 +290,12 @@
 .dropdown-icon {
   width: 17px;
   height: 17px;
+
   flex-shrink: 0;
 
   margin-left: 4px;
 
-  color: #94a3b8;
+  color: #aebbd0;
 }
 
 
@@ -269,6 +304,7 @@
 ============================================ */
 
 @media (max-width: 1024px) {
+
   .admin-header {
     height: 70px;
     min-height: 70px;
@@ -287,6 +323,7 @@
 ============================================ */
 
 @media (max-width: 650px) {
+
   .admin-header {
     height: 66px;
     min-height: 66px;
@@ -294,18 +331,30 @@
     padding: 0 14px;
   }
 
-  .header-context {
-    gap: 4px;
+  .header-brand {
+    gap: 9px;
   }
 
-  .header-breadcrumb {
-    font-size: 10px;
-    gap: 5px;
+  .header-brand-logo {
+    flex-basis: 36px;
+
+    width: 36px;
+    height: 36px;
+
+    border-radius: 10px;
   }
 
-  .header-welcome {
-    font-size: 13px;
-    letter-spacing: -0.2px;
+  .header-brand-logo svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .header-brand-title {
+    font-size: 17px;
+  }
+
+  .header-brand-subtitle {
+    display: none;
   }
 
   .header-actions {
@@ -315,6 +364,7 @@
   .notification-button {
     width: 36px;
     height: 36px;
+
     border-radius: 10px;
   }
 
@@ -334,6 +384,7 @@
   .profile-avatar {
     width: 36px;
     height: 36px;
+
     border-radius: 11px;
   }
 
@@ -357,7 +408,13 @@
   outline-offset: 3px;
 }
 
+
+/* ============================================
+   Reduced Motion
+============================================ */
+
 @media (prefers-reduced-motion: reduce) {
+
   .notification-button {
     transition: none;
   }

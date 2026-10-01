@@ -60,13 +60,10 @@
   gap: 9px;
   min-height: 46px;
   padding: 0 22px;
-
   border: 1px solid #2459df;
   border-radius: 11px;
-
-  background: linear-gradient(135deg, #3978f6 0%, #2459df 100%);
+  background: linear-gradient(135deg, #285A8E, #4682B4);
   color: #fff;
-
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
@@ -74,7 +71,7 @@
   cursor: pointer;
 
   box-shadow:
-    0 5px 12px rgba(37, 99, 235, 0.18),
+    0 5px 12px rgba(40, 90, 142, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
 
   transition:
@@ -86,7 +83,10 @@
 .register-button:hover {
   transform: translateY(-2px);
   filter: brightness(1.04);
-  box-shadow: 0 9px 22px rgba(37, 99, 235, 0.25);
+
+  box-shadow:
+    0 9px 22px rgba(40, 90, 142, 0.30);
+
 }
 
 .register-button:active {
@@ -97,7 +97,6 @@
   outline: 3px solid rgba(59, 130, 246, 0.28);
   outline-offset: 3px;
 }
-
 
 /* =====================================================
    SUMMARY CARDS — COMPACT ENTERPRISE DESIGN
