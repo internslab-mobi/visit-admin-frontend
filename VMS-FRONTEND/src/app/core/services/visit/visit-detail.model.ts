@@ -31,23 +31,15 @@ export interface VisitDetailResponse {
 
 
 export interface VisitorDetails {
-
   visitorId: string;
-
   firstName: string;
-
   lastName: string;
-
   email: string;
-
   mobileNumber: string;
-
-  companyName: string;
-
-  ndaAvailable: boolean;
-
+companyName: string;
+nationality: string;
+ndaAvailable: boolean;
   ndaDocumentId: string | null;
-
   ndaValidUntil: string | null;
 }
 

@@ -44,6 +44,8 @@ export interface VisitorDetails {
 
   companyName: string;
 
+  nationality: string;
+
   ndaAvailable: boolean;
 
   ndaDocumentId: string | null;
@@ -74,3 +76,4 @@ export interface AuditDetails {
 
   updatedBy: string | null;
 }
+
