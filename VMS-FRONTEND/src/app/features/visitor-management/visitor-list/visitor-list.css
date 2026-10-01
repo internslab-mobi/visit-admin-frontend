@@ -1,6 +1,6 @@
-/* =================================
-   VISITOR PAGE
-================================= */
+
+   /* VISITOR PAGE */
+
 
 .visitor-page {
   width: 100%;
@@ -9,9 +9,9 @@
 }
 
 
-/* =================================
-   PAGE HEADER
-================================= */
+
+   /* PAGE HEADER */
+
 
 .page-header {
   display: flex;
@@ -92,9 +92,9 @@
 }
 
 
-/* =================================
-   SUMMARY
-================================= */
+
+   /* SUMMARY */
+
 
 .summary-section {
   margin-bottom: 22px;
@@ -167,9 +167,9 @@
 }
 
 
-/* =================================
-   FILTER CARD
-================================= */
+
+   /* FILTER CARD */
+
 
 .filter-card {
   padding: 22px 24px;
@@ -212,9 +212,9 @@
 }
 
 
-/* =================================
-   FILTER GRID
-================================= */
+
+   /* FILTER GRID */
+
 
 .filter-grid {
   display: grid;
@@ -248,9 +248,9 @@
 }
 
 
-/* =================================
-   SEARCH
-================================= */
+
+   /* SEARCH */
+
 
 .search-field {
   width: 100%;
@@ -322,9 +322,9 @@
 }
 
 
-/* =================================
-   SELECT / DATE INPUT
-================================= */
+
+   /* SELECT / DATE INPUT */
+
 
 .filter-field select,
 .filter-field input[type="date"] {
@@ -380,9 +380,9 @@
 }
 
 
-/* =================================
-   CLEAR BUTTON
-================================= */
+
+   /* CLEAR BUTTON */
+
 
 .clear-button {
   border: none;
@@ -411,9 +411,9 @@
 }
 
 
-/* =================================
-   TABLE CARD
-================================= */
+
+   /* TABLE CARD */
+
 
 .visitor-table-card {
   background: #ffffff;
@@ -429,9 +429,9 @@
 }
 
 
-/* =================================
-   TABLE HEADER
-================================= */
+
+   /* TABLE HEADER */
+
 
 .table-header {
   display: flex;
@@ -483,9 +483,9 @@
 }
 
 
-/* =================================
-   TABLE
-================================= */
+
+   /* TABLE */
+
 
 .table-wrapper {
   width: 100%;
@@ -549,9 +549,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   VISITOR CELL
-================================= */
+
+   /* VISITOR CELL */
+
 
 .visitor-cell {
   display: flex;
@@ -617,9 +617,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   CONTACT
-================================= */
+
+   /* CONTACT */
+
 
 .contact-cell {
   display: flex;
@@ -644,9 +644,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   COMPANY
-================================= */
+
+   /* COMPANY */
+
 
 .company-name {
   color: #475569;
@@ -663,9 +663,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   VISITOR TYPE
-================================= */
+
+   /* VISITOR TYPE */
+
 
 .visitor-type {
   display: inline-flex;
@@ -710,9 +710,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   LAST VISIT DATE
-================================= */
+
+   /* LAST VISIT DATE */
+
 
 .visit-date-cell {
   display: flex;
@@ -739,9 +739,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   VISITOR ID
-================================= */
+
+   /* VISITOR ID */
+
 
 .visitor-id {
   display: inline-flex;
@@ -768,9 +768,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   ACTION
-================================= */
+
+   /* ACTION */
+
 
 .action-button {
   padding: 7px 14px;
@@ -809,9 +809,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   EMPTY STATE
-================================= */
+
+   /* EMPTY STATE */
+
 
 .empty-cell {
   padding: 0 !important;
@@ -894,9 +894,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   PAGINATION
-================================= */
+
+   /* PAGINATION */
+
 
 .pagination {
   display: flex;
@@ -979,9 +979,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   RESPONSIVE - 1200px
-================================= */
+
+   /* RESPONSIVE - 1200px */
+
 
 @media (max-width: 1200px) {
 
@@ -996,9 +996,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   RESPONSIVE - 900px
-================================= */
+
+   /* RESPONSIVE - 900px */
+
 
 @media (max-width: 900px) {
 
@@ -1027,9 +1027,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   RESPONSIVE - 700px
-================================= */
+
+   /* RESPONSIVE - 700px */
+
 
 @media (max-width: 700px) {
 
@@ -1056,9 +1056,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   RESPONSIVE - 650px
-================================= */
+
+   /* RESPONSIVE - 650px */
+
 
 @media (max-width: 650px) {
 
@@ -1141,9 +1141,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   RESPONSIVE - 480px
-================================= */
+
+   /* RESPONSIVE - 480px */
+
 
 @media (max-width: 480px) {
 
@@ -1231,9 +1231,9 @@ tbody tr:last-child td {
 }
 
 
-/* =================================
-   ACCESSIBILITY
-================================= */
+
+   /* ACCESSIBILITY */
+
 
 button:focus-visible,
 input:focus-visible,
@@ -1244,9 +1244,9 @@ select:focus-visible {
 }
 
 
-/* =================================
-   SCROLLBAR
-================================= */
+
+   /* SCROLLBAR */
+
 
 .table-wrapper::-webkit-scrollbar {
   height: 7px;
@@ -1266,9 +1266,9 @@ select:focus-visible {
   background: #94a3b8;
 }
 
-/* =================================
-   REGISTER VISITOR BUTTON
-================================= */
+
+   /* REGISTER VISITOR BUTTON */
+
 
 
 .register-button {

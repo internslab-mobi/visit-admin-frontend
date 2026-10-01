@@ -79,4 +79,35 @@ export class VisitService {
       );
     }
 
+    checkIn(
+      visitId: string,
+      request: {
+        aadharNumber?: string;
+        panNumber?: string;
+        passportNumber?: string;
+      },
+      photo: File
+    ): Observable<VisitDetailResponse> {
+
+      const formData = new FormData();
+
+      formData.append(
+        'request',
+        new Blob(
+          [JSON.stringify(request)],
+          { type: 'application/json' }
+        )
+      );
+
+      formData.append(
+        'photo',
+        photo
+      );
+
+      return this.http.patch<VisitDetailResponse>(
+        `${this.apiUrl}/${visitId}/check-in`,
+        formData
+      );
+    }
+
 }

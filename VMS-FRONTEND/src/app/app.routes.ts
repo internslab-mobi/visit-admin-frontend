@@ -21,8 +21,9 @@ import { DepartmentListComponent }
 import { Blacklist } from './features/blacklist/blacklist';
 
 import { BlacklistDetails } from './features/blacklist-details/blacklist-details';
-import { VisitorListComponent }
-  from './features/visitor-management/visitor-list/visitor-list';
+import { VisitorListComponent }  from './features/visitor-management/visitor-list/visitor-list';
+
+import { VendorListComponent } from './features/vendor-management/vendor-list/vendor-list';
 
 import { VisitDetailsComponent }
   from './features/visitor-management/visit-details/visit-details';
@@ -76,7 +77,10 @@ export const routes: Routes = [
   path: 'visitors/:visitorId/edit',
   component: VisitorEditComponent
 },
-      
+      {
+  path: 'vendors',
+  component: VendorListComponent
+},
 
       // Employees
       {

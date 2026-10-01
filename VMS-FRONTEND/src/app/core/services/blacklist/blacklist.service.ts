@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { AddVisitorToBlacklistRequest } from '../../models/blacklist/blacklist.model';
 import { BlacklistResponse } from '../../models/blacklist/blacklist.model';
 
 @Injectable({
@@ -22,4 +22,33 @@ export class BlacklistService {
     `${this.apiUrl}/${id}`
   );
 }
+
+
+
+  addExistingVisitorToBlacklist(
+    visitorId: string,
+    request: AddVisitorToBlacklistRequest
+  ): Observable<BlacklistResponse> {
+
+    return this.http.post<BlacklistResponse>(
+      `${this.apiUrl}/visitor/${visitorId}`,
+      request
+    );
+  }
+
+  removeFromBlacklist(
+    blacklistId: string,
+    removedBy: string
+  ): Observable<BlacklistResponse> {
+
+    return this.http.put<BlacklistResponse>(
+      `${this.apiUrl}/${blacklistId}/remove`,
+      null,
+      {
+        params: {
+          removedBy
+        }
+      }
+    );
+  }
 }

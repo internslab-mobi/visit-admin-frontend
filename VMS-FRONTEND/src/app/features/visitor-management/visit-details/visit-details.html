@@ -6,7 +6,7 @@
 
   <div class="page-header">
 
-    <div>
+    <div class="page-header-left">
 
       <button
         type="button"
@@ -16,18 +16,21 @@
         ← Back to Visits
       </button>
 
-      <h1>Visit Details</h1>
+      <div class="page-title">
 
-      <p class="visit-reference">
-        {{ visitDetails?.visitReference || 'Loading...' }}
-      </p>
+        <h1>Visit Details</h1>
+
+        <p class="visit-reference">
+          {{ visitDetails?.visitReference || 'Loading...' }}
+        </p>
+
+      </div>
 
     </div>
 
-
     @if (visitDetails) {
 
-      <div class="header-status">
+      <div class="page-header-right">
 
         <span
           class="status-badge"
@@ -47,330 +50,46 @@
   </div>
 
 
-  <!-- ================================
-       VISITOR INFORMATION
-  ================================= -->
+  @if (visitDetails) {
 
-  <section class="details-card">
+    <!-- ================================
+         MAIN CONTENT
+    ================================= -->
 
-    <div class="card-header">
-
-      <div>
-
-        <h2>Visitor Information</h2>
-
-        <p>
-          Personal and contact information
-        </p>
-
-      </div>
-
-    </div>
+    <div class="details-layout">
 
 
-    @if (visitDetails) {
+      <!-- ================================
+           VISITOR CARD
+      ================================= -->
 
-      <div class="visitor-profile">
+      <section class="details-card visitor-card">
 
-        <div class="visitor-avatar">
-          {{ visitDetails.visitor.firstName.charAt(0) }}
-        </div>
+        <div class="card-header">
 
-
-        <div class="visitor-name">
-
-          <h3>
-            {{ visitDetails.visitor.firstName }}
-            {{ visitDetails.visitor.lastName }}
-          </h3>
-
-          <span>
-            Visitor ID: {{ visitDetails.visitor.visitorId }}
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <div class="details-grid">
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Email
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.visitor.email }}
-          </span>
+          <div>
+            <h2>Visitor</h2>
+            <p>Visitor information</p>
+          </div>
 
         </div>
 
 
-        <div class="detail-item">
+        <div class="visitor-profile">
 
-          <span class="detail-label">
-            Mobile
-          </span>
+          <div class="visitor-avatar">
+            {{ visitDetails.visitor.firstName.charAt(0) }}
+          </div>
 
-          <span class="detail-value">
-            {{ visitDetails.visitor.mobileNumber }}
-          </span>
+          <div class="visitor-name">
 
-        </div>
+            <h3>
+              {{ visitDetails.visitor.firstName }}
+              {{ visitDetails.visitor.lastName }}
+            </h3>
 
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Company
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.visitor.companyName || 'Not provided' }}
-          </span>
-
-        </div>
-
-      </div>
-
-    }
-
-  </section>
-
-
-  <!-- ================================
-       HOST INFORMATION
-  ================================= -->
-
-  <section class="details-card">
-
-    <div class="card-header">
-
-      <div>
-
-        <h2>Host Information</h2>
-
-        <p>
-          Employee responsible for this visit
-        </p>
-
-      </div>
-
-    </div>
-
-
-    @if (visitDetails) {
-
-      <div class="details-grid">
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Host Name
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.host.hostName }}
-          </span>
-
-        </div>
-
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Host ID
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.host.hostId }}
-          </span>
-
-        </div>
-
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Department
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.host.departmentName }}
-          </span>
-
-        </div>
-
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Department ID
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.host.departmentId }}
-          </span>
-
-        </div>
-
-      </div>
-
-    }
-
-  </section>
-
-
-  <!-- ================================
-       VISIT INFORMATION
-  ================================= -->
-
-  <section class="details-card">
-
-    <div class="card-header">
-
-      <div>
-
-        <h2>Visit Information</h2>
-
-        <p>
-          Purpose and schedule of the visit
-        </p>
-
-      </div>
-
-    </div>
-
-
-    @if (visitDetails) {
-
-      <div class="details-grid">
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Visitor Type
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.visitorType }}
-          </span>
-
-        </div>
-
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Registration Type
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.registrationType }}
-          </span>
-
-        </div>
-
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Purpose
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.purpose }}
-          </span>
-
-        </div>
-
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Expected Arrival
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.expectedArrivalAt }}
-          </span>
-
-        </div>
-
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Expected Departure
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.expectedDepartureAt }}
-          </span>
-
-        </div>
-
-
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Remarks
-          </span>
-
-          <span class="detail-value">
-            {{ visitDetails.remarks || 'No remarks' }}
-          </span>
-
-        </div>
-
-      </div>
-
-    }
-
-  </section>
-
-
-  <!-- ================================
-       VISIT TIMELINE
-  ================================= -->
-
-  <section class="details-card">
-
-    <div class="card-header">
-
-      <div>
-
-        <h2>Visit Timeline</h2>
-
-        <p>
-          Actual visit activity
-        </p>
-
-      </div>
-
-    </div>
-
-
-    @if (visitDetails) {
-
-      <div class="visit-timeline">
-
-        <!-- Registered -->
-
-        <div class="timeline-item">
-
-          <div class="timeline-marker"></div>
-
-          <div class="timeline-content">
-
-            <span class="timeline-title">
-              Visit Registered
-            </span>
-
-            <span class="timeline-time">
-              {{ visitDetails.audit.createdAt }}
+            <span>
+              {{ visitDetails.visitor.visitorId }}
             </span>
 
           </div>
@@ -378,22 +97,302 @@
         </div>
 
 
-        <!-- Checked In -->
+        <div class="details-grid">
 
-        @if (visitDetails.checkedInAt) {
+          <div class="detail-item">
 
-          <div class="timeline-item">
+            <span class="detail-label">
+              Email
+            </span>
 
-            <div class="timeline-marker"></div>
+            <span class="detail-value">
+              {{ visitDetails.visitor.email }}
+            </span>
 
-            <div class="timeline-content">
+          </div>
 
-              <span class="timeline-title">
-                Checked In
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Mobile
+            </span>
+
+            <span class="detail-value">
+              {{ visitDetails.visitor.mobileNumber }}
+            </span>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Company
+            </span>
+
+            <span class="detail-value">
+              {{ visitDetails.visitor.companyName || 'Not provided' }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================
+           VISIT CARD
+      ================================= -->
+
+      <section class="details-card visit-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>Visit</h2>
+            <p>Purpose, host and schedule</p>
+          </div>
+
+        </div>
+
+
+        <div class="details-grid">
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Purpose
+            </span>
+
+            <span class="detail-value">
+              {{ visitDetails.purpose }}
+            </span>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Visitor Type
+            </span>
+
+            <span class="detail-value">
+              {{ visitDetails.visitorType }}
+            </span>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Registration
+            </span>
+
+            <span class="detail-value">
+              {{ visitDetails.registrationType }}
+            </span>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Host
+            </span>
+
+            <span class="detail-value">
+              {{ visitDetails.host.hostName }}
+            </span>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Department
+            </span>
+
+            <span class="detail-value">
+              {{ visitDetails.host.departmentName }}
+            </span>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Expected Time
+            </span>
+
+            <span class="detail-value">
+              {{ visitDetails.expectedArrivalAt }}
+              →
+              {{ visitDetails.expectedDepartureAt }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================
+           IDENTITY VERIFICATION
+      ================================= -->
+
+      <section class="details-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>Identity Verification</h2>
+            <p>Check-in verification status</p>
+          </div>
+
+        </div>
+
+
+        @if (visitDetails.status === 'REGISTERED') {
+
+          @if (nationality === 'DOMESTIC') {
+
+            <div class="identity-form">
+
+              <div class="detail-item">
+
+                <label class="detail-label">
+                  Aadhaar Number
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="aadharNumber"
+                  placeholder="Enter Aadhaar number"
+                />
+
+              </div>
+
+
+              <div class="detail-item">
+
+                <label class="detail-label">
+                  PAN Number
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="panNumber"
+                  placeholder="Enter PAN number"
+                />
+
+              </div>
+
+
+              <div class="detail-item">
+
+                <label class="detail-label">
+                  Visitor Photo
+                </label>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  (change)="onPhotoSelected($event)"
+                />
+
+              </div>
+
+            </div>
+
+          }
+
+
+          @if (nationality === 'INTERNATIONAL') {
+
+            <div class="identity-form">
+
+              <div class="detail-item">
+
+                <label class="detail-label">
+                  Passport Number
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="passportNumber"
+                  placeholder="Enter passport number"
+                />
+
+              </div>
+
+
+              <div class="detail-item">
+
+                <label class="detail-label">
+                  Visitor Photo
+                </label>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  (change)="onPhotoSelected($event)"
+                />
+
+              </div>
+
+            </div>
+
+          }
+
+
+          @if (!nationality) {
+
+            <div class="verification-placeholder">
+
+              <span class="placeholder-icon">
+                ⚠️
               </span>
 
-              <span class="timeline-time">
-                {{ visitDetails.checkedInAt }}
+              <div>
+
+                <strong>
+                  Identity information unavailable
+                </strong>
+
+                <span>
+                  Nationality information is not available for this visitor.
+                </span>
+
+              </div>
+
+            </div>
+
+          }
+
+        } @else {
+
+          <div class="verification-placeholder">
+
+            <span class="placeholder-icon">
+              🪪
+            </span>
+
+            <div>
+
+              <strong>
+                Identity verification completed
+              </strong>
+
+              <span>
+                Identity verification was performed during check-in.
               </span>
 
             </div>
@@ -402,10 +401,65 @@
 
         }
 
+      </section>
 
-        <!-- Checked Out -->
 
-        @if (visitDetails.checkedOutAt) {
+      <!-- ================================
+           NDA
+      ================================= -->
+
+      <section class="details-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>NDA</h2>
+            <p>Non-disclosure agreement</p>
+          </div>
+
+        </div>
+
+
+        <div class="verification-placeholder">
+
+          <span class="placeholder-icon">
+            📄
+          </span>
+
+          <div>
+
+            <strong>
+              NDA status
+            </strong>
+
+            <span>
+              NDA information will appear here
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================
+           VISIT ACTIVITY
+      ================================= -->
+
+      <section class="details-card activity-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>Visit Activity</h2>
+            <p>Visit lifecycle</p>
+          </div>
+
+        </div>
+
+
+        <div class="visit-timeline">
 
           <div class="timeline-item">
 
@@ -414,23 +468,124 @@
             <div class="timeline-content">
 
               <span class="timeline-title">
-                Checked Out
+                Visit Registered
               </span>
 
               <span class="timeline-time">
-                {{ visitDetails.checkedOutAt }}
+                {{ visitDetails.audit.createdAt }}
               </span>
 
             </div>
 
           </div>
 
-        }
 
-      </div>
+          @if (visitDetails.checkedInAt) {
 
-    }
+            <div class="timeline-item">
 
-  </section>
+              <div class="timeline-marker"></div>
+
+              <div class="timeline-content">
+
+                <span class="timeline-title">
+                  Checked In
+                </span>
+
+                <span class="timeline-time">
+                  {{ visitDetails.checkedInAt }}
+                </span>
+
+              </div>
+
+            </div>
+
+          }
+
+
+          @if (visitDetails.checkedOutAt) {
+
+            <div class="timeline-item">
+
+              <div class="timeline-marker"></div>
+
+              <div class="timeline-content">
+
+                <span class="timeline-title">
+                  Checked Out
+                </span>
+
+                <span class="timeline-time">
+                  {{ visitDetails.checkedOutAt }}
+                </span>
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================
+           SECURITY ACTIONS
+      ================================= -->
+
+      <section class="details-card security-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>Security Actions</h2>
+            <p>Front-desk actions for this visitor</p>
+          </div>
+
+        </div>
+
+
+        <div class="security-actions">
+
+          <button
+            type="button"
+            class="action-button blacklist-button"
+          >
+            Add to Blacklist
+          </button>
+
+
+          @if (visitDetails.status === 'REGISTERED') {
+
+            <button
+              type="button"
+              class="action-button primary-action"
+            >
+              Check In
+            </button>
+
+          }
+
+
+          @if (visitDetails.status === 'CHECKED_IN') {
+
+            <button
+              type="button"
+              class="action-button primary-action"
+            >
+              Check Out
+            </button>
+
+          }
+
+        </div>
+
+      </section>
+
+
+    </div>
+
+  }
 
 </div>

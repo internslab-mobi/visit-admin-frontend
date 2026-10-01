@@ -56,9 +56,9 @@ private readonly router = inject(Router);
   visitorRecords: VisitorRecord[] = [];
 
 
-  /* ================================
-     FILTERS
-  ================================= */
+  
+    //  FILTERS
+ 
 
   searchText = '';
 
@@ -69,27 +69,27 @@ private readonly router = inject(Router);
   toDate = '';
 
 
-  /* ================================
-     SORTING
-  ================================= */
+  
+    //  SORTING
+ 
 
   sortBy = 'lastVisitDate';
 
   sortDirection: 'asc' | 'desc' = 'desc';
 
 
-  /* ================================
-     PAGINATION
-  ================================= */
+  
+    //  PAGINATION
+ 
 
   currentPage = 1;
 
   pageSize = 10;
 
 
-  /* ================================
-     INITIALIZATION
-  ================================= */
+  
+    //  INITIALIZATION
+ 
 
   ngOnInit(): void {
 
@@ -98,9 +98,9 @@ private readonly router = inject(Router);
   }
 
 
-  /* ================================
-     LOAD VISITORS
-  ================================= */
+  
+    //  LOAD VISITORS
+ 
 
   private loadVisitors(): void {
 
@@ -147,9 +147,9 @@ private readonly router = inject(Router);
   }
 
 
-  /* ================================
-     MAP API RESPONSE
-  ================================= */
+  
+    //  MAP API RESPONSE
+ 
 
   private mapToVisitorRecord(
     visitor: VisitorResponse
@@ -180,9 +180,9 @@ private readonly router = inject(Router);
   }
 
 
-  /* ================================
-     FILTER + SORT
-  ================================= */
+  
+    //  FILTER + SORT
+ 
 
   get filteredVisitors(): VisitorRecord[] {
 
@@ -283,9 +283,9 @@ private readonly router = inject(Router);
       });
 
 
-    /* ================================
-       SORTING
-    ================================= */
+    
+      //  SORTING
+   
 
     visitors.sort((a, b) => {
 
@@ -368,9 +368,9 @@ editVisitor(visitorId: string): void {
   ]);
 
 }
-  /* ================================
-     PAGINATION
-  ================================= */
+  
+    //  PAGINATION
+ 
 
   get paginatedVisitors(): VisitorRecord[] {
 
@@ -437,9 +437,9 @@ editVisitor(visitorId: string): void {
   }
 
 
-  /* ================================
-     SORT
-  ================================= */
+  
+    //  SORT
+ 
 
   onSortChange(): void {
 
@@ -448,9 +448,9 @@ editVisitor(visitorId: string): void {
   }
 
 
-  /* ================================
-     FILTER CHANGE
-  ================================= */
+  
+    //  FILTER CHANGE
+ 
 
   onFilterChange(): void {
 
@@ -459,9 +459,9 @@ editVisitor(visitorId: string): void {
   }
 
 
-  /* ================================
-     PAGINATION
-  ================================= */
+  
+    //  PAGINATION
+ 
 
   previousPage(): void {
 
@@ -488,9 +488,9 @@ editVisitor(visitorId: string): void {
   }
 
 
-  /* ================================
-     CLEAR FILTERS
-  ================================= */
+  
+    //  CLEAR FILTERS
+ 
 
   clearFilters(): void {
 
@@ -511,9 +511,9 @@ editVisitor(visitorId: string): void {
   }
 
 
-  /* ================================
-     TOTAL
-  ================================= */
+  
+    //  TOTAL
+ 
 
   get totalVisitors(): number {
 
@@ -522,9 +522,9 @@ editVisitor(visitorId: string): void {
   }
 
 
-  /* ================================
-     DISPLAY HELPERS
-  ================================= */
+  
+    //  DISPLAY HELPERS
+ 
 
   getVisitorTypeLabel(
     type: string

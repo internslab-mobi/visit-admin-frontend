@@ -88,6 +88,27 @@
 
     <div class="nav-section-label">ORGANIZATION</div>
 
+<!-- Vendors -->
+<a
+  routerLink="/admin/vendors"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  class="nav-item"
+>
+  <span class="nav-icon">▤</span>
+  <span>Vendors</span>
+</a>
+<!-- Blacklist -->
+<a
+  routerLink="/admin/blacklist"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  class="nav-item"
+>
+  <span class="nav-icon">⊘</span>
+  <span>Blacklist</span>
+</a>
+
     <!-- Employees -->
     <a
       routerLink="/admin/employees"
