@@ -358,7 +358,12 @@
 
                 <label class="button button-secondary upload-button">
                   Upload photo
-                  <input type="file" accept="image/*" (change)="onPhotoSelected($event)" />
+                  <input
+                    #photoInput
+                    type="file"
+                    accept="image/*"
+                    (change)="onPhotoSelected($event)"
+                  />
                 </label>
               </div>
 

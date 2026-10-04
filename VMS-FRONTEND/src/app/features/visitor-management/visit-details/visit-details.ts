@@ -33,7 +33,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly blacklistService = inject(BlacklistService);
 
-  @ViewChild('cameraVideo')
+  @ViewChild('videoElement')
   cameraVideo?: ElementRef<HTMLVideoElement>;
 
   @ViewChild('photoInput')
