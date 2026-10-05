@@ -327,7 +327,7 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
     this.registrationForm.patchValue({
       departmentName:
-        employee?.department?.departmentName ?? ''
+        employee?.departmentName ?? ''
     });
   }
 

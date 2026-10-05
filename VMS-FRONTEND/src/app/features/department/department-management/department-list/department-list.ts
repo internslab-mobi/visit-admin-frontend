@@ -47,6 +47,7 @@ export class DepartmentListComponent implements OnInit {
   private loadDepartments(): void {
     this.departmentService.getDepartments().subscribe({
       next: (departments) => {
+        console.log('Departments API Response:', departments);
         this.departments = departments;
         this.filteredDepartments = departments;
 

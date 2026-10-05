@@ -40,8 +40,9 @@ export class Blacklist implements OnInit {
 
     this.blacklistService.getAllBlacklistRecords().subscribe({
       next: (records) => {
-
+        console.log('Blacklist API Response:', records);
         this.blacklistRecords = records;
+        console.log('Blacklist RECORDS:', this.blacklistRecords);
         this.currentPage = 1;
         this.isLoading = false;
 
