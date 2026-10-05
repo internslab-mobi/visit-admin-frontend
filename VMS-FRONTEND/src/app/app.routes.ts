@@ -1,126 +1,103 @@
-
 import { Routes } from '@angular/router';
 
-import { VisitorRegistrationComponent }
-  from './features/visitor-management/visitor-registration/visitor-registration';
+import { LoginComponent } from './features/auth/login/login';
 
-import { VisitorEditComponent }
-  from './features/visitor-management/visitor-edit/visitor-edit';
-import { AdminLayoutComponent }
-  from './layout/admin-layout/admin-layout';
+import { authGuard } from './core/guards/auth.guard';
 
-import { VisitListComponent }
-  from './features/visit-management/visit-list/visit-list';
+import { VisitorRegistrationComponent } from './features/visitor-management/visitor-registration/visitor-registration';
 
-import { EmployeeListComponent }
-  from './features/employee/employee-management/employee-list/employee-list';
+import { VisitorEditComponent } from './features/visitor-management/visitor-edit/visitor-edit';
 
-import { DepartmentListComponent }
-  from './features/department/department-management/department-list/department-list';
+import { AdminLayoutComponent } from './layout/admin-layout/admin-layout';
+
+import { VisitListComponent } from './features/visit-management/visit-list/visit-list';
+
+import { EmployeeListComponent } from './features/employee/employee-management/employee-list/employee-list';
+
+import { DepartmentListComponent } from './features/department/department-management/department-list/department-list';
 
 import { Blacklist } from './features/blacklist/blacklist';
 
 import { BlacklistDetails } from './features/blacklist-details/blacklist-details';
-import { VisitorListComponent }  from './features/visitor-management/visitor-list/visitor-list';
+
+import { VisitorListComponent } from './features/visitor-management/visitor-list/visitor-list';
 
 import { VendorListComponent } from './features/vendor-management/vendor-list/vendor-list';
 
-import { VisitDetailsComponent }
-  from './features/visitor-management/visit-details/visit-details';
+import { VisitDetailsComponent } from './features/visitor-management/visit-details/visit-details';
 
-import { DepartmentAddComponent }
-  from './features/department/department-add/department-add';
+import { DepartmentAddComponent } from './features/department/department-add/department-add';
 
-import { EmployeeAddComponent }
-  from './features/employee/employee-add/employee-add';
+import { EmployeeAddComponent } from './features/employee/employee-add/employee-add';
 
 export const routes: Routes = [
-
-  // LANDING PAGE
   {
     path: '',
-    loadComponent: () =>
-      import('./features/landing/landing').then(
-        m => m.Landing
-      )
+    redirectTo: 'login',
+    pathMatch: 'full',
   },
-
-  // ADMIN
+  {
+    path: 'login',
+    component: LoginComponent,
+  },
   {
     path: 'admin',
     component: AdminLayoutComponent,
+    canActivate: [authGuard],
+    canActivateChild: [authGuard],
     children: [
-
-      // Pre-Registration
       {
         path: 'pre-registration',
-        component: VisitorRegistrationComponent
+        component: VisitorRegistrationComponent,
       },
-
-      // Visits
       {
         path: 'visits',
-        component: VisitListComponent
+        component: VisitListComponent,
       },
-
       {
         path: 'visits/:visitId',
-        component: VisitDetailsComponent
+        component: VisitDetailsComponent,
       },
-
-      // Visitors
       {
         path: 'visitors',
-        component: VisitorListComponent
+        component: VisitorListComponent,
       },
       {
-  path: 'visitors/:visitorId/edit',
-  component: VisitorEditComponent
-},
+        path: 'visitors/:visitorId/edit',
+        component: VisitorEditComponent,
+      },
       {
-  path: 'vendors',
-  component: VendorListComponent
-},
-
-      // Employees
+        path: 'vendors',
+        component: VendorListComponent,
+      },
       {
-  path: 'employees',
-  component: EmployeeListComponent
-},
-{
-  path: 'employees/add',
-  component: EmployeeAddComponent
-},
-
-      // Departments
+        path: 'employees',
+        component: EmployeeListComponent,
+      },
       {
-  path: 'departments',
-  component: DepartmentListComponent
-},
-{
-  path: 'departments/add',
-  component: DepartmentAddComponent
-},
-
-      // Blacklist
+        path: 'employees/add',
+        component: EmployeeAddComponent,
+      },
+      {
+        path: 'departments',
+        component: DepartmentListComponent,
+      },
+      {
+        path: 'departments/add',
+        component: DepartmentAddComponent,
+      },
       {
         path: 'blacklist',
-        component: Blacklist
+        component: Blacklist,
       },
-
-      // Blacklist Details
       {
         path: 'blacklist/:id',
-        component: BlacklistDetails
-      }
-
-    ]
+        component: BlacklistDetails,
+      },
+    ],
   },
-
-  // UNKNOWN ROUTES
   {
     path: '**',
-    redirectTo: 'admin/pre-registration'
-  }
-
+    redirectTo: 'login',
+  },
 ];

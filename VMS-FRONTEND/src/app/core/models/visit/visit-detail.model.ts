@@ -44,7 +44,7 @@ export interface VisitorDetails {
 
   companyName: string;
 
-  nationality: string;
+  nationality: 'DOMESTIC' | 'INTERNATIONAL' | null;
 
   ndaAvailable: boolean;
 

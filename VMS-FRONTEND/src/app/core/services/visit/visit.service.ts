@@ -79,6 +79,15 @@ export class VisitService {
       );
     }
 
+  getVisitorPhoto(visitorId: string): Observable<Blob> {
+    return this.http.get(
+      `${API_CONFIG.BASE_URL}/api/documents/visitor/${encodeURIComponent(visitorId)}/photo`,
+      {
+        responseType: 'blob'
+      }
+    );
+  }
+
     checkIn(
       visitId: string,
       request: {
@@ -109,5 +118,29 @@ export class VisitService {
         formData
       );
     }
+
+    verifyIdentity(
+        visitId: string,
+        request: {
+          aadharNumber?: string;
+          panNumber?: string;
+          passportNumber?: string;
+        }
+      ): Observable<void> {
+        return this.http.post<void>(
+          `${this.apiUrl}/${visitId}/verify-identity`,
+          request
+        );
+      }
+
+    checkOut(
+       visitId: string
+      ): Observable<VisitDetailResponse> {
+
+        return this.http.patch<VisitDetailResponse>(
+          `${this.apiUrl}/${visitId}/check-out`,
+          {}
+        );
+      }
 
 }

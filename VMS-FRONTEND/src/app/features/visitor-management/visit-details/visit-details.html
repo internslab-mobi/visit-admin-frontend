@@ -1,591 +1,621 @@
 <div class="visit-details-page">
+  @if (visitDetails; as visit) {
+    <header class="page-header">
+      <div class="header-copy">
+        <a class="back-link" routerLink="/admin/visits">
+          <span aria-hidden="true">←</span>
+          Back to visits
+        </a>
 
-  <!-- ================================
-       PAGE HEADER
-  ================================= -->
+        <div class="title-row">
+          <div>
+            <p class="eyebrow">VISITOR MANAGEMENT</p>
+            <h1>Visit details</h1>
+            <p class="page-subtitle">Review visitor information and manage this visit.</p>
+          </div>
 
-  <div class="page-header">
-
-    <div class="page-header-left">
-
-      <button
-        type="button"
-        class="back-button"
-        routerLink="/admin/visits"
-      >
-        ← Back to Visits
-      </button>
-
-      <div class="page-title">
-
-        <h1>Visit Details</h1>
-
-        <p class="visit-reference">
-          {{ visitDetails?.visitReference || 'Loading...' }}
-        </p>
-
+          <span class="status-badge" [ngClass]="'status-' + visit.status.toLowerCase()">
+            {{ getStatusLabel(visit.status) }}
+          </span>
+        </div>
       </div>
+    </header>
 
-    </div>
+    <main class="visit-content">
+      <section class="visitor-summary">
+        <div class="visitor-avatar">
+          @if (visitorPhotoUrl) {
+            <img
+              [src]="visitorPhotoUrl"
+              [alt]="'Photo of ' + visit.visitor.firstName + ' ' + visit.visitor.lastName"
+            />
+          } @else {
+            <span aria-label="Visitor initials">
+              {{ visit.visitor.firstName.charAt(0) }}{{ visit.visitor.lastName.charAt(0) }}
+            </span>
+          }
+        </div>
 
-    @if (visitDetails) {
+        <div class="summary-identity">
+          <p class="eyebrow">VISITOR</p>
+          <h2>{{ visit.visitor.firstName }} {{ visit.visitor.lastName }}</h2>
+          <p>{{ visit.visitor.email }}</p>
+          <div class="summary-tags">
+            <span class="type-tag">{{ visit.visitorType }}</span>
+            <span class="reference-tag">{{ visit.visitReference }}</span>
+          </div>
+        </div>
 
-      <div class="page-header-right">
-
-        <span
-          class="status-badge"
-          [class.status-registered]="visitDetails.status === 'REGISTERED'"
-          [class.status-checked-in]="visitDetails.status === 'CHECKED_IN'"
-          [class.status-checked-out]="visitDetails.status === 'CHECKED_OUT'"
-          [class.status-cancelled]="visitDetails.status === 'CANCELLED'"
-          [class.status-no-show]="visitDetails.status === 'NO_SHOW'"
-        >
-          {{ getStatusLabel(visitDetails.status) }}
-        </span>
-
-      </div>
-
-    }
-
-  </div>
-
-
-  @if (visitDetails) {
-
-    <!-- ================================
-         MAIN CONTENT
-    ================================= -->
-
-    <div class="details-layout">
-
-
-      <!-- ================================
-           VISITOR CARD
-      ================================= -->
-
-      <section class="details-card visitor-card">
-
-        <div class="card-header">
+        <div class="summary-meta">
+          <div>
+            <span class="field-label">Expected arrival</span>
+            <strong>{{ formatVisitDate(visit.expectedArrivalAt) }}</strong>
+            <span class="meta-subtext">{{ formatVisitTime(visit.expectedArrivalAt) }}</span>
+          </div>
 
           <div>
-            <h2>Visitor</h2>
-            <p>Visitor information</p>
+            <span class="field-label">Host</span>
+            <strong>{{ visit.host.hostName }}</strong>
+            <span class="meta-subtext">{{ visit.host.departmentName }}</span>
           </div>
-
         </div>
-
-
-        <div class="visitor-profile">
-
-          <div class="visitor-avatar">
-            {{ visitDetails.visitor.firstName.charAt(0) }}
-          </div>
-
-          <div class="visitor-name">
-
-            <h3>
-              {{ visitDetails.visitor.firstName }}
-              {{ visitDetails.visitor.lastName }}
-            </h3>
-
-            <span>
-              {{ visitDetails.visitor.visitorId }}
-            </span>
-
-          </div>
-
-        </div>
-
-
-        <div class="details-grid">
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Email
-            </span>
-
-            <span class="detail-value">
-              {{ visitDetails.visitor.email }}
-            </span>
-
-          </div>
-
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Mobile
-            </span>
-
-            <span class="detail-value">
-              {{ visitDetails.visitor.mobileNumber }}
-            </span>
-
-          </div>
-
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Company
-            </span>
-
-            <span class="detail-value">
-              {{ visitDetails.visitor.companyName || 'Not provided' }}
-            </span>
-
-          </div>
-
-        </div>
-
       </section>
 
-
-      <!-- ================================
-           VISIT CARD
-      ================================= -->
-
-      <section class="details-card visit-card">
-
-        <div class="card-header">
-
+      <section class="timeline-section" aria-label="Visit progress">
+        <div class="section-heading">
           <div>
-            <h2>Visit</h2>
-            <p>Purpose, host and schedule</p>
+            <h2>Visit progress</h2>
+            <p>Registration and on-site activity</p>
           </div>
-
+          <span class="reference-tag">{{ getVisitDayLabel() }}</span>
         </div>
 
-
-        <div class="details-grid">
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Purpose
-            </span>
-
-            <span class="detail-value">
-              {{ visitDetails.purpose }}
-            </span>
-
+        <div class="timeline">
+          <div class="timeline-step is-complete">
+            <span class="timeline-marker" aria-hidden="true">✓</span>
+            <div class="timeline-copy">
+              <strong>Registered</strong>
+              <span>{{ formatVisitDate(visit.audit.createdAt) }}</span>
+              <span class="meta-subtext">{{ formatVisitTime(visit.audit.createdAt) }}</span>
+            </div>
           </div>
 
+          <div
+            class="timeline-connector"
+            [class.is-complete]="visit.status === 'CHECKED_IN' || visit.status === 'CHECKED_OUT'"
+          ></div>
 
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Visitor Type
+          <div
+            class="timeline-step"
+            [class.is-complete]="visit.status === 'CHECKED_IN' || visit.status === 'CHECKED_OUT'"
+            [class.is-current]="visit.status === 'CHECKED_IN'"
+          >
+            <span class="timeline-marker" aria-hidden="true">
+              @if (visit.status === 'CHECKED_IN' || visit.status === 'CHECKED_OUT') {
+                ✓
+              } @else {
+                2
+              }
             </span>
-
-            <span class="detail-value">
-              {{ visitDetails.visitorType }}
-            </span>
-
+            <div class="timeline-copy">
+              <strong>Checked in</strong>
+              @if (visit.checkedInAt) {
+                <span>{{ formatVisitDate(visit.checkedInAt) }}</span>
+                <span class="meta-subtext">{{ formatVisitTime(visit.checkedInAt) }}</span>
+              } @else {
+                <span class="meta-subtext">Not checked in</span>
+              }
+            </div>
           </div>
 
+          <div
+            class="timeline-connector"
+            [class.is-complete]="visit.status === 'CHECKED_OUT'"
+          ></div>
 
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Registration
+          <div
+            class="timeline-step"
+            [class.is-complete]="visit.status === 'CHECKED_OUT'"
+            [class.is-current]="visit.status === 'CHECKED_OUT'"
+          >
+            <span class="timeline-marker" aria-hidden="true">
+              @if (visit.status === 'CHECKED_OUT') {
+                ✓
+              } @else {
+                3
+              }
             </span>
-
-            <span class="detail-value">
-              {{ visitDetails.registrationType }}
-            </span>
-
+            <div class="timeline-copy">
+              <strong>Checked out</strong>
+              @if (visit.checkedOutAt) {
+                <span>{{ formatVisitDate(visit.checkedOutAt) }}</span>
+                <span class="meta-subtext">{{ formatVisitTime(visit.checkedOutAt) }}</span>
+              } @else {
+                <span class="meta-subtext">Not checked out</span>
+              }
+            </div>
           </div>
-
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Host
-            </span>
-
-            <span class="detail-value">
-              {{ visitDetails.host.hostName }}
-            </span>
-
-          </div>
-
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Department
-            </span>
-
-            <span class="detail-value">
-              {{ visitDetails.host.departmentName }}
-            </span>
-
-          </div>
-
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Expected Time
-            </span>
-
-            <span class="detail-value">
-              {{ visitDetails.expectedArrivalAt }}
-              →
-              {{ visitDetails.expectedDepartureAt }}
-            </span>
-
-          </div>
-
         </div>
-
       </section>
 
-
-      <!-- ================================
-           IDENTITY VERIFICATION
-      ================================= -->
-
-      <section class="details-card">
-
-        <div class="card-header">
-
-          <div>
-            <h2>Identity Verification</h2>
-            <p>Check-in verification status</p>
-          </div>
-
-        </div>
-
-
-        @if (visitDetails.status === 'REGISTERED') {
-
-          @if (nationality === 'DOMESTIC') {
-
-            <div class="identity-form">
-
-              <div class="detail-item">
-
-                <label class="detail-label">
-                  Aadhaar Number
-                </label>
-
-                <input
-                  type="text"
-                  [(ngModel)]="aadharNumber"
-                  placeholder="Enter Aadhaar number"
-                />
-
-              </div>
-
-
-              <div class="detail-item">
-
-                <label class="detail-label">
-                  PAN Number
-                </label>
-
-                <input
-                  type="text"
-                  [(ngModel)]="panNumber"
-                  placeholder="Enter PAN number"
-                />
-
-              </div>
-
-
-              <div class="detail-item">
-
-                <label class="detail-label">
-                  Visitor Photo
-                </label>
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  (change)="onPhotoSelected($event)"
-                />
-
-              </div>
-
-            </div>
-
-          }
-
-
-          @if (nationality === 'INTERNATIONAL') {
-
-            <div class="identity-form">
-
-              <div class="detail-item">
-
-                <label class="detail-label">
-                  Passport Number
-                </label>
-
-                <input
-                  type="text"
-                  [(ngModel)]="passportNumber"
-                  placeholder="Enter passport number"
-                />
-
-              </div>
-
-
-              <div class="detail-item">
-
-                <label class="detail-label">
-                  Visitor Photo
-                </label>
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  (change)="onPhotoSelected($event)"
-                />
-
-              </div>
-
-            </div>
-
-          }
-
-
-          @if (!nationality) {
-
-            <div class="verification-placeholder">
-
-              <span class="placeholder-icon">
-                ⚠️
-              </span>
-
-              <div>
-
-                <strong>
-                  Identity information unavailable
-                </strong>
-
-                <span>
-                  Nationality information is not available for this visitor.
-                </span>
-
-              </div>
-
-            </div>
-
-          }
-
-        } @else {
-
-          <div class="verification-placeholder">
-
-            <span class="placeholder-icon">
-              🪪
-            </span>
-
+      <div class="details-layout">
+        <section class="content-section">
+          <div class="section-heading">
             <div>
-
-              <strong>
-                Identity verification completed
-              </strong>
-
-              <span>
-                Identity verification was performed during check-in.
-              </span>
-
+              <h2>Visitor information</h2>
+              <p>Contact and identification details</p>
             </div>
-
           </div>
 
+          <div class="information-grid">
+            <div class="information-item">
+              <span class="field-label">Full name</span>
+              <strong>{{ visit.visitor.firstName }} {{ visit.visitor.lastName }}</strong>
+            </div>
+
+            <div class="information-item">
+              <span class="field-label">Mobile number</span>
+              <strong>{{ visit.visitor.mobileNumber || 'Not provided' }}</strong>
+            </div>
+
+            <div class="information-item">
+              <span class="field-label">Email address</span>
+              <strong class="break-word">{{ visit.visitor.email || 'Not provided' }}</strong>
+            </div>
+
+            <div class="information-item">
+              <span class="field-label">Company</span>
+              <strong>{{ visit.visitor.companyName || 'Not provided' }}</strong>
+            </div>
+
+            <div class="information-item">
+              <span class="field-label">Nationality</span>
+              <strong>{{ visit.visitor.nationality || 'Not provided' }}</strong>
+            </div>
+
+            <div class="information-item">
+              <span class="field-label">Visitor category</span>
+              <strong>{{ visit.visitorType }}</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-section">
+          <div class="section-heading">
+            <div>
+              <h2>Visit information</h2>
+              <p>Purpose, host and scheduled duration</p>
+            </div>
+          </div>
+
+          <div class="information-grid">
+            <div class="information-item">
+              <span class="field-label">Visit reference</span>
+              <strong>{{ visit.visitReference }}</strong>
+            </div>
+
+            <div class="information-item">
+              <span class="field-label">Registration type</span>
+              <strong>{{ visit.registrationType }}</strong>
+            </div>
+
+            <div class="information-item">
+              <span class="field-label">Purpose of visit</span>
+              <strong>{{ visit.purpose || 'Not provided' }}</strong>
+            </div>
+
+            <div class="information-item">
+              <span class="field-label">Host</span>
+              <strong>{{ visit.host.hostName }}</strong>
+            </div>
+
+            <div class="information-item">
+              <span class="field-label">Department</span>
+              <strong>{{ visit.host.departmentName || 'Not provided' }}</strong>
+            </div>
+
+            <div class="information-item">
+              <span class="field-label">Expected departure</span>
+              <strong>{{ formatVisitDate(visit.expectedDepartureAt) }}</strong>
+              <span class="meta-subtext">{{ formatVisitTime(visit.expectedDepartureAt) }}</span>
+            </div>
+
+            @if (visit.remarks) {
+              <div class="information-item information-item-wide">
+                <span class="field-label">Remarks</span>
+                <p class="information-value">{{ visit.remarks }}</p>
+              </div>
+            }
+          </div>
+        </section>
+      </div>
+
+      <section class="content-section workflow-section">
+        <div class="section-heading">
+          <div>
+            <h2>Identity verification</h2>
+            <p>Verify the visitor before completing check-in.</p>
+          </div>
+          @if (visit.status === 'REGISTERED') {
+            <span class="section-tag">Action required</span>
+          }
+        </div>
+
+        @if (visit.status === 'REGISTERED') {
+          <div class="workflow-body">
+            <div class="workflow-intro">
+              <div class="workflow-icon" aria-hidden="true">ID</div>
+              <div>
+                <h3>Confirm visitor identity</h3>
+                <p>Enter the appropriate identity details and capture or upload a visitor photo.</p>
+              </div>
+            </div>
+
+            <div class="identity-form">
+              @if (nationality === 'INDIAN') {
+                <div class="form-field">
+                  <label for="aadharNumber">Aadhaar number</label>
+                  <input
+                    id="aadharNumber"
+                    type="text"
+                    name="aadharNumber"
+                    [(ngModel)]="aadharNumber"
+                    (ngModelChange)="onIdentityDetailsChanged()"
+                    placeholder="Enter Aadhaar number"
+                    autocomplete="off"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label for="panNumber"
+                    >PAN number <span class="optional-label">Optional</span></label
+                  >
+                  <input
+                    id="panNumber"
+                    type="text"
+                    name="panNumber"
+                    [(ngModel)]="panNumber"
+                    (ngModelChange)="onIdentityDetailsChanged()"
+                    placeholder="Enter PAN number"
+                    autocomplete="off"
+                  />
+                </div>
+              } @else {
+                <div class="form-field">
+                  <label for="passportNumber">Passport number</label>
+                  <input
+                    id="passportNumber"
+                    type="text"
+                    name="passportNumber"
+                    [(ngModel)]="passportNumber"
+                    (ngModelChange)="onIdentityDetailsChanged()"
+                    placeholder="Enter passport number"
+                    autocomplete="off"
+                  />
+                </div>
+              }
+
+              <button
+                type="button"
+                class="button button-secondary verify-button"
+                [disabled]="isVerifyingIdentity"
+                (click)="onVerifyIdentity()"
+              >
+                @if (isVerifyingIdentity) {
+                  Verifying…
+                } @else {
+                  Verify identity
+                }
+              </button>
+            </div>
+
+            @if (identityVerificationError) {
+              <div class="inline-alert alert-error" role="alert">
+                {{ identityVerificationError }}
+              </div>
+            }
+
+            @if (identityVerificationSuccess) {
+              <div class="inline-alert alert-success" role="status">
+                {{ identityVerificationSuccess }}
+              </div>
+            }
+
+            <div class="photo-workspace">
+              <div class="photo-copy">
+                <h3>Visitor photo</h3>
+                <p>Capture a current photo or select an image file for check-in.</p>
+              </div>
+
+              @if (photoPreviewUrl) {
+                <div class="photo-preview">
+                  <img [src]="photoPreviewUrl" alt="Selected visitor photo preview" />
+                  <button type="button" class="text-button" (click)="discardPhoto()">
+                    Remove photo
+                  </button>
+                </div>
+              } @else {
+                <div class="photo-placeholder">
+                  <span class="photo-placeholder-icon" aria-hidden="true">＋</span>
+                  <strong>No photo selected</strong>
+                  <span>Capture or upload a photo to continue.</span>
+                </div>
+              }
+
+              @if (photoError) {
+                <div class="inline-alert alert-error" role="alert">{{ photoError }}</div>
+              }
+
+              <div class="photo-actions">
+                <button
+                  type="button"
+                  class="button button-secondary"
+                  [disabled]="isCapturingPhoto"
+                  (click)="openCamera()"
+                >
+                  Open camera
+                </button>
+
+                <label class="button button-secondary upload-button">
+                  Upload photo
+                  <input
+                    #photoInput
+                    type="file"
+                    accept="image/*"
+                    (change)="onPhotoSelected($event)"
+                  />
+                </label>
+              </div>
+
+              @if (isCameraOpen) {
+                <div class="camera-panel">
+                  <video #videoElement autoplay playsinline></video>
+                  <div class="camera-actions">
+                    <button
+                      type="button"
+                      class="button button-primary"
+                      [disabled]="isCapturingPhoto"
+                      (click)="capturePhoto()"
+                    >
+                      Capture photo
+                    </button>
+                    <button type="button" class="button button-quiet" (click)="stopCamera()">
+                      Close camera
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="read-only-state">
+            <span class="read-only-icon" aria-hidden="true">✓</span>
+            <div>
+              <strong>Check-in verification is no longer available</strong>
+              <p>
+                This visit is currently {{ getStatusLabel(visit.status).toLowerCase() }}. The visit
+                record and recorded timestamps are shown above.
+              </p>
+            </div>
+          </div>
+        }
+      </section>
+
+      <section class="content-section action-section">
+        <div class="section-heading">
+          <div>
+            <h2>Visit actions</h2>
+            <p>Available actions depend on the current visit status.</p>
+          </div>
+        </div>
+
+        @if (visit.status === 'REGISTERED') {
+          <div class="action-row">
+            <div class="action-description">
+              <strong>Check in visitor</strong>
+              <p>Complete identity verification and provide a visitor photo before check-in.</p>
+            </div>
+            <button
+              type="button"
+              class="button button-primary"
+              [disabled]="isCheckingIn || !identityVerified || !selectedPhoto"
+              (click)="onCheckIn()"
+            >
+              @if (isCheckingIn) {
+                Checking in…
+              } @else {
+                Check in
+              }
+            </button>
+          </div>
+
+          @if (!identityVerified || !selectedPhoto) {
+            <p class="action-hint">Verify the identity and select a photo to enable check-in.</p>
+          }
+        } @else if (visit.status === 'CHECKED_IN') {
+          <div class="action-row">
+            <div class="action-description">
+              <strong>Check out visitor</strong>
+              <p>Record the visitor’s departure from the premises.</p>
+            </div>
+            <button
+              type="button"
+              class="button button-primary"
+              [disabled]="isCheckingOut"
+              (click)="onCheckOut()"
+            >
+              @if (isCheckingOut) {
+                Checking out…
+              } @else {
+                Check out
+              }
+            </button>
+          </div>
+        } @else if (visit.status === 'CHECKED_OUT') {
+          <div class="read-only-state">
+            <span class="read-only-icon" aria-hidden="true">✓</span>
+            <div>
+              <strong>Visit completed</strong>
+              <p>This visit has been checked out. No further visit actions are available here.</p>
+            </div>
+          </div>
+        } @else {
+          <div class="read-only-state">
+            <span class="read-only-icon" aria-hidden="true">i</span>
+            <div>
+              <strong>No active visit action</strong>
+              <p>This visit is {{ getStatusLabel(visit.status).toLowerCase() }}.</p>
+            </div>
+          </div>
         }
 
+        @if (checkInError) {
+          <div class="inline-alert alert-error" role="alert">{{ checkInError }}</div>
+        }
+
+        @if (checkOutError) {
+          <div class="inline-alert alert-error" role="alert">{{ checkOutError }}</div>
+        }
       </section>
 
-
-      <!-- ================================
-           NDA
-      ================================= -->
-
-      <section class="details-card">
-
-        <div class="card-header">
-
+      <section class="content-section blacklist-section">
+        <div class="section-heading">
           <div>
-            <h2>NDA</h2>
-            <p>Non-disclosure agreement</p>
+            <h2>Blacklist status</h2>
+            <p>Review any active restriction associated with this visitor.</p>
           </div>
-
+          @if (isBlacklistStatusLoading) {
+            <span class="section-tag">Checking…</span>
+          } @else if (isBlacklisted) {
+            <span class="status-badge status-cancelled">Blacklisted</span>
+          } @else {
+            <span class="status-badge status-checked_out">No active restriction</span>
+          }
         </div>
 
+        @if (blacklistStatusError) {
+          <div class="inline-alert alert-error" role="alert">{{ blacklistStatusError }}</div>
+        }
 
-        <div class="verification-placeholder">
+        @if (blacklistSuccess) {
+          <div class="inline-alert alert-success" role="status">{{ blacklistSuccess }}</div>
+        }
 
-          <span class="placeholder-icon">
-            📄
-          </span>
-
-          <div>
-
-            <strong>
-              NDA status
-            </strong>
-
-            <span>
-              NDA information will appear here
-            </span>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- ================================
-           VISIT ACTIVITY
-      ================================= -->
-
-      <section class="details-card activity-card">
-
-        <div class="card-header">
-
-          <div>
-            <h2>Visit Activity</h2>
-            <p>Visit lifecycle</p>
-          </div>
-
-        </div>
-
-
-        <div class="visit-timeline">
-
-          <div class="timeline-item">
-
-            <div class="timeline-marker"></div>
-
-            <div class="timeline-content">
-
-              <span class="timeline-title">
-                Visit Registered
-              </span>
-
-              <span class="timeline-time">
-                {{ visitDetails.audit.createdAt }}
-              </span>
-
+        @if (isBlacklisted && activeBlacklistRecord) {
+          <div class="blacklist-record">
+            <div class="information-item">
+              <span class="field-label">Reason</span>
+              <strong>{{ activeBlacklistRecord.reason }}</strong>
             </div>
-
+            <div class="information-item">
+              <span class="field-label">Created by</span>
+              <strong>{{ activeBlacklistRecord.createdBy || 'Not provided' }}</strong>
+            </div>
           </div>
-
-
-          @if (visitDetails.checkedInAt) {
-
-            <div class="timeline-item">
-
-              <div class="timeline-marker"></div>
-
-              <div class="timeline-content">
-
-                <span class="timeline-title">
-                  Checked In
-                </span>
-
-                <span class="timeline-time">
-                  {{ visitDetails.checkedInAt }}
-                </span>
-
+        } @else if (!isBlacklistStatusLoading && !isBlacklisted) {
+          @if (!showBlacklistForm) {
+            <div class="action-row">
+              <div class="action-description">
+                <strong>No active blacklist record</strong>
+                <p>A restriction can be recorded if there is a valid administrative reason.</p>
+              </div>
+              <button
+                type="button"
+                class="button button-danger-outline"
+                (click)="openBlacklistForm()"
+              >
+                Add to blacklist
+              </button>
+            </div>
+          } @else {
+            <div class="blacklist-form">
+              <div class="form-field">
+                <label for="blacklistReason"
+                  >Reason <span class="required-label">Required</span></label
+                >
+                <textarea
+                  id="blacklistReason"
+                  name="blacklistReason"
+                  [(ngModel)]="blacklistReason"
+                  rows="3"
+                  placeholder="Enter the reason for this restriction"
+                ></textarea>
               </div>
 
-            </div>
-
-          }
-
-
-          @if (visitDetails.checkedOutAt) {
-
-            <div class="timeline-item">
-
-              <div class="timeline-marker"></div>
-
-              <div class="timeline-content">
-
-                <span class="timeline-title">
-                  Checked Out
-                </span>
-
-                <span class="timeline-time">
-                  {{ visitDetails.checkedOutAt }}
-                </span>
-
+              <div class="form-field">
+                <label for="blacklistCreatedBy">Created by</label>
+                <input
+                  id="blacklistCreatedBy"
+                  name="blacklistCreatedBy"
+                  [(ngModel)]="blacklistCreatedBy"
+                  placeholder="Enter administrator name"
+                />
               </div>
 
+              @if (blacklistError) {
+                <div class="inline-alert alert-error" role="alert">{{ blacklistError }}</div>
+              }
+
+              <div class="form-actions">
+                <button
+                  type="button"
+                  class="button button-quiet"
+                  [disabled]="isAddingToBlacklist"
+                  (click)="cancelBlacklistForm()"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  class="button button-danger"
+                  [disabled]="isAddingToBlacklist || !blacklistReason.trim()"
+                  (click)="confirmAddToBlacklist()"
+                >
+                  @if (isAddingToBlacklist) {
+                    Saving…
+                  } @else {
+                    Confirm restriction
+                  }
+                </button>
+              </div>
             </div>
-
           }
-
-        </div>
-
+        }
       </section>
 
-
-      <!-- ================================
-           SECURITY ACTIONS
-      ================================= -->
-
-      <section class="details-card security-card">
-
-        <div class="card-header">
-
-          <div>
-            <h2>Security Actions</h2>
-            <p>Front-desk actions for this visitor</p>
+      @if (visit.visitorType === 'VENDOR') {
+        <section class="content-section nda-section">
+          <div class="section-heading">
+            <div>
+              <h2>Non-disclosure agreement</h2>
+              <p>Vendor documentation status</p>
+            </div>
           </div>
 
-        </div>
-
-
-        <div class="security-actions">
-
-          <button
-            type="button"
-            class="action-button blacklist-button"
-          >
-            Add to Blacklist
-          </button>
-
-
-          @if (visitDetails.status === 'REGISTERED') {
-
-            <button
-              type="button"
-              class="action-button primary-action"
-            >
-              Check In
-            </button>
-
+          @if (visit.visitor.ndaAvailable) {
+            <div class="nda-status">
+              <span class="nda-status-icon" aria-hidden="true">✓</span>
+              <div>
+                <strong>NDA available</strong>
+                @if (visit.visitor.ndaValidUntil) {
+                  <p>Valid until {{ formatVisitDate(visit.visitor.ndaValidUntil) }}</p>
+                }
+                @if (visit.visitor.ndaDocumentId) {
+                  <p class="meta-subtext">Document reference: {{ visit.visitor.ndaDocumentId }}</p>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="read-only-state">
+              <span class="read-only-icon" aria-hidden="true">i</span>
+              <div>
+                <strong>No valid NDA is recorded</strong>
+                <p>Check the vendor’s documentation requirements before proceeding.</p>
+              </div>
+            </div>
           }
-
-
-          @if (visitDetails.status === 'CHECKED_IN') {
-
-            <button
-              type="button"
-              class="action-button primary-action"
-            >
-              Check Out
-            </button>
-
-          }
-
-        </div>
-
-      </section>
-
-
-    </div>
-
+        </section>
+      }
+    </main>
   }
-
 </div>
