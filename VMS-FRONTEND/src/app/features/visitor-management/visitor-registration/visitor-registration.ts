@@ -30,7 +30,7 @@ import {
 
 import { EmployeeService } from '../../../core/services/employee/employee.service';
 import { VisitService } from '../../../core/services/visit/visit.service';
-import { ProofDocumentService } from '../../../core/services/proof-document/proof-document.service';
+import { ProofDocumentService } from '../../../core/services/document/proof-document.service';
 
 
 @Component({

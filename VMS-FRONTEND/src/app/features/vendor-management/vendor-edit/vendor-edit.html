@@ -1,0 +1,1432 @@
+<div class="vendor-edit-page">
+
+  <!-- ==================================================
+       PAGE HEADER
+  ================================================== -->
+
+  <!-- <div class="page-header">
+
+    <div class="breadcrumb">
+
+      <button
+        type="button"
+        class="breadcrumb-link"
+        (click)="cancel()"
+      >
+        Vendors
+      </button>
+
+      <span class="breadcrumb-separator">
+        ›
+      </span>
+
+      <span>
+        {{ vendor.id }}
+      </span>
+
+      <span class="breadcrumb-separator">
+        ›
+      </span>
+
+      <strong>
+        Edit
+      </strong>
+
+    </div>
+
+
+    <div class="header-row">
+
+      <div>
+
+        <h1>
+          Edit Vendor
+        </h1>
+
+        <p>
+          Update vendor information and manage documents.
+        </p>
+
+      </div>
+
+
+      <div class="status-badge">
+
+        <span class="status-dot"></span>
+
+        Active
+
+      </div>
+
+    </div>
+
+
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="outline-button"
+        (click)="openModal('VISIT_HISTORY')"
+      >
+        <span>◷</span>
+        View Visit History
+      </button>
+
+
+      <button
+        type="button"
+        class="outline-button"
+        (click)="openModal('ALL_NDAS')"
+      >
+        <span>▣</span>
+        View All NDAs
+      </button>
+
+
+      <button
+        type="button"
+        class="danger-outline-button"
+        (click)="openModal('BLACKLIST')"
+      >
+        <span>⊘</span>
+        Add to Blacklist
+      </button>
+
+    </div>
+
+  </div> -->
+
+<!-- ==================================================
+     PAGE HEADER
+================================================== -->
+
+<div class="page-header">
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+
+    <button
+      type="button"
+      class="breadcrumb-link"
+      (click)="cancel()"
+    >
+      Vendors
+    </button>
+
+    <span class="breadcrumb-separator">
+      ›
+    </span>
+
+    <span>
+      {{ vendor.id }}
+    </span>
+
+    <span class="breadcrumb-separator">
+      ›
+    </span>
+
+    <strong>
+      Edit
+    </strong>
+
+  </div>
+
+
+  <!-- ==================================================
+       TITLE ROW
+  ================================================== -->
+
+  <div class="header-title-row">
+
+    <div class="header-title">
+
+      <h1>
+        Edit Vendor
+      </h1>
+
+      <p>
+        Update vendor information and manage documents.
+      </p>
+
+    </div>
+
+
+    <!-- Add to Blacklist -->
+    <button
+      type="button"
+      class="danger-outline-button"
+      (click)="openModal('BLACKLIST')"
+    >
+      <span>⊘</span>
+      Add to Blacklist
+    </button>
+
+  </div>
+
+
+  <!-- ==================================================
+       STATUS + VIEW ACTIONS
+  ================================================== -->
+
+  <div class="header-status-row">
+
+    <!-- Active -->
+    <div class="status-badge">
+
+      <span class="status-dot"></span>
+
+      Active
+
+    </div>
+
+
+    <!-- View Actions -->
+    <div class="header-view-actions">
+
+      <button
+        type="button"
+        class="outline-button"
+        (click)="openModal('VISIT_HISTORY')"
+      >
+        <span>◷</span>
+        View Visit History
+      </button>
+
+
+      <button
+        type="button"
+        class="outline-button"
+        (click)="openModal('ALL_NDAS')"
+      >
+        <span>▣</span>
+        View All NDAs
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+  <!-- ==================================================
+       SUCCESS / ERROR
+  ================================================== -->
+
+  @if (errorMessage) {
+
+    <div class="alert error-alert">
+      {{ errorMessage }}
+    </div>
+
+  }
+
+
+  @if (successMessage) {
+
+    <div class="alert success-alert">
+      {{ successMessage }}
+    </div>
+
+  }
+
+
+  @if (loading) {
+
+    <div class="loading-card">
+      Loading vendor details...
+    </div>
+
+  }
+
+
+  @if (!loading) {
+
+    <!-- ==================================================
+         VENDOR PROFILE
+    ================================================== -->
+
+    <section class="card">
+
+      <div class="card-header">
+
+        <div class="card-title">
+
+          <div class="card-icon">
+            ♙
+          </div>
+
+          <h2>
+            Vendor Profile
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="profile-layout">
+
+        <!-- PHOTO -->
+
+        <div class="photo-section">
+
+          <div class="photo-wrapper">
+
+            @if (photoUrl) {
+
+              <img
+                [src]="photoUrl"
+                alt="Vendor photo"
+                class="vendor-photo"
+              />
+
+            } @else {
+
+              <div class="photo-placeholder">
+                ♙
+              </div>
+
+            }
+
+
+            <div class="camera-button">
+              📷
+            </div>
+
+          </div>
+
+
+          <label class="change-photo-button">
+
+            <span>↥</span>
+
+            Change Photo
+
+            <input
+              type="file"
+              accept="image/jpeg,image/png"
+              hidden
+              (change)="changePhoto($event)"
+            />
+
+          </label>
+
+
+          <span class="photo-help">
+            JPG, PNG (Max 2 MB)
+          </span>
+
+        </div>
+
+
+        <!-- PROFILE FIELDS -->
+
+        <div class="profile-fields">
+
+          <div class="form-grid">
+
+            <div class="form-field">
+
+              <label>
+                Vendor ID
+              </label>
+
+              <input
+                type="text"
+                [value]="vendor.id"
+                readonly
+                class="readonly"
+              />
+
+            </div>
+
+
+            <div class="form-field">
+
+              <label>
+                Visitor Type
+              </label>
+
+              <input
+                type="text"
+                value="Vendor"
+                readonly
+                class="readonly"
+              />
+
+            </div>
+
+
+            <div class="form-field">
+
+              <label>
+                First Name
+                <span>*</span>
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="vendor.firstName"
+              />
+
+            </div>
+
+
+            <div class="form-field">
+
+              <label>
+                Last Name
+                <span>*</span>
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="vendor.lastName"
+              />
+
+            </div>
+
+
+            <div class="form-field">
+
+              <label>
+                Email
+                <span>*</span>
+              </label>
+
+              <input
+                type="email"
+                [(ngModel)]="vendor.email"
+              />
+
+            </div>
+
+
+            <div class="form-field">
+
+              <label>
+                Mobile Number
+                <span>*</span>
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="vendor.mobileNumber"
+              />
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         COMPANY DETAILS
+    ================================================== -->
+
+    <section class="card">
+
+      <div class="card-header">
+
+        <div class="card-title">
+
+          <div class="card-icon">
+            ▣
+          </div>
+
+          <h2>
+            Company Details
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-grid company-grid">
+
+        <div class="form-field">
+
+          <label>
+            Company Name
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="vendor.companyName"
+          />
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Company Phone
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="vendor.companyPhone"
+          />
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Company Email
+          </label>
+
+          <input
+            type="email"
+            [(ngModel)]="vendor.companyEmail"
+          />
+
+        </div>
+
+
+      <div class="form-field nda-validity-field">
+
+  <label>
+    NDA Validity
+  </label>
+
+
+  <div class="validity-edit-row">
+
+    @if (!isEditingNdaValidity) {
+
+      <input
+        type="text"
+        [value]="nda.validUntil || '-'"
+        readonly
+        class="readonly"
+      />
+
+
+      <button
+        type="button"
+        class="edit-validity-button"
+        (click)="startEditingNdaValidity()"
+      >
+        ✎ Edit Validity
+      </button>
+
+    }
+
+
+    @if (isEditingNdaValidity) {
+
+      <input
+        type="date"
+        [(ngModel)]="ndaValidityEditValue"
+        class="validity-input"
+      />
+
+
+      <button
+        type="button"
+        class="save-validity-button"
+        (click)="saveNdaValidity()"
+      >
+        ✓ Save
+      </button>
+
+
+      <button
+        type="button"
+        class="cancel-validity-button"
+        (click)="cancelNdaValidityEdit()"
+      >
+        Cancel
+      </button>
+
+    }
+
+  </div>
+
+</div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         DOCUMENT + NDA ROW
+    ================================================== -->
+
+    <div class="bottom-grid">
+
+
+      <!-- ==================================================
+           IDENTITY DOCUMENTS
+      ================================================== -->
+
+      <section class="card">
+
+        <div class="card-header section-header">
+
+          <div class="card-title">
+
+            <div class="card-icon">
+              ▤
+            </div>
+
+            <h2>
+              Identity Documents
+            </h2>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="upload-button"
+            (click)="openModal('UPLOAD_DOCUMENTS')"
+          >
+            ↥ Upload Documents
+          </button>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Document Type
+                </th>
+
+                <th>
+                  File Name
+                </th>
+
+                <th>
+                  Uploaded On
+                </th>
+
+                <th>
+                  Actions
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                document of documents;
+                track document.fileName
+              ) {
+
+                <tr>
+
+                  <td>
+                    {{ document.documentType }}
+                  </td>
+
+                  <td>
+                    {{ document.fileName }}
+                  </td>
+
+                  <td>
+                    {{ document.uploadedOn }}
+                  </td>
+
+                  <td>
+
+                    <div class="document-actions">
+
+                      <button
+                        type="button"
+                        title="View"
+                      >
+                        ◉
+                      </button>
+
+                      <button
+                        type="button"
+                        title="Download"
+                      >
+                        ↓
+                      </button>
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              } @empty {
+
+                <tr>
+
+                  <td
+                    colspan="4"
+                    class="empty-row"
+                  >
+                    No identity documents uploaded.
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           NDA
+      ================================================== -->
+
+      <section class="card">
+
+        <div class="card-header">
+
+          <div class="card-title">
+
+            <div class="card-icon">
+              ♢
+            </div>
+
+            <h2>
+              NDA Information
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="nda-content">
+
+       <div class="nda-status-box">
+
+  <div class="nda-row">
+
+    <span>
+      NDA Status
+    </span>
+
+    <strong
+      [class.active-text]="nda.status === 'ACTIVE'"
+      [class.inactive-text]="nda.status !== 'ACTIVE'"
+    >
+
+      <span class="status-dot"></span>
+
+      {{ nda.status }}
+
+    </strong>
+
+  </div>
+
+
+  <div class="nda-row">
+
+    <span>
+      Signed On
+    </span>
+
+    <strong>
+      {{ nda.signedOn || '-' }}
+    </strong>
+
+  </div>
+
+
+  <div class="nda-row">
+
+    <span>
+      Valid Until
+    </span>
+
+    <strong>
+      {{ nda.validUntil || '-' }}
+    </strong>
+
+  </div>
+
+
+  @if (nda.status !== 'ACTIVE') {
+
+    <div class="nda-upload-container">
+
+      <button
+        type="button"
+        class="primary-button"
+        (click)="openModal('UPLOAD_NDA')"
+      >
+        ↥ Upload New NDA
+      </button>
+
+    </div>
+
+  }
+
+</div>
+
+          <div class="nda-divider"></div>
+
+
+          <div class="latest-nda">
+
+            <div class="pdf-icon">
+              PDF
+            </div>
+
+            <div class="nda-file-info">
+
+              <strong>
+                {{ nda.latest.fileName || 'No NDA available' }}
+              </strong>
+
+              <span>
+                Uploaded on
+                {{ nda.latest.uploadedOn || '-' }}
+              </span>
+
+            </div>
+
+
+            <div class="nda-actions">
+
+              <button
+                type="button"
+                class="small-outline-button"
+              >
+                ◉ View
+              </button>
+
+              <button
+                type="button"
+                class="small-outline-button"
+              >
+                ↓ Download
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- ==================================================
+         FOOTER ACTIONS
+    ================================================== -->
+
+    <div class="page-footer">
+
+      <button
+        type="button"
+        class="cancel-button"
+        (click)="cancel()"
+      >
+        Cancel
+      </button>
+
+
+      <button
+        type="button"
+        class="save-button"
+        [disabled]="saving"
+        (click)="saveChanges()"
+      >
+
+        @if (saving) {
+          Saving...
+        } @else {
+          Save Changes
+        }
+
+      </button>
+
+    </div>
+
+  }
+
+</div>
+
+
+<!-- ======================================================
+     MODAL OVERLAY
+====================================================== -->
+
+@if (activeModal) {
+
+  <div
+    class="modal-overlay"
+    (click)="closeModal()"
+  >
+
+    <div
+      class="modal"
+      (click)="$event.stopPropagation()"
+    >
+
+
+      <!-- ==================================================
+           VISIT HISTORY
+      ================================================== -->
+
+      @if (activeModal === 'VISIT_HISTORY') {
+
+        <div class="modal-header">
+
+          <div class="modal-title">
+
+            <span class="modal-title-icon">
+              ◷
+            </span>
+
+            <h2>
+              Visit History - {{ vendor.id }}
+            </h2>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="modal-close"
+            (click)="closeModal()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+          <div class="table-wrapper">
+
+            <table>
+
+              <thead>
+
+                <tr>
+
+                  <th>Visit ID</th>
+                  <th>Date</th>
+                  <th>Host</th>
+                  <th>Purpose</th>
+                  <th>Status</th>
+
+                </tr>
+
+              </thead>
+
+
+              <tbody>
+
+                <tr>
+
+                  <td>VIS-041</td>
+                  <td>05-Oct-2026</td>
+                  <td>Arun Kumar</td>
+                  <td>Maintenance</td>
+
+                  <td>
+                    <span class="visit-status checked-in">
+                      Checked In
+                    </span>
+                  </td>
+
+                </tr>
+
+
+                <tr>
+
+                  <td>VIS-032</td>
+                  <td>12-Sep-2026</td>
+                  <td>Priya Sharma</td>
+                  <td>Service</td>
+
+                  <td>
+                    <span class="visit-status">
+                      Checked Out
+                    </span>
+                  </td>
+
+                </tr>
+
+
+                <tr>
+
+                  <td>VIS-021</td>
+                  <td>10-Aug-2026</td>
+                  <td>Arun Kumar</td>
+                  <td>Installation</td>
+
+                  <td>
+                    <span class="visit-status">
+                      Checked Out
+                    </span>
+                  </td>
+
+                </tr>
+
+
+                <tr>
+
+                  <td>VIS-015</td>
+                  <td>15-Jul-2026</td>
+                  <td>Kavya Nair</td>
+                  <td>Meeting</td>
+
+                  <td>
+                    <span class="visit-status">
+                      Checked Out
+                    </span>
+                  </td>
+
+                </tr>
+
+
+                <tr>
+
+                  <td>VIS-009</td>
+                  <td>20-Jun-2026</td>
+                  <td>Ramesh</td>
+                  <td>Support</td>
+
+                  <td>
+                    <span class="visit-status">
+                      Checked Out
+                    </span>
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="cancel-button"
+            (click)="closeModal()"
+          >
+            Close
+          </button>
+
+        </div>
+
+      }
+
+
+      <!-- ==================================================
+           ALL NDAs
+      ================================================== -->
+
+      @if (activeModal === 'ALL_NDAS') {
+
+        <div class="modal-header">
+
+          <div class="modal-title">
+
+            <span class="modal-title-icon">
+              ▤
+            </span>
+
+            <h2>
+              All NDAs - {{ vendor.id }}
+            </h2>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="modal-close"
+            (click)="closeModal()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+          <div class="nda-history-item">
+
+            <div class="pdf-icon">
+              PDF
+            </div>
+
+            <div class="nda-file-info">
+
+              <strong>
+                NDA-0042.pdf
+              </strong>
+
+              <span>
+                Signed: 05-Oct-2026
+              </span>
+
+            </div>
+
+            <button
+              type="button"
+              class="small-outline-button"
+            >
+              ◉ View
+            </button>
+
+            <button
+              type="button"
+              class="small-outline-button"
+            >
+              ↓ Download
+            </button>
+
+          </div>
+
+
+          <div class="nda-history-item">
+
+            <div class="pdf-icon">
+              PDF
+            </div>
+
+            <div class="nda-file-info">
+
+              <strong>
+                NDA-0031.pdf
+              </strong>
+
+              <span>
+                Signed: 01-Apr-2026
+              </span>
+
+            </div>
+
+            <button
+              type="button"
+              class="small-outline-button"
+            >
+              ◉ View
+            </button>
+
+            <button
+              type="button"
+              class="small-outline-button"
+            >
+              ↓ Download
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="cancel-button"
+            (click)="closeModal()"
+          >
+            Close
+          </button>
+
+        </div>
+
+      }
+
+
+      <!-- ==================================================
+           BLACKLIST
+      ================================================== -->
+
+      @if (activeModal === 'BLACKLIST') {
+
+        <div class="modal-header">
+
+          <div class="modal-title danger-title">
+
+            <span class="modal-title-icon">
+              ⊘
+            </span>
+
+            <h2>
+              Add to Blacklist
+            </h2>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="modal-close"
+            (click)="closeModal()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+          <div class="warning-box">
+
+            <span>
+              ⚠
+            </span>
+
+            <p>
+              This vendor will be added to the blacklist
+              and will not be allowed for future visits.
+            </p>
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label>
+              Reason <span>*</span>
+            </label>
+
+            <textarea
+              [(ngModel)]="blacklistReason"
+              maxlength="500"
+              placeholder="Enter reason for blacklisting..."
+            ></textarea>
+
+
+            <div class="character-count">
+
+              {{ blacklistReasonLength }}/500
+
+            </div>
+
+          </div>
+
+
+          @if (blacklistError) {
+
+            <div class="field-error">
+              {{ blacklistError }}
+            </div>
+
+          }
+
+        </div>
+
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="cancel-button"
+            (click)="closeModal()"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="button"
+            class="blacklist-confirm-button"
+            (click)="addToBlacklist()"
+          >
+            Add to Blacklist
+          </button>
+
+        </div>
+
+      }
+
+
+      <!-- ==================================================
+           UPLOAD DOCUMENTS
+      ================================================== -->
+
+      @if (activeModal === 'UPLOAD_DOCUMENTS') {
+
+        <div class="modal-header">
+
+          <div class="modal-title">
+
+            <span class="modal-title-icon">
+              ↑
+            </span>
+
+            <h2>
+              Upload Documents
+            </h2>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="modal-close"
+            (click)="closeModal()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+          <label class="upload-dropzone">
+
+            <span class="upload-large-icon">
+              ↑
+            </span>
+
+            <strong>
+              Select identity documents
+            </strong>
+
+            <small>
+              Aadhaar or Passport
+            </small>
+
+            <input
+              type="file"
+              multiple
+              accept=".pdf,.jpg,.jpeg,.png"
+              hidden
+              (change)="uploadDocuments($event)"
+            />
+
+          </label>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="cancel-button"
+            (click)="closeModal()"
+          >
+            Cancel
+          </button>
+
+        </div>
+
+      }
+
+
+      <!-- ==================================================
+           UPLOAD NDA
+      ================================================== -->
+
+      @if (activeModal === 'UPLOAD_NDA') {
+
+        <div class="modal-header">
+
+          <div class="modal-title">
+
+            <span class="modal-title-icon">
+              ↑
+            </span>
+
+            <h2>
+              Upload New NDA
+            </h2>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="modal-close"
+            (click)="closeModal()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+          <label class="upload-dropzone">
+
+            <span class="upload-large-icon">
+              ↑
+            </span>
+
+            <strong>
+              Select NDA document
+            </strong>
+
+            <small>
+              PDF only
+            </small>
+
+            <input
+              type="file"
+              accept=".pdf"
+              hidden
+              (change)="uploadNda($event)"
+            />
+
+          </label>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="cancel-button"
+            (click)="closeModal()"
+          >
+            Cancel
+          </button>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+}
