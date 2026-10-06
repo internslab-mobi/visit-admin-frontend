@@ -8,7 +8,7 @@ import {
   inject,
 } from '@angular/core';
 
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
@@ -16,10 +16,6 @@ import { VisitService } from '../../../core/services/visit/visit.service';
 import { VisitDetailResponse } from '../../../core/models/visit/visit-detail.model';
 
 import { BlacklistService } from '../../../core/services/blacklist/blacklist.service';
-import {
-  AddVisitorToBlacklistRequest,
-  BlacklistResponse,
-} from '../../../core/models/blacklist/blacklist.model';
 
 @Component({
   selector: 'app-visit-details',
@@ -28,40 +24,31 @@ import {
   styleUrl: './visit-details.css',
 })
 export class VisitDetailsComponent implements OnInit, OnDestroy {
-  private readonly route = inject(ActivatedRoute);
-  private readonly visitService = inject(VisitService);
-  private readonly changeDetectorRef = inject(ChangeDetectorRef);
-  private readonly blacklistService = inject(BlacklistService);
-
-  @ViewChild('videoElement')
-  cameraVideo?: ElementRef<HTMLVideoElement>;
-
-  @ViewChild('photoInput')
-  photoInput?: ElementRef<HTMLInputElement>;
-
   private visitId: string | null = null;
 
   visitDetails: VisitDetailResponse | null = null;
-  visitorPhotoUrl: string | null = null;
-  isVisitorPhotoLoading = false;
 
-  aadharNumber = '';
-  panNumber = '';
-  passportNumber = '';
+  visitorPhotoUrl: string | null = null;
 
   selectedPhoto: File | null = null;
   photoPreviewUrl: string | null = null;
   photoError: string | null = null;
+
+  capturedPhotoFile: File | null = null;
+  capturedPhotoPreviewUrl: string | null = null;
 
   isCameraOpen = false;
   isCapturingPhoto = false;
 
   private cameraStream: MediaStream | null = null;
 
+  aadharNumber = '';
+  panNumber = '';
+  passportNumber = '';
+
   isVerifyingIdentity = false;
   identityVerified = false;
   identityVerificationError: string | null = null;
-  identityVerificationSuccess: string | null = null;
 
   isCheckingIn = false;
   checkInError: string | null = null;
@@ -71,102 +58,141 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
   checkOutError: string | null = null;
   checkOutSuccess: string | null = null;
 
-  showBlacklistForm = false;
-  isAddingToBlacklist = false;
-
-  blacklistReason = '';
-  blacklistCreatedBy = '';
-
-  blacklistError: string | null = null;
-  blacklistSuccess: string | null = null;
+  showCancelConfirmation = false;
+  isCancellingVisit = false;
+  cancelVisitError: string | null = null;
 
   isBlacklistStatusLoading = true;
   isBlacklisted = false;
-  activeBlacklistRecord: BlacklistResponse | null = null;
   blacklistStatusError: string | null = null;
+
+  @ViewChild('videoElement')
+  cameraVideo?: ElementRef<HTMLVideoElement>;
+
+  @ViewChild('photoInput')
+  photoInput?: ElementRef<HTMLInputElement>;
+
+  private readonly route = inject(ActivatedRoute);
+  private readonly visitService = inject(VisitService);
+  private readonly blacklistService = inject(BlacklistService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   get nationality(): string | null {
     return this.visitDetails?.visitor.nationality ?? null;
   }
 
-  private loadBlacklistStatus(visitorId: string): void {
-    this.isBlacklistStatusLoading = true;
-    this.blacklistStatusError = null;
-
-    this.blacklistService.getAllBlacklistRecords().subscribe({
-      next: (records) => {
-        this.activeBlacklistRecord =
-          records.find((record) => record.visitorId === visitorId && record.status === 'ACTIVE') ??
-          null;
-
-        this.isBlacklisted = this.activeBlacklistRecord !== null;
-        this.isBlacklistStatusLoading = false;
-        this.blacklistStatusError = null;
-
-        this.changeDetectorRef.markForCheck();
-      },
-
-      error: (error) => {
-        console.error('Failed to load blacklist status:', error);
-
-        this.activeBlacklistRecord = null;
-        this.isBlacklisted = false;
-        this.isBlacklistStatusLoading = false;
-        this.blacklistStatusError = 'Unable to verify blacklist status. Please try again.';
-
-        this.changeDetectorRef.markForCheck();
-      },
-    });
-  }
-
   ngOnInit(): void {
-    const visitId = this.route.snapshot.paramMap.get('visitId');
+    this.visitId = this.route.snapshot.paramMap.get('visitId');
 
-    if (!visitId) {
-      console.error('Visit ID not found in route');
+    if (!this.visitId) {
       return;
     }
 
-    this.visitId = visitId;
-
-    this.visitService.getVisitDetails(visitId).subscribe({
+    this.visitService.getVisitDetails(this.visitId).subscribe({
       next: (response) => {
         this.visitDetails = response;
 
         this.loadVisitorPhoto(response.visitor.visitorId);
+        this.loadBlacklistStatus();
 
-        this.loadBlacklistStatus(response.visitor.visitorId);
-
-        this.changeDetectorRef.markForCheck();
+        this.cdr.detectChanges();
       },
 
-      error: (error) => {
-        console.error('Failed to load visit details:', error);
+      error: () => {
+        this.visitDetails = null;
+        this.isBlacklistStatusLoading = false;
+
+        this.cdr.detectChanges();
       },
     });
   }
 
-  private loadVisitorPhoto(visitorId: string): void {
-    this.isVisitorPhotoLoading = true;
-
+  loadVisitorPhoto(visitorId: string): void {
     this.visitService.getVisitorPhoto(visitorId).subscribe({
-      next: (photo: Blob) => {
+      next: (blob) => {
         if (this.visitorPhotoUrl) {
           URL.revokeObjectURL(this.visitorPhotoUrl);
         }
 
-        this.visitorPhotoUrl = URL.createObjectURL(photo);
-        this.isVisitorPhotoLoading = false;
+        this.visitorPhotoUrl = URL.createObjectURL(blob);
 
-        this.changeDetectorRef.markForCheck();
+        this.cdr.detectChanges();
       },
-      error: (error) => {
-        console.error('Failed to load visitor photo:', error);
 
+      error: () => {
         this.visitorPhotoUrl = null;
-        this.isVisitorPhotoLoading = false;
 
-        this.changeDetectorRef.markForCheck();
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  /**
+   * Builds the identity request expected by the backend.
+   *
+   * The same request is used for both:
+   * - identity verification
+   * - check-in
+   */
+  private buildIdentityRequest(): {
+    aadharNumber?: string;
+    panNumber?: string;
+    passportNumber?: string;
+  } {
+    const identityRequest: {
+      aadharNumber?: string;
+      panNumber?: string;
+      passportNumber?: string;
+    } = {};
+
+    if (this.nationality === 'DOMESTIC') {
+      identityRequest.aadharNumber = this.aadharNumber;
+      identityRequest.panNumber = this.panNumber;
+    } else if (this.nationality === 'INTERNATIONAL') {
+      identityRequest.passportNumber = this.passportNumber;
+    }
+
+    return identityRequest;
+  }
+
+  /**
+   * Identity verification becomes invalid whenever
+   * the identity values are changed after verification.
+   */
+  onIdentityFieldChanged(): void {
+    if (this.identityVerified) {
+      this.identityVerified = false;
+    }
+
+    this.identityVerificationError = null;
+  }
+
+  onVerifyIdentity(): void {
+    if (!this.visitId || !this.visitDetails || !this.nationality) {
+      return;
+    }
+
+    this.isVerifyingIdentity = true;
+    this.identityVerificationError = null;
+
+    const identityRequest = this.buildIdentityRequest();
+
+    this.visitService.verifyIdentity(this.visitId, identityRequest).subscribe({
+      next: () => {
+        this.identityVerified = true;
+        this.isVerifyingIdentity = false;
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+        this.identityVerified = false;
+
+        this.identityVerificationError = error?.error?.message || 'Identity verification failed.';
+
+        this.isVerifyingIdentity = false;
+
+        this.cdr.detectChanges();
       },
     });
   }
@@ -175,14 +201,22 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
 
-    this.photoError = null;
-
     if (!file) {
       return;
     }
 
+    this.photoError = null;
+
     if (!file.type.startsWith('image/')) {
-      this.photoError = 'Please select an image file.';
+      this.photoError = 'Please select a valid image.';
+      input.value = '';
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      this.photoError = 'Photo size must not exceed 5 MB.';
       input.value = '';
       return;
     }
@@ -196,10 +230,9 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     this.selectedPhoto = file;
     this.photoPreviewUrl = URL.createObjectURL(file);
 
-    this.checkInError = null;
-    this.checkInSuccess = null;
+    input.value = '';
 
-    this.changeDetectorRef.markForCheck();
+    this.cdr.detectChanges();
   }
 
   discardPhoto(): void {
@@ -207,92 +240,102 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
       URL.revokeObjectURL(this.photoPreviewUrl);
     }
 
-    this.photoPreviewUrl = null;
     this.selectedPhoto = null;
+    this.photoPreviewUrl = null;
     this.photoError = null;
 
     if (this.photoInput?.nativeElement) {
       this.photoInput.nativeElement.value = '';
     }
 
-    this.checkInError = null;
-    this.checkInSuccess = null;
-
-    this.changeDetectorRef.detectChanges();
+    this.cdr.detectChanges();
   }
 
   async openCamera(): Promise<void> {
     this.photoError = null;
 
-    if (this.isCapturingPhoto) {
-      return;
-    }
-
     if (!navigator.mediaDevices?.getUserMedia) {
-      this.photoError = 'Camera access is not supported by this browser.';
-      return;
-    }
+      this.photoError =
+        'Camera access is not supported by this browser. Please upload a photo instead.';
 
-    if (this.isCameraOpen && this.cameraStream) {
+      this.cdr.detectChanges();
       return;
     }
 
     try {
+      /*
+       * Make sure there is no previous camera session
+       * or stale captured-photo review state.
+       */
       this.stopCamera();
 
+      this.clearCapturedPhoto();
+
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: {
+          facingMode: 'user',
+        },
         audio: false,
       });
 
       this.cameraStream = stream;
       this.isCameraOpen = true;
 
-      this.changeDetectorRef.detectChanges();
+      this.cdr.detectChanges();
 
-      const video = this.cameraVideo?.nativeElement;
+      setTimeout(() => {
+        const video = this.cameraVideo?.nativeElement;
 
-      if (!video) {
-        this.stopCamera();
+        if (!video) {
+          this.photoError = 'Unable to initialize the camera preview.';
 
-        this.photoError = 'Unable to initialize the camera preview. Please try again.';
-        return;
-      }
+          this.stopCamera();
 
-      video.srcObject = stream;
-      await video.play();
+          this.cdr.detectChanges();
+          return;
+        }
 
-      this.discardPhoto();
-      this.changeDetectorRef.detectChanges();
+        video.srcObject = stream;
+
+        video.play().catch((error) => {
+          console.error('Unable to start camera preview:', error);
+
+          this.photoError = 'Unable to start the camera preview. Please try again.';
+
+          this.stopCamera();
+
+          this.cdr.detectChanges();
+        });
+      });
     } catch (error) {
-      console.error('Failed to open camera:', error);
+      console.error('Camera access failed:', error);
 
       this.stopCamera();
 
       this.photoError =
-        'Unable to access the camera. Please allow camera permission and try again.';
+        'Unable to access the camera. Please check camera permissions or upload a photo instead.';
 
-      this.changeDetectorRef.detectChanges();
+      this.cdr.detectChanges();
     }
   }
 
   capturePhoto(): void {
-    if (this.isCapturingPhoto) {
-      return;
-    }
-
     const video = this.cameraVideo?.nativeElement;
-    const stream = this.cameraStream;
 
-    if (!video || !stream || !this.isCameraOpen) {
-      this.photoError = 'Camera is not available.';
+    if (!video || !this.cameraStream) {
+      this.photoError = 'Camera is not available. Please try again.';
+      this.cdr.detectChanges();
       return;
     }
 
     if (!video.videoWidth || !video.videoHeight) {
-      this.photoError = 'Camera is not ready yet. Please wait a moment and try again.';
+      this.photoError = 'Camera is not ready yet. Please try again.';
+      this.cdr.detectChanges();
       return;
     }
+
+    this.isCapturingPhoto = true;
+    this.photoError = null;
 
     const canvas = document.createElement('canvas');
 
@@ -302,21 +345,22 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     const context = canvas.getContext('2d');
 
     if (!context) {
-      this.photoError = 'Unable to capture the photo.';
+      this.photoError = 'Unable to capture photo.';
+      this.isCapturingPhoto = false;
+
+      this.cdr.detectChanges();
       return;
     }
-
-    this.isCapturingPhoto = true;
-    this.photoError = null;
 
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     canvas.toBlob(
       (blob) => {
         if (!blob) {
+          this.photoError = 'Unable to capture photo.';
           this.isCapturingPhoto = false;
-          this.photoError = 'Unable to create the photo.';
-          this.changeDetectorRef.detectChanges();
+
+          this.cdr.detectChanges();
           return;
         }
 
@@ -324,218 +368,161 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
           type: 'image/jpeg',
         });
 
-        if (this.photoPreviewUrl) {
-          URL.revokeObjectURL(this.photoPreviewUrl);
+        if (this.capturedPhotoPreviewUrl) {
+          URL.revokeObjectURL(this.capturedPhotoPreviewUrl);
         }
 
-        this.selectedPhoto = file;
-        this.photoPreviewUrl = URL.createObjectURL(file);
+        this.capturedPhotoFile = file;
+        this.capturedPhotoPreviewUrl = URL.createObjectURL(file);
 
-        this.stopCamera();
+        this.stopCameraStream();
 
-        this.photoError = null;
-        this.checkInError = null;
-        this.checkInSuccess = null;
+        this.isCapturingPhoto = false;
 
-        this.changeDetectorRef.detectChanges();
+        this.cdr.detectChanges();
       },
       'image/jpeg',
       0.9,
     );
   }
 
-  stopCamera(): void {
+  /**
+   * Releases the browser camera stream.
+   */
+  private stopCameraStream(): void {
     if (this.cameraStream) {
       this.cameraStream.getTracks().forEach((track) => {
         track.stop();
       });
     }
 
-    if (this.cameraVideo?.nativeElement) {
-      this.cameraVideo.nativeElement.srcObject = null;
-    }
-
     this.cameraStream = null;
-    this.isCameraOpen = false;
-    this.isCapturingPhoto = false;
 
-    this.changeDetectorRef.detectChanges();
+    const video = this.cameraVideo?.nativeElement;
+
+    if (video) {
+      video.pause();
+      video.srcObject = null;
+    }
   }
 
-  ngOnDestroy(): void {
-    this.stopCamera();
+  /**
+   * Clears a captured photo that has not yet been
+   * transferred into selectedPhoto.
+   */
+  private clearCapturedPhoto(): void {
+    if (this.capturedPhotoPreviewUrl) {
+      URL.revokeObjectURL(this.capturedPhotoPreviewUrl);
+    }
+
+    this.capturedPhotoFile = null;
+    this.capturedPhotoPreviewUrl = null;
+  }
+
+  useCapturedPhoto(): void {
+    if (!this.capturedPhotoFile || !this.capturedPhotoPreviewUrl) {
+      return;
+    }
 
     if (this.photoPreviewUrl) {
       URL.revokeObjectURL(this.photoPreviewUrl);
-      this.photoPreviewUrl = null;
     }
 
-    if (this.visitorPhotoUrl) {
-      URL.revokeObjectURL(this.visitorPhotoUrl);
-      this.visitorPhotoUrl = null;
-    }
+    this.selectedPhoto = this.capturedPhotoFile;
+    this.photoPreviewUrl = this.capturedPhotoPreviewUrl;
+
+    this.capturedPhotoFile = null;
+    this.capturedPhotoPreviewUrl = null;
+
+    this.isCameraOpen = false;
+    this.photoError = null;
+
+    this.cdr.detectChanges();
   }
 
-  onIdentityDetailsChanged(): void {
-    this.identityVerified = false;
-    this.identityVerificationError = null;
-    this.identityVerificationSuccess = null;
+  async retakePhoto(): Promise<void> {
+    if (this.capturedPhotoPreviewUrl) {
+      URL.revokeObjectURL(this.capturedPhotoPreviewUrl);
+    }
+
+    this.capturedPhotoFile = null;
+    this.capturedPhotoPreviewUrl = null;
+
+    await this.openCamera();
   }
 
-  onVerifyIdentity(): void {
-    if (!this.visitDetails || !this.visitId) {
-      this.identityVerificationError = 'Visit details are not available.';
-      return;
-    }
+  stopCamera(): void {
+    this.stopCameraStream();
 
-    if (this.isVerifyingIdentity) {
-      return;
-    }
-
-    const request: {
-      aadharNumber?: string;
-      panNumber?: string;
-      passportNumber?: string;
-    } = {};
-
-    if (this.nationality === 'DOMESTIC') {
-      if (!this.aadharNumber.trim() || !this.panNumber.trim()) {
-        this.identityVerificationError = 'Please enter both Aadhaar and PAN numbers.';
-        return;
-      }
-
-      request.aadharNumber = this.aadharNumber.trim();
-      request.panNumber = this.panNumber.trim();
-    } else if (this.nationality === 'INTERNATIONAL') {
-      if (!this.passportNumber.trim()) {
-        this.identityVerificationError = 'Please enter the passport number.';
-        return;
-      }
-
-      request.passportNumber = this.passportNumber.trim();
-    } else {
-      this.identityVerificationError = 'Nationality is unavailable. Verification cannot proceed.';
-      return;
-    }
-
-    this.isVerifyingIdentity = true;
-    this.identityVerified = false;
-    this.identityVerificationError = null;
-    this.identityVerificationSuccess = null;
-    this.checkInError = null;
-
-    this.visitService.verifyIdentity(this.visitId, request).subscribe({
-      next: () => {
-        this.isVerifyingIdentity = false;
-        this.identityVerified = true;
-
-        this.identityVerificationSuccess =
-          'Identity verified successfully. You can now check in the visitor.';
-
-        this.changeDetectorRef.markForCheck();
-      },
-
-      error: (error: any) => {
-        this.isVerifyingIdentity = false;
-        this.identityVerified = false;
-
-        this.identityVerificationError =
-          error?.error?.message ||
-          error?.error?.detail ||
-          'Identity verification failed. Please check the details and try again.';
-
-        this.changeDetectorRef.markForCheck();
-      },
-    });
+    this.isCameraOpen = false;
+    this.isCapturingPhoto = false;
   }
 
   onCheckIn(): void {
-    console.log('Check In button clicked');
+    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'REGISTERED') {
+      return;
+    }
 
-    if (!this.visitDetails || !this.visitId) {
-      this.checkInError = 'Visit details are not available.';
+    if (this.isBlacklistStatusLoading) {
+      this.checkInError = 'Check-in is unavailable while blacklist status is being verified.';
+      return;
+    }
+
+    if (this.isBlacklisted) {
+      this.checkInError = 'Check-in is unavailable while this visitor is blacklisted.';
+      return;
+    }
+
+    if (this.blacklistStatusError) {
+      this.checkInError = 'Check-in is unavailable because blacklist status could not be verified.';
       return;
     }
 
     if (!this.identityVerified) {
-      this.checkInError = 'Please verify the visitor identity before checking in.';
-      return;
-    }
-
-    if (this.isCheckingIn) {
+      this.checkInError = 'Identity verification is required before check-in.';
       return;
     }
 
     if (!this.selectedPhoto) {
-      this.checkInError = 'Please select a visitor photo.';
+      this.checkInError = 'Visitor photo is required before check-in.';
       return;
     }
 
-    const request: {
-      aadharNumber?: string;
-      panNumber?: string;
-      passportNumber?: string;
-    } = {};
-
-    if (this.nationality === 'DOMESTIC') {
-      if (!this.aadharNumber.trim() || !this.panNumber.trim()) {
-        this.checkInError = 'Please enter both Aadhaar and PAN numbers.';
-        return;
-      }
-
-      request.aadharNumber = this.aadharNumber.trim();
-      request.panNumber = this.panNumber.trim();
-    } else if (this.nationality === 'INTERNATIONAL') {
-      if (!this.passportNumber.trim()) {
-        this.checkInError = 'Please enter the passport number.';
-        return;
-      }
-
-      request.passportNumber = this.passportNumber.trim();
-    } else {
-      this.checkInError = 'Nationality is unavailable. Check-in cannot proceed.';
-      return;
-    }
+    const identityRequest = this.buildIdentityRequest();
 
     this.isCheckingIn = true;
     this.checkInError = null;
     this.checkInSuccess = null;
 
-    this.visitService.checkIn(this.visitId, request, this.selectedPhoto).subscribe({
+    this.visitService.checkIn(this.visitId, identityRequest, this.selectedPhoto).subscribe({
       next: (response) => {
-        this.visitDetails = response;
+        if (this.visitDetails) {
+          this.visitDetails = {
+            ...this.visitDetails,
+            status: response.status,
+            checkedInAt: response.checkedInAt,
+          };
+        }
+
         this.isCheckingIn = false;
 
         this.checkInSuccess = 'Visitor checked in successfully.';
 
-        this.changeDetectorRef.markForCheck();
+        this.cdr.detectChanges();
       },
 
       error: (error) => {
+        this.checkInError = error?.error?.message || 'Unable to check in visitor.';
+
         this.isCheckingIn = false;
 
-        this.checkInError =
-          error?.error?.message ||
-          error?.error?.detail ||
-          'Check-in failed. Please verify the details and try again.';
-
-        this.changeDetectorRef.markForCheck();
+        this.cdr.detectChanges();
       },
     });
   }
 
   onCheckOut(): void {
-    if (!this.visitDetails || !this.visitId) {
-      this.checkOutError = 'Visit details are not available.';
-      return;
-    }
-
-    if (this.isCheckingOut) {
-      return;
-    }
-
-    if (this.visitDetails.status !== 'CHECKED_IN') {
-      this.checkOutError = 'Only a checked-in visit can be checked out.';
+    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'CHECKED_IN') {
       return;
     }
 
@@ -545,183 +532,172 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
     this.visitService.checkOut(this.visitId).subscribe({
       next: (response) => {
-        this.visitDetails = response;
+        if (this.visitDetails) {
+          this.visitDetails = {
+            ...this.visitDetails,
+            status: response.status,
+            checkedOutAt: response.checkedOutAt,
+          };
+        }
+
         this.isCheckingOut = false;
 
         this.checkOutSuccess = 'Visitor checked out successfully.';
 
-        this.changeDetectorRef.markForCheck();
+        this.cdr.detectChanges();
       },
 
       error: (error) => {
+        this.checkOutError = error?.error?.message || 'Unable to check out visitor.';
+
         this.isCheckingOut = false;
 
-        this.checkOutError =
-          error?.error?.message || error?.error?.detail || 'Check-out failed. Please try again.';
-
-        this.changeDetectorRef.markForCheck();
+        this.cdr.detectChanges();
       },
     });
   }
 
-  openBlacklistForm(): void {
-    this.showBlacklistForm = true;
-    this.blacklistError = null;
-    this.blacklistSuccess = null;
+  openCancelConfirmation(): void {
+    if (!this.visitDetails || this.visitDetails.status !== 'REGISTERED') {
+      return;
+    }
+
+    this.cancelVisitError = null;
+    this.showCancelConfirmation = true;
   }
 
-  cancelBlacklistForm(): void {
-    if (this.isAddingToBlacklist) {
+  closeCancelConfirmation(): void {
+    if (this.isCancellingVisit) {
       return;
     }
 
-    this.showBlacklistForm = false;
-    this.blacklistReason = '';
-    this.blacklistCreatedBy = '';
-    this.blacklistError = null;
+    this.showCancelConfirmation = false;
+    this.cancelVisitError = null;
   }
 
-  confirmAddToBlacklist(): void {
-    if (!this.visitDetails) {
-      this.blacklistError = 'Visit details are not available.';
+  onCancelVisit(): void {
+    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'REGISTERED') {
       return;
     }
 
-    if (this.isAddingToBlacklist) {
-      return;
-    }
+    this.isCancellingVisit = true;
+    this.cancelVisitError = null;
 
-    const reason = this.blacklistReason.trim();
-    const createdBy = this.blacklistCreatedBy.trim();
-
-    if (reason.length < 3 || reason.length > 255) {
-      this.blacklistError = 'Reason must be between 3 and 255 characters.';
-      return;
-    }
-
-    if (!createdBy) {
-      this.blacklistError = 'Please enter the staff identifier.';
-      return;
-    }
-
-    const visitorId = this.visitDetails.visitor.visitorId;
-
-    if (!visitorId) {
-      this.blacklistError = 'Visitor ID is unavailable.';
-      return;
-    }
-
-    const request: AddVisitorToBlacklistRequest = {
-      reason,
-      createdBy,
-    };
-
-    this.isAddingToBlacklist = true;
-    this.blacklistError = null;
-    this.blacklistSuccess = null;
-
-    this.blacklistService.addExistingVisitorToBlacklist(visitorId, request).subscribe({
+    this.visitService.cancelVisit(this.visitId).subscribe({
       next: (response) => {
-        this.isAddingToBlacklist = false;
-        this.showBlacklistForm = false;
+        if (this.visitDetails) {
+          this.visitDetails = {
+            ...this.visitDetails,
+            status: response.status,
+          };
+        }
 
-        this.activeBlacklistRecord = response;
-        this.isBlacklisted = response.status === 'ACTIVE';
-        this.isBlacklistStatusLoading = false;
+        this.showCancelConfirmation = false;
+        this.isCancellingVisit = false;
 
-        this.blacklistSuccess = `${response.visitorName} was added to the blacklist successfully.`;
-
-        this.blacklistReason = '';
-        this.blacklistCreatedBy = '';
-
-        this.changeDetectorRef.markForCheck();
+        this.cdr.detectChanges();
       },
 
       error: (error) => {
-        this.isAddingToBlacklist = false;
+        this.cancelVisitError = error?.error?.message || 'Unable to cancel visit.';
 
-        this.blacklistError =
-          error?.error?.message ||
-          error?.error?.detail ||
-          'Failed to add visitor to the blacklist. Please try again.';
+        this.isCancellingVisit = false;
 
-        this.changeDetectorRef.markForCheck();
+        this.cdr.detectChanges();
       },
     });
   }
 
-  formatVisitDate(dateTime: string): string {
-    return new Date(dateTime).toLocaleDateString('en-IN', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
+  loadBlacklistStatus(): void {
+    const visitorId = this.visitDetails?.visitor.visitorId;
+
+    if (!visitorId) {
+      this.isBlacklistStatusLoading = false;
+      return;
+    }
+
+    this.isBlacklistStatusLoading = true;
+    this.blacklistStatusError = null;
+
+    this.blacklistService.isBlacklisted(visitorId).subscribe({
+      next: (isBlacklisted: boolean) => {
+        this.isBlacklisted = isBlacklisted;
+        this.isBlacklistStatusLoading = false;
+      },
+
+      error: (error) => {
+        console.error('Blacklist status request failed:', error);
+
+        this.isBlacklistStatusLoading = false;
+        this.blacklistStatusError = 'Unable to determine blacklist status.';
+      },
     });
   }
 
-  formatVisitTime(dateTime: string): string {
-    return new Date(dateTime).toLocaleTimeString('en-IN', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
-  }
-
-  getVisitDayLabel(): string {
-    if (!this.visitDetails) {
+  formatVisitDate(dateTime: string | null | undefined): string {
+    if (!dateTime) {
       return '';
     }
 
-    const visitDate = new Date(this.visitDetails.expectedArrivalAt);
+    return new Intl.DateTimeFormat('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }).format(new Date(dateTime));
+  }
 
-    const today = new Date();
-
-    const visitDay = new Date(visitDate.getFullYear(), visitDate.getMonth(), visitDate.getDate());
-
-    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-    const differenceInMilliseconds = visitDay.getTime() - todayDate.getTime();
-
-    const differenceInDays = Math.round(differenceInMilliseconds / (1000 * 60 * 60 * 24));
-
-    if (differenceInDays === 0) {
-      return 'Today';
+  formatVisitTime(dateTime: string | null | undefined): string {
+    if (!dateTime) {
+      return '';
     }
 
-    if (differenceInDays === 1) {
-      return 'Tomorrow';
-    }
-
-    if (differenceInDays === -1) {
-      return 'Yesterday';
-    }
-
-    if (differenceInDays > 1) {
-      return `Upcoming · In ${differenceInDays} days`;
-    }
-
-    return `${Math.abs(differenceInDays)} days ago`;
+    return new Intl.DateTimeFormat('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    }).format(new Date(dateTime));
   }
 
   getStatusLabel(status: string): string {
     switch (status) {
+      case 'REGISTERED':
+        return 'Registered';
+
       case 'CHECKED_IN':
         return 'Checked In';
 
       case 'CHECKED_OUT':
         return 'Checked Out';
 
-      case 'NO_SHOW':
-        return 'No Show';
-
       case 'CANCELLED':
         return 'Cancelled';
 
-      case 'REGISTERED':
-        return 'Registered';
+      case 'NO_SHOW':
+        return 'No Show';
 
       default:
         return status;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.stopCamera();
+
+    if (this.visitorPhotoUrl) {
+      URL.revokeObjectURL(this.visitorPhotoUrl);
+    }
+
+    if (this.photoPreviewUrl) {
+      URL.revokeObjectURL(this.photoPreviewUrl);
+    }
+
+    /*
+     * capturedPhotoPreviewUrl is normally already cleared
+     * by stopCamera(), but keeping this cleanup makes
+     * destruction safe even if the state changes later.
+     */
+    if (this.capturedPhotoPreviewUrl) {
+      URL.revokeObjectURL(this.capturedPhotoPreviewUrl);
     }
   }
 }

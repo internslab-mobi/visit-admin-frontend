@@ -12,7 +12,7 @@ import {
   throwError,
 } from 'rxjs';
 
-const AUTH_URL = 'http://localhost:8097/api/auth';
+const AUTH_URL = 'http://localhost:8082/api/auth';
 
 export interface LoginRequest {
   email: string;
