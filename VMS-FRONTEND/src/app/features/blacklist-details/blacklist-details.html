@@ -110,12 +110,14 @@
         <div class="detail-item">
           <label>Visitor Type</label>
           <p>{{record.visitorType || "Not available"}}</p>
+
         </div>
 
       </div>
 
     </div>
 
+    
     <!-- Blacklist Verification -->
     <div class="details-card">
 
@@ -216,13 +218,25 @@
         type="button"
         class="confirm-revoke-button"
         (click)="confirmRevoke()">
-
         Confirm Revoke
-
       </button>
 
     </div>
 
   </div>
+  </div>
 
+  <!-- Success Toast -->
+<div
+  *ngIf="showSuccessToast"
+  class="success-toast"
+  role="status"
+  aria-live="polite">
+
+  <span class="success-toast-icon">✓</span>
+
+  <div class="success-toast-content">
+    <strong>Success</strong>
+    <span>Blacklist revoked successfully.</span>
+  </div>
 </div>

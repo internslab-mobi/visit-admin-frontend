@@ -10,7 +10,9 @@ import { BlacklistResponse } from '../../models/blacklist/blacklist.model';
 export class BlacklistService {
   private readonly apiUrl = 'http://localhost:8092/api/blacklist';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+  ) {}
 
   getAllBlacklistRecords(): Observable<BlacklistResponse[]> {
     return this.http.get<BlacklistResponse[]>(this.apiUrl);
@@ -24,20 +26,30 @@ export class BlacklistService {
     visitorId: string,
     request: AddVisitorToBlacklistRequest,
   ): Observable<BlacklistResponse> {
-    return this.http.post<BlacklistResponse>(`${this.apiUrl}/visitor/${visitorId}`, request);
+    return this.http.post<BlacklistResponse>(
+      `${this.apiUrl}/visitor/${visitorId}`,
+      request,
+    );
   }
-  removeFromBlacklist(blacklistId: string, removedBy: string): Observable<BlacklistResponse> {
-    return this.http.put<BlacklistResponse>(`${this.apiUrl}/${blacklistId}/remove`, null, {
-      params: {
-        removedBy,
+
+  removeFromBlacklist(
+    blacklistId: string,
+    removedBy: string,
+  ): Observable<BlacklistResponse> {
+    return this.http.put<BlacklistResponse>(
+      `${this.apiUrl}/${blacklistId}/remove`,
+      null,
+      {
+        params: {
+          removedBy,
+        },
       },
-    });
+    );
   }
-
-
-
 
   isBlacklisted(visitorId: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.apiUrl}/visitor/${visitorId}/status`);
+    return this.http.get<boolean>(
+      `${this.apiUrl}/visitor/${visitorId}/status`,
+    );
   }
 }
