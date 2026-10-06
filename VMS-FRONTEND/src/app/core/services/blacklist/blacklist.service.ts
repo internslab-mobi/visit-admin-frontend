@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AddVisitorToBlacklistRequest } from '../../models/blacklist/blacklist.model';
@@ -11,7 +11,9 @@ export class BlacklistService {
 
   private readonly apiUrl = 'http://localhost:8092/api/blacklist';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+  ) {}
 
   getAllBlacklistRecords(): Observable<BlacklistResponse[]> {
     return this.http.get<BlacklistResponse[]>(this.apiUrl);
@@ -22,8 +24,6 @@ export class BlacklistService {
     `${this.apiUrl}/${id}`
   );
 }
-
-
 
   addExistingVisitorToBlacklist(
     visitorId: string,

@@ -23,7 +23,8 @@ export class Blacklist implements OnInit {
   visitorNameFilter = '';
   visitorIdFilter = '';
   reasonFilter = '';
-  statusFilter = '';
+  sortBy = 'visitorName';
+  sortOrder = 'asc';
 
   constructor(
     private blacklistService: BlacklistService,
@@ -62,31 +63,59 @@ export class Blacklist implements OnInit {
 
   get filteredRecords(): BlacklistResponse[] {
 
-    const visitorId = this.visitorIdFilter.trim().toLowerCase();
-    const reason = this.reasonFilter.trim().toLowerCase();
-    const status = this.statusFilter;
+  const visitorName = this.visitorNameFilter.trim().toLowerCase();
+  const visitorId = this.visitorIdFilter.trim().toLowerCase();
+  const reason = this.reasonFilter.trim().toLowerCase();
 
-    return this.blacklistRecords.filter(record => {
+  const filtered = this.blacklistRecords.filter(record => {
 
-      const matchesVisitorId =
-        !visitorId ||
-        record.visitorId.toLowerCase().includes(visitorId);
+    const matchesVisitorName =
+      !visitorName ||
+      record.visitorName.toLowerCase().includes(visitorName);
 
-      const matchesReason =
-        !reason ||
-        record.reason.toLowerCase().includes(reason);
+    const matchesVisitorId =
+      !visitorId ||
+      record.visitorId.toLowerCase().includes(visitorId);
 
-      const matchesStatus =
-        !status ||
-        record.status === status;
+    const matchesReason =
+      !reason ||
+      record.reason.toLowerCase().includes(reason);
 
-      return (
-        matchesVisitorId &&
-        matchesReason &&
-        matchesStatus
-      );
-    });
-  }
+
+    return (
+      matchesVisitorName &&
+      matchesVisitorId &&
+      matchesReason 
+    );
+  });
+
+  return filtered.sort((a, b) => {
+
+    let valueA = '';
+    let valueB = '';
+
+    if (this.sortBy === 'visitorName') {
+      valueA = a.visitorName.toLowerCase();
+      valueB = b.visitorName.toLowerCase();
+    }
+
+    if (this.sortBy === 'blacklistId') {
+      valueA = a.id.toLowerCase();
+      valueB = b.id.toLowerCase();
+    }
+
+    if (this.sortBy === 'status') {
+      valueA = a.status.toLowerCase();
+      valueB = b.status.toLowerCase();
+    }
+
+    const comparison = valueA.localeCompare(valueB);
+
+    return this.sortOrder === 'asc'
+      ? comparison
+      : -comparison;
+  });
+}
 
   get totalPages(): number {
 
@@ -121,7 +150,9 @@ getRemovedCount(): number {
     this.visitorNameFilter = '';
     this.visitorIdFilter = '';
     this.reasonFilter = '';
-    this.statusFilter = '';
+
+    this.sortBy = 'blacklistId';
+    this.sortOrder = 'asc';
 
     this.currentPage = 1;
   }
