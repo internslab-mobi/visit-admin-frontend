@@ -1,10 +1,12 @@
 <div class="vendor-edit-page">
 
-  <!-- ==================================================
+  <!-- =========================================================
        PAGE HEADER
-  ================================================== -->
+  ========================================================== -->
 
-  <!-- <div class="page-header">
+  <div class="page-header">
+
+    <!-- Breadcrumb -->
 
     <div class="breadcrumb">
 
@@ -16,200 +18,97 @@
         Vendors
       </button>
 
-      <span class="breadcrumb-separator">
-        ›
-      </span>
+      <span class="breadcrumb-separator">›</span>
 
       <span>
-        {{ vendor.id }}
+        {{ vendorData?.vendor?.vendorId || vendorId }}
       </span>
 
-      <span class="breadcrumb-separator">
-        ›
-      </span>
+      <span class="breadcrumb-separator">›</span>
 
-      <strong>
-        Edit
-      </strong>
+      <strong>Edit</strong>
 
     </div>
 
 
-    <div class="header-row">
+    <!-- Header -->
 
-      <div>
+    <div class="header-title-row">
 
-        <h1>
-          Edit Vendor
-        </h1>
+      <div class="header-title">
+
+        <h1>Edit Vendor</h1>
 
         <p>
-          Update vendor information and manage documents.
+          Update vendor information and documents.
         </p>
 
       </div>
 
 
-      <div class="status-badge">
+      <div class="nda-actions">
 
-        <span class="status-dot"></span>
+        <button
+          type="button"
+          class="outline-button"
+          (click)="openVisitHistory()"
+        >
+          ◷
+          View Visit History
+        </button>
 
-        Active
+
+        <button
+          type="button"
+          class="outline-button"
+          (click)="openAllNdas()"
+        >
+          ▣
+          View All NDAs
+        </button>
+
+
+        <!-- @if (!isBlacklisted) {
+
+          <button
+            type="button"
+            class="danger-outline-button"
+            (click)="openBlacklistModal()"
+          >
+            ⊘
+            Add to Blacklist
+          </button>
+
+        } -->
 
       </div>
 
     </div>
 
 
-    <div class="header-actions">
+    <!-- Status -->
 
-      <button
-        type="button"
-        class="outline-button"
-        (click)="openModal('VISIT_HISTORY')"
+    <div class="header-status-row">
+
+      <div
+        class="status-badge"
+        [class.blacklisted-status]="isBlacklisted"
       >
-        <span>◷</span>
-        View Visit History
-      </button>
 
+        <span class="status-dot"></span>
 
-      <button
-        type="button"
-        class="outline-button"
-        (click)="openModal('ALL_NDAS')"
-      >
-        <span>▣</span>
-        View All NDAs
-      </button>
+        {{ vendorStatus }}
 
-
-      <button
-        type="button"
-        class="danger-outline-button"
-        (click)="openModal('BLACKLIST')"
-      >
-        <span>⊘</span>
-        Add to Blacklist
-      </button>
-
-    </div>
-
-  </div> -->
-
-<!-- ==================================================
-     PAGE HEADER
-================================================== -->
-
-<div class="page-header">
-
-  <!-- Breadcrumb -->
-  <div class="breadcrumb">
-
-    <button
-      type="button"
-      class="breadcrumb-link"
-      (click)="cancel()"
-    >
-      Vendors
-    </button>
-
-    <span class="breadcrumb-separator">
-      ›
-    </span>
-
-    <span>
-      {{ vendor.id }}
-    </span>
-
-    <span class="breadcrumb-separator">
-      ›
-    </span>
-
-    <strong>
-      Edit
-    </strong>
-
-  </div>
-
-
-  <!-- ==================================================
-       TITLE ROW
-  ================================================== -->
-
-  <div class="header-title-row">
-
-    <div class="header-title">
-
-      <h1>
-        Edit Vendor
-      </h1>
-
-      <p>
-        Update vendor information and manage documents.
-      </p>
-
-    </div>
-
-
-    <!-- Add to Blacklist -->
-    <button
-      type="button"
-      class="danger-outline-button"
-      (click)="openModal('BLACKLIST')"
-    >
-      <span>⊘</span>
-      Add to Blacklist
-    </button>
-
-  </div>
-
-
-  <!-- ==================================================
-       STATUS + VIEW ACTIONS
-  ================================================== -->
-
-  <div class="header-status-row">
-
-    <!-- Active -->
-    <div class="status-badge">
-
-      <span class="status-dot"></span>
-
-      Active
-
-    </div>
-
-
-    <!-- View Actions -->
-    <div class="header-view-actions">
-
-      <button
-        type="button"
-        class="outline-button"
-        (click)="openModal('VISIT_HISTORY')"
-      >
-        <span>◷</span>
-        View Visit History
-      </button>
-
-
-      <button
-        type="button"
-        class="outline-button"
-        (click)="openModal('ALL_NDAS')"
-      >
-        <span>▣</span>
-        View All NDAs
-      </button>
+      </div>
 
     </div>
 
   </div>
 
-</div>
-  <!-- ==================================================
-       SUCCESS / ERROR
-  ================================================== -->
+
+  <!-- =========================================================
+       ERROR
+  ========================================================== -->
 
   @if (errorMessage) {
 
@@ -220,14 +119,9 @@
   }
 
 
-  @if (successMessage) {
-
-    <div class="alert success-alert">
-      {{ successMessage }}
-    </div>
-
-  }
-
+  <!-- =========================================================
+       LOADING
+  ========================================================== -->
 
   @if (loading) {
 
@@ -238,11 +132,15 @@
   }
 
 
-  @if (!loading) {
+  <!-- =========================================================
+       MAIN CONTENT
+  ========================================================== -->
 
-    <!-- ==================================================
+  @if (!loading && vendorData) {
+
+    <!-- =======================================================
          VENDOR PROFILE
-    ================================================== -->
+    ======================================================== -->
 
     <section class="card">
 
@@ -271,10 +169,10 @@
 
           <div class="photo-wrapper">
 
-            @if (photoUrl) {
+            @if (visitorPhotoUrl) {
 
               <img
-                [src]="photoUrl"
+                [src]="visitorPhotoUrl"
                 alt="Vendor photo"
                 class="vendor-photo"
               />
@@ -287,33 +185,8 @@
 
             }
 
-
-            <div class="camera-button">
-              📷
-            </div>
-
           </div>
 
-
-          <label class="change-photo-button">
-
-            <span>↥</span>
-
-            Change Photo
-
-            <input
-              type="file"
-              accept="image/jpeg,image/png"
-              hidden
-              (change)="changePhoto($event)"
-            />
-
-          </label>
-
-
-          <span class="photo-help">
-            JPG, PNG (Max 2 MB)
-          </span>
 
         </div>
 
@@ -324,6 +197,8 @@
 
           <div class="form-grid">
 
+            <!-- Vendor ID -->
+
             <div class="form-field">
 
               <label>
@@ -332,13 +207,15 @@
 
               <input
                 type="text"
-                [value]="vendor.id"
+                [value]="vendorData.vendor.vendorId"
                 readonly
                 class="readonly"
               />
 
             </div>
 
+
+            <!-- Visitor Type -->
 
             <div class="form-field">
 
@@ -348,13 +225,15 @@
 
               <input
                 type="text"
-                value="Vendor"
+                [value]="vendorData.visitor.visitorType"
                 readonly
                 class="readonly"
               />
 
             </div>
 
+
+            <!-- First Name -->
 
             <div class="form-field">
 
@@ -365,11 +244,13 @@
 
               <input
                 type="text"
-                [(ngModel)]="vendor.firstName"
+                [(ngModel)]="vendorData.visitor.firstName"
               />
 
             </div>
 
+
+            <!-- Last Name -->
 
             <div class="form-field">
 
@@ -380,13 +261,15 @@
 
               <input
                 type="text"
-                [(ngModel)]="vendor.lastName"
+                [(ngModel)]="vendorData.visitor.lastName"
               />
 
             </div>
 
 
-            <div class="form-field">
+            <!-- Email -->
+
+            <!-- <div class="form-field">
 
               <label>
                 Email
@@ -395,13 +278,15 @@
 
               <input
                 type="email"
-                [(ngModel)]="vendor.email"
+                [(ngModel)]="vendorData.visitor.email"
               />
 
-            </div>
+            </div> -->
 
 
-            <div class="form-field">
+            <!-- Mobile -->
+
+            <!-- <div class="form-field">
 
               <label>
                 Mobile Number
@@ -410,10 +295,10 @@
 
               <input
                 type="text"
-                [(ngModel)]="vendor.mobileNumber"
+                [(ngModel)]="vendorData.visitor.mobileNumber"
               />
 
-            </div>
+            </div> -->
 
           </div>
 
@@ -424,9 +309,9 @@
     </section>
 
 
-    <!-- ==================================================
+    <!-- =======================================================
          COMPANY DETAILS
-    ================================================== -->
+    ======================================================== -->
 
     <section class="card">
 
@@ -449,6 +334,8 @@
 
       <div class="form-grid company-grid">
 
+        <!-- Company Name -->
+
         <div class="form-field">
 
           <label>
@@ -458,11 +345,15 @@
 
           <input
             type="text"
-            [(ngModel)]="vendor.companyName"
+            [(ngModel)]="vendorData.visitor.companyName"
+            readonly
+             class="readonly"
           />
 
         </div>
 
+
+        <!-- Company Phone -->
 
         <div class="form-field">
 
@@ -472,11 +363,15 @@
 
           <input
             type="text"
-            [(ngModel)]="vendor.companyPhone"
+            [value]="vendorData.visitor.mobileNumber"
+            readonly
+            class="readonly"
           />
 
         </div>
 
+
+        <!-- Company Email -->
 
         <div class="form-field">
 
@@ -486,89 +381,28 @@
 
           <input
             type="email"
-            [(ngModel)]="vendor.companyEmail"
+            [value]="vendorData.visitor.email"
+            readonly
+            class="readonly"
           />
 
         </div>
-
-
-      <div class="form-field nda-validity-field">
-
-  <label>
-    NDA Validity
-  </label>
-
-
-  <div class="validity-edit-row">
-
-    @if (!isEditingNdaValidity) {
-
-      <input
-        type="text"
-        [value]="nda.validUntil || '-'"
-        readonly
-        class="readonly"
-      />
-
-
-      <button
-        type="button"
-        class="edit-validity-button"
-        (click)="startEditingNdaValidity()"
-      >
-        ✎ Edit Validity
-      </button>
-
-    }
-
-
-    @if (isEditingNdaValidity) {
-
-      <input
-        type="date"
-        [(ngModel)]="ndaValidityEditValue"
-        class="validity-input"
-      />
-
-
-      <button
-        type="button"
-        class="save-validity-button"
-        (click)="saveNdaValidity()"
-      >
-        ✓ Save
-      </button>
-
-
-      <button
-        type="button"
-        class="cancel-validity-button"
-        (click)="cancelNdaValidityEdit()"
-      >
-        Cancel
-      </button>
-
-    }
-
-  </div>
-
-</div>
 
       </div>
 
     </section>
 
 
-    <!-- ==================================================
-         DOCUMENT + NDA ROW
-    ================================================== -->
+    <!-- =======================================================
+         DOCUMENT + NDA
+    ======================================================== -->
 
     <div class="bottom-grid">
 
 
-      <!-- ==================================================
+      <!-- =====================================================
            IDENTITY DOCUMENTS
-      ================================================== -->
+      ====================================================== -->
 
       <section class="card">
 
@@ -586,14 +420,19 @@
 
           </div>
 
+          <label class="upload-button">
 
-          <button
-            type="button"
-            class="upload-button"
-            (click)="openModal('UPLOAD_DOCUMENTS')"
-          >
-            ↥ Upload Documents
-          </button>
+            
+            Upload Documents
+
+            <input
+              type="file"
+              multiple
+              hidden
+              (change)="uploadDocuments($event)"
+            />
+
+          </label>
 
         </div>
 
@@ -605,10 +444,6 @@
             <thead>
 
               <tr>
-
-                <th>
-                  Document Type
-                </th>
 
                 <th>
                   File Name
@@ -630,40 +465,30 @@
             <tbody>
 
               @for (
-                document of documents;
-                track document.fileName
+                document of vendorData.documents;
+                track document.documentId
               ) {
 
                 <tr>
 
                   <td>
-                    {{ document.documentType }}
+                    {{ document.documentId }}
                   </td>
 
                   <td>
-                    {{ document.fileName }}
-                  </td>
-
-                  <td>
-                    {{ document.uploadedOn }}
+                    {{ formatDate(document.createdAt) }}
                   </td>
 
                   <td>
 
-                    <div class="document-actions">
+                    <div class="nda-actions">
 
                       <button
                         type="button"
-                        title="View"
+                        class="small-outline-button"
+                        (click)="viewDocument(document.documentId)"
                       >
-                        ◉
-                      </button>
-
-                      <button
-                        type="button"
-                        title="Download"
-                      >
-                        ↓
+                        ◉ View
                       </button>
 
                     </div>
@@ -677,7 +502,7 @@
                 <tr>
 
                   <td
-                    colspan="4"
+                    colspan="3"
                     class="empty-row"
                   >
                     No identity documents uploaded.
@@ -693,12 +518,53 @@
 
         </div>
 
+
+        @if (pendingDocuments.length > 0) {
+  <div class="pending-documents">
+    <div class="pending-documents-title">
+     
+    </div>
+
+    @for (
+      file of pendingDocuments;
+      track $index;
+      let i = $index
+    ) {
+      <div class="pending-document-row">
+
+        <div class="pending-document-info">
+          <div class="pdf-icon">
+            PDF
+          </div>
+
+          <div class="pending-file-details">
+            <strong>{{ file.name }}</strong>
+
+            <span>
+              {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+            </span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="small-outline-button"
+          (click)="removePendingDocument(i)"
+        >
+          × Remove
+        </button>
+
+      </div>
+    }
+  </div>
+}
+
       </section>
 
 
-      <!-- ==================================================
-           NDA
-      ================================================== -->
+      <!-- =====================================================
+           NDA INFORMATION
+      ====================================================== -->
 
       <section class="card">
 
@@ -721,114 +587,114 @@
 
         <div class="nda-content">
 
-       <div class="nda-status-box">
 
-  <div class="nda-row">
+          <!-- NDA STATUS -->
 
-    <span>
-      NDA Status
-    </span>
+          <div class="nda-status-box">
 
-    <strong
-      [class.active-text]="nda.status === 'ACTIVE'"
-      [class.inactive-text]="nda.status !== 'ACTIVE'"
-    >
+            <div class="nda-row">
 
-      <span class="status-dot"></span>
+              <span>
+                NDA Status
+              </span>
 
-      {{ nda.status }}
+              <strong
+                [class.active-text]="ndaStatus === 'ACTIVE'"
+                [class.inactive-text]="ndaStatus !== 'ACTIVE'"
+              >
 
-    </strong>
+                <span class="status-dot"></span>
 
-  </div>
+                {{ ndaStatus }}
 
+              </strong>
 
-  <div class="nda-row">
-
-    <span>
-      Signed On
-    </span>
-
-    <strong>
-      {{ nda.signedOn || '-' }}
-    </strong>
-
-  </div>
+            </div>
 
 
-  <div class="nda-row">
-
-    <span>
-      Valid Until
-    </span>
-
-    <strong>
-      {{ nda.validUntil || '-' }}
-    </strong>
-
-  </div>
-
-
-  @if (nda.status !== 'ACTIVE') {
-
-    <div class="nda-upload-container">
-
-      <button
-        type="button"
-        class="primary-button"
-        (click)="openModal('UPLOAD_NDA')"
-      >
-        ↥ Upload New NDA
-      </button>
-
-    </div>
-
-  }
-
+            <div class="nda-row">
+  <span>Valid From</span>
+  <strong>{{ formatDate(ndaValidFrom) }}</strong>
 </div>
+
+
+            <div class="nda-row">
+
+              <span>
+                Valid Until
+              </span>
+
+              <strong>
+                {{ formatDate(ndaValidUntil) }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- LATEST NDA -->
 
           <div class="nda-divider"></div>
 
 
           <div class="latest-nda">
 
-            <div class="pdf-icon">
-              PDF
-            </div>
+            @if (latestNda) {
 
-            <div class="nda-file-info">
-
-              <strong>
-                {{ nda.latest.fileName || 'No NDA available' }}
-              </strong>
-
-              <span>
-                Uploaded on
-                {{ nda.latest.uploadedOn || '-' }}
-              </span>
-
-            </div>
+              <div class="pdf-icon">
+                PDF
+              </div>
 
 
-            <div class="nda-actions">
+              <div class="nda-file-info">
 
-              <button
-                type="button"
-                class="small-outline-button"
-              >
-                ◉ View
-              </button>
+                <strong>
+                  {{ latestNda.documentId }}
+                </strong>
 
-              <button
-                type="button"
-                class="small-outline-button"
-              >
-                ↓ Download
-              </button>
+                <span>
+                  Uploaded on
+                  {{ formatDate(latestNda.createdAt) }}
+                </span>
 
-            </div>
+              </div>
+
+
+              <div class="nda-actions">
+
+                <button
+                  type="button"
+                  class="small-outline-button"
+                  (click)="viewNda(latestNda.documentId)"
+                >
+                  ◉ View
+                </button>
+
+                @if (ndaStatus === 'ACTIVE') {
+
+                  <button
+                    type="button"
+                    class="small-outline-button"
+                    (click)="openExtendNdaModal()"
+                  >
+                    Extend Validity
+                  </button>
+
+                }
+
+              </div>
+
+            } @else {
+
+              <div class="empty-row">
+                No NDA available.
+              </div>
+
+            }
 
           </div>
+
 
         </div>
 
@@ -837,9 +703,9 @@
     </div>
 
 
-    <!-- ==================================================
-         FOOTER ACTIONS
-    ================================================== -->
+    <!-- =======================================================
+         FOOTER
+    ======================================================== -->
 
     <div class="page-footer">
 
@@ -860,9 +726,13 @@
       >
 
         @if (saving) {
+
           Saving...
+
         } @else {
+
           Save Changes
+
         }
 
       </button>
@@ -874,15 +744,15 @@
 </div>
 
 
-<!-- ======================================================
-     MODAL OVERLAY
-====================================================== -->
+<!-- ===========================================================
+     VISIT HISTORY MODAL
+============================================================ -->
 
-@if (activeModal) {
+@if (showVisitHistory && vendorData) {
 
   <div
     class="modal-overlay"
-    (click)="closeModal()"
+    (click)="closeVisitHistory()"
   >
 
     <div
@@ -890,543 +760,528 @@
       (click)="$event.stopPropagation()"
     >
 
+      <div class="modal-header">
 
-      <!-- ==================================================
-           VISIT HISTORY
-      ================================================== -->
+        <div class="modal-title">
 
-      @if (activeModal === 'VISIT_HISTORY') {
+          <span class="modal-title-icon">
+            ◷
+          </span>
 
-        <div class="modal-header">
-
-          <div class="modal-title">
-
-            <span class="modal-title-icon">
-              ◷
-            </span>
-
-            <h2>
-              Visit History - {{ vendor.id }}
-            </h2>
-
-          </div>
-
-
-          <button
-            type="button"
-            class="modal-close"
-            (click)="closeModal()"
-          >
-            ×
-          </button>
+          <h2>
+            Visit History -
+            {{ vendorData.vendor.vendorId }}
+          </h2>
 
         </div>
 
 
-        <div class="modal-body">
+        <button
+          type="button"
+          class="modal-close"
+          (click)="closeVisitHistory()"
+        >
+          ×
+        </button>
 
-          <div class="table-wrapper">
+      </div>
 
-            <table>
 
-              <thead>
+      <div class="modal-body">
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Visit ID</th>
+                <th>Date</th>
+                <th>Host</th>
+                <th>Purpose</th>
+                <th>Status</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                visit of vendorData.visits;
+                track visit.visitId
+              ) {
 
                 <tr>
-
-                  <th>Visit ID</th>
-                  <th>Date</th>
-                  <th>Host</th>
-                  <th>Purpose</th>
-                  <th>Status</th>
-
-                </tr>
-
-              </thead>
-
-
-              <tbody>
-
-                <tr>
-
-                  <td>VIS-041</td>
-                  <td>05-Oct-2026</td>
-                  <td>Arun Kumar</td>
-                  <td>Maintenance</td>
 
                   <td>
-                    <span class="visit-status checked-in">
-                      Checked In
-                    </span>
+                    {{ visit.visitId }}
                   </td>
 
-                </tr>
-
-
-                <tr>
-
-                  <td>VIS-032</td>
-                  <td>12-Sep-2026</td>
-                  <td>Priya Sharma</td>
-                  <td>Service</td>
+                  <td>
+                    {{ formatDateTime(visit.expectedArrivalAt) }}
+                  </td>
 
                   <td>
+                    {{ visit.hostName }}
+                  </td>
+
+                  <td>
+                    {{ visit.purpose }}
+                  </td>
+
+                  <td>
+
                     <span class="visit-status">
-                      Checked Out
+                      {{ visit.status }}
                     </span>
+
                   </td>
 
                 </tr>
 
+              } @empty {
 
                 <tr>
 
-                  <td>VIS-021</td>
-                  <td>10-Aug-2026</td>
-                  <td>Arun Kumar</td>
-                  <td>Installation</td>
-
-                  <td>
-                    <span class="visit-status">
-                      Checked Out
-                    </span>
+                  <td
+                    colspan="5"
+                    class="empty-row"
+                  >
+                    No visit history available.
                   </td>
 
                 </tr>
 
+              }
 
-                <tr>
+            </tbody>
 
-                  <td>VIS-015</td>
-                  <td>15-Jul-2026</td>
-                  <td>Kavya Nair</td>
-                  <td>Meeting</td>
-
-                  <td>
-                    <span class="visit-status">
-                      Checked Out
-                    </span>
-                  </td>
-
-                </tr>
-
-
-                <tr>
-
-                  <td>VIS-009</td>
-                  <td>20-Jun-2026</td>
-                  <td>Ramesh</td>
-                  <td>Support</td>
-
-                  <td>
-                    <span class="visit-status">
-                      Checked Out
-                    </span>
-                  </td>
-
-                </tr>
-
-              </tbody>
-
-            </table>
-
-          </div>
+          </table>
 
         </div>
 
+      </div>
 
-        <div class="modal-footer">
 
-          <button
-            type="button"
-            class="cancel-button"
-            (click)="closeModal()"
-          >
-            Close
-          </button>
+      <div class="modal-footer">
 
-        </div>
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="closeVisitHistory()"
+        >
+          Close
+        </button>
 
-      }
-
-
-      <!-- ==================================================
-           ALL NDAs
-      ================================================== -->
-
-      @if (activeModal === 'ALL_NDAS') {
-
-        <div class="modal-header">
-
-          <div class="modal-title">
-
-            <span class="modal-title-icon">
-              ▤
-            </span>
-
-            <h2>
-              All NDAs - {{ vendor.id }}
-            </h2>
-
-          </div>
-
-
-          <button
-            type="button"
-            class="modal-close"
-            (click)="closeModal()"
-          >
-            ×
-          </button>
-
-        </div>
-
-
-        <div class="modal-body">
-
-          <div class="nda-history-item">
-
-            <div class="pdf-icon">
-              PDF
-            </div>
-
-            <div class="nda-file-info">
-
-              <strong>
-                NDA-0042.pdf
-              </strong>
-
-              <span>
-                Signed: 05-Oct-2026
-              </span>
-
-            </div>
-
-            <button
-              type="button"
-              class="small-outline-button"
-            >
-              ◉ View
-            </button>
-
-            <button
-              type="button"
-              class="small-outline-button"
-            >
-              ↓ Download
-            </button>
-
-          </div>
-
-
-          <div class="nda-history-item">
-
-            <div class="pdf-icon">
-              PDF
-            </div>
-
-            <div class="nda-file-info">
-
-              <strong>
-                NDA-0031.pdf
-              </strong>
-
-              <span>
-                Signed: 01-Apr-2026
-              </span>
-
-            </div>
-
-            <button
-              type="button"
-              class="small-outline-button"
-            >
-              ◉ View
-            </button>
-
-            <button
-              type="button"
-              class="small-outline-button"
-            >
-              ↓ Download
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <div class="modal-footer">
-
-          <button
-            type="button"
-            class="cancel-button"
-            (click)="closeModal()"
-          >
-            Close
-          </button>
-
-        </div>
-
-      }
-
-
-      <!-- ==================================================
-           BLACKLIST
-      ================================================== -->
-
-      @if (activeModal === 'BLACKLIST') {
-
-        <div class="modal-header">
-
-          <div class="modal-title danger-title">
-
-            <span class="modal-title-icon">
-              ⊘
-            </span>
-
-            <h2>
-              Add to Blacklist
-            </h2>
-
-          </div>
-
-
-          <button
-            type="button"
-            class="modal-close"
-            (click)="closeModal()"
-          >
-            ×
-          </button>
-
-        </div>
-
-
-        <div class="modal-body">
-
-          <div class="warning-box">
-
-            <span>
-              ⚠
-            </span>
-
-            <p>
-              This vendor will be added to the blacklist
-              and will not be allowed for future visits.
-            </p>
-
-          </div>
-
-
-          <div class="form-field">
-
-            <label>
-              Reason <span>*</span>
-            </label>
-
-            <textarea
-              [(ngModel)]="blacklistReason"
-              maxlength="500"
-              placeholder="Enter reason for blacklisting..."
-            ></textarea>
-
-
-            <div class="character-count">
-
-              {{ blacklistReasonLength }}/500
-
-            </div>
-
-          </div>
-
-
-          @if (blacklistError) {
-
-            <div class="field-error">
-              {{ blacklistError }}
-            </div>
-
-          }
-
-        </div>
-
-
-        <div class="modal-footer">
-
-          <button
-            type="button"
-            class="cancel-button"
-            (click)="closeModal()"
-          >
-            Cancel
-          </button>
-
-
-          <button
-            type="button"
-            class="blacklist-confirm-button"
-            (click)="addToBlacklist()"
-          >
-            Add to Blacklist
-          </button>
-
-        </div>
-
-      }
-
-
-      <!-- ==================================================
-           UPLOAD DOCUMENTS
-      ================================================== -->
-
-      @if (activeModal === 'UPLOAD_DOCUMENTS') {
-
-        <div class="modal-header">
-
-          <div class="modal-title">
-
-            <span class="modal-title-icon">
-              ↑
-            </span>
-
-            <h2>
-              Upload Documents
-            </h2>
-
-          </div>
-
-
-          <button
-            type="button"
-            class="modal-close"
-            (click)="closeModal()"
-          >
-            ×
-          </button>
-
-        </div>
-
-
-        <div class="modal-body">
-
-          <label class="upload-dropzone">
-
-            <span class="upload-large-icon">
-              ↑
-            </span>
-
-            <strong>
-              Select identity documents
-            </strong>
-
-            <small>
-              Aadhaar or Passport
-            </small>
-
-            <input
-              type="file"
-              multiple
-              accept=".pdf,.jpg,.jpeg,.png"
-              hidden
-              (change)="uploadDocuments($event)"
-            />
-
-          </label>
-
-        </div>
-
-
-        <div class="modal-footer">
-
-          <button
-            type="button"
-            class="cancel-button"
-            (click)="closeModal()"
-          >
-            Cancel
-          </button>
-
-        </div>
-
-      }
-
-
-      <!-- ==================================================
-           UPLOAD NDA
-      ================================================== -->
-
-      @if (activeModal === 'UPLOAD_NDA') {
-
-        <div class="modal-header">
-
-          <div class="modal-title">
-
-            <span class="modal-title-icon">
-              ↑
-            </span>
-
-            <h2>
-              Upload New NDA
-            </h2>
-
-          </div>
-
-
-          <button
-            type="button"
-            class="modal-close"
-            (click)="closeModal()"
-          >
-            ×
-          </button>
-
-        </div>
-
-
-        <div class="modal-body">
-
-          <label class="upload-dropzone">
-
-            <span class="upload-large-icon">
-              ↑
-            </span>
-
-            <strong>
-              Select NDA document
-            </strong>
-
-            <small>
-              PDF only
-            </small>
-
-            <input
-              type="file"
-              accept=".pdf"
-              hidden
-              (change)="uploadNda($event)"
-            />
-
-          </label>
-
-        </div>
-
-
-        <div class="modal-footer">
-
-          <button
-            type="button"
-            class="cancel-button"
-            (click)="closeModal()"
-          >
-            Cancel
-          </button>
-
-        </div>
-
-      }
+      </div>
 
     </div>
 
   </div>
 
 }
+
+
+<!-- ===========================================================
+     ALL NDAS MODAL
+============================================================ -->
+
+@if (showAllNdas && vendorData) {
+
+  <div
+    class="modal-overlay"
+    (click)="closeAllNdas()"
+  >
+
+    <div
+      class="modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="modal-header">
+
+        <div class="modal-title">
+
+          <span class="modal-title-icon">
+            ▤
+          </span>
+
+          <h2>
+            All NDAs -
+            {{ vendorData.vendor.vendorId }}
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="modal-close"
+          (click)="closeAllNdas()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="modal-body">
+
+        @for (
+          nda of ndaHistory;
+          track nda.documentId
+        ) {
+
+          <div class="nda-history-item">
+
+            <div class="pdf-icon">
+              PDF
+            </div>
+
+
+            <div class="nda-file-info">
+
+  <strong>
+    {{ nda.documentId }}
+  </strong>
+
+  <span>
+    Valid:
+    {{ formatDate(nda.validFrom) }}
+    -
+    {{ formatDate(nda.validUntil) }}
+  </span>
+
+  <span>
+    Uploaded:
+    {{ formatDate(nda.createdAt) }}
+  </span>
+
+  <span
+    [class.nda-overridden]="nda.overwrittenBy"
+     [class.nda-expired]="getNdaHistoryStatus(nda) === 'EXPIRED'"
+    [class.nda-current]="!nda.overwrittenBy"
+  >
+     {{ getNdaHistoryStatus(nda) }}
+  </span>
+
+</div>
+
+            <button
+              type="button"
+              class="small-outline-button"
+              (click)="viewNda(nda.documentId)"
+            >
+              ◉ View
+            </button>
+
+          </div>
+
+        } @empty {
+
+          <div class="empty-row">
+            No NDA records available.
+          </div>
+
+        }
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="closeAllNdas()"
+        >
+          Close
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- ===========================================================
+     EXTEND NDA VALIDITY MODAL
+============================================================ -->
+
+@if (showExtendNdaModal) {
+
+  <div
+    class="modal-overlay"
+    (click)="closeExtendNdaModal()"
+  >
+
+    <div
+      class="modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="modal-header">
+
+        <div class="modal-title">
+
+          <span class="modal-title-icon">
+            ♢
+          </span>
+
+          <h2>
+            Extend NDA Validity
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="modal-close"
+          [disabled]="extendingNda"
+          (click)="closeExtendNdaModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="modal-body">
+
+        @if (ndaExtendError) {
+
+          <div class="alert error-alert">
+            {{ ndaExtendError }}
+          </div>
+
+        }
+
+
+        <div class="form-field">
+
+          <label>
+            Current Valid Until
+          </label>
+
+          <input
+            type="text"
+            [value]="formatDate(ndaValidUntil)"
+            readonly
+            class="readonly"
+          />
+
+        </div>
+
+<br>
+
+        <div class="form-field">
+
+          <label>
+            New Valid Until
+            <span>*</span>
+          </label>
+
+          <input
+            type="date"
+            [(ngModel)]="newNdaValidUntil"
+            [min]="ndaValidUntil ? (ndaValidUntil | date:'yyyy-MM-dd') : ''"
+            [disabled]="extendingNda"
+          />
+
+        </div>
+<br>
+
+
+        <div class="form-field">
+
+          <label>
+            Supporting Document
+            <span>*</span>
+          </label>
+
+          <div class="file-upload-wrapper">
+
+    <label
+      for="supportingNdaDocument"
+      class="file-upload-button"
+      [class.disabled]="extendingNda"
+    >
+      Choose File
+    </label>
+
+    <input
+      id="supportingNdaDocument"
+      type="file"
+      accept="application/pdf,.pdf"
+      hidden
+      (change)="onSupportingNdaSelected($event)"
+      [disabled]="extendingNda"
+    />
+
+    @if (supportingNdaDocument) {
+      <span class="selected-file-name">
+        {{ supportingNdaDocument.name }}
+      </span>
+    } @else {
+      <span class="no-file-selected">
+        No document selected
+      </span>
+    }
+
+  </div>
+  </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="cancel-button"
+          [disabled]="extendingNda"
+          (click)="closeExtendNdaModal()"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="button"
+          class="save-button"
+          [disabled]="extendingNda"
+          (click)="extendNdaValidity()"
+        >
+
+          @if (extendingNda) {
+
+            Extending...
+
+          } @else {
+
+            Extend Validity
+
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- ===========================================================
+     BLACKLIST MODAL
+============================================================ -->
+
+<!-- @if (showBlacklistModal) {
+
+  <div
+    class="modal-overlay"
+    (click)="closeBlacklistModal()"
+  >
+
+    <div
+      class="modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="modal-header">
+
+        <div class="modal-title danger-title">
+
+          <span class="modal-title-icon">
+            ⊘
+          </span>
+
+          <h2>
+            Add to Blacklist
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="modal-close"
+          (click)="closeBlacklistModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="modal-body">
+
+        <div class="warning-box">
+
+          <span>⚠</span>
+
+          <p>
+            This vendor will be added to the blacklist
+            and will not be allowed for future visits.
+          </p>
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Reason
+            <span>*</span>
+          </label>
+
+          <textarea
+            [(ngModel)]="blacklistReason"
+            maxlength="500"
+            placeholder="Enter reason for blacklisting..."
+          ></textarea>
+
+          <div class="character-count">
+            {{ blacklistReason.length }}/500
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="closeBlacklistModal()"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="button"
+          class="blacklist-confirm-button"
+        >
+          Add to Blacklist
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+} -->

@@ -29,7 +29,64 @@ export interface VendorResponse {
 
 }
 
+export interface VendorEditResponse {
+  vendor: {
+    vendorId: string;
+    visitorId: string;
+  };
 
+  visitor: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobileNumber: string;
+    companyName: string | null;
+    visitorType: string;
+    nationality: string;
+  };
+
+  documents: {
+    documentId: string;
+    documentType: string;
+    documentPath: string | null;
+    createdAt: string | null;
+  }[];
+
+  ndas: {
+    documentId: string;
+    documentPath: string;
+    createdAt: string | null;
+    validUntil: string | null;
+  }[];
+
+  visits: {
+    visitId: string;
+    visitReference: string;
+    visitorType: string;
+    registrationType: string;
+    purpose: string;
+    hostId: string;
+    hostName: string;
+    departmentId: string;
+    departmentName: string;
+    expectedArrivalAt: string | null;
+    expectedDepartureAt: string | null;
+    checkedInAt: string | null;
+    checkedOutAt: string | null;
+    remarks: string | null;
+    status: string;
+  }[];
+
+  blacklist: {
+    id: string;
+    reason: string;
+    status: string;
+    createdAt: string | null;
+  } | null;
+
+  blacklisted: boolean;
+}
 /* =========================================================
    SERVICE
 ========================================================= */
@@ -71,5 +128,30 @@ export class VendorService {
     );
 
   }
+getVendorEditDetails(
+  vendorId: string
+): Observable<VendorEditResponse> {
 
+  return this.http.get<VendorEditResponse>(
+    `${this.apiUrl}/${vendorId}/edit`
+  );
+
+}
+
+
+  /* =======================================================
+     UPLOAD PROOF DOCUMENTS
+  ======================================================= */
+
+  uploadProofDocuments(
+    visitorId: string,
+    formData: FormData
+  ): Observable<any> {
+
+    return this.http.post(
+      `${API_CONFIG.BASE_URL}/api/documents/api/proof-documents/upload/${visitorId}`,
+      formData
+    );
+
+  }
 }
