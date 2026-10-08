@@ -1,0 +1,487 @@
+<div class="vendor-page">
+
+
+       <!-- PAGE HEADER -->
+ 
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="page-icon">
+        🏢
+      </div>
+
+      <div>
+
+        <h1>Vendors</h1>
+
+        <p>
+          Manage and view all registered vendors
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+ 
+       <!-- FILTER CARD -->
+
+  <div class="filter-card">
+
+    <div class="filter-header">
+
+      <div>
+
+        <h3>
+          Vendor Directory
+        </h3>
+
+        <p>
+          Search, filter and sort registered vendors
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="clear-button"
+        (click)="clearFilters()"
+      >
+        Clear
+      </button>
+
+    </div>
+
+
+    <div class="filter-grid">
+
+
+
+      <div class="filter-field search-field">
+
+        <label for="vendorSearch">
+          Search Vendors
+        </label>
+
+        <div class="search-input-wrapper">
+
+          <span class="search-icon">
+            ⌕
+          </span>
+
+          <input
+            id="vendorSearch"
+            type="text"
+            placeholder="Name, email, mobile, company or vendor ID"
+            [(ngModel)]="searchText"
+            (ngModelChange)="onFilterChange()"
+          />
+
+        </div>
+
+      </div>
+
+
+ 
+
+      <div class="filter-field">
+
+        <label for="fromDate">
+          Validity From
+        </label>
+
+        <input
+          id="fromDate"
+          type="date"
+          [(ngModel)]="fromDate"
+          (ngModelChange)="onFilterChange()"
+        />
+
+      </div>
+
+
+
+      <div class="filter-field">
+
+        <label for="toDate">
+          Validity To
+        </label>
+
+        <input
+          id="toDate"
+          type="date"
+          [(ngModel)]="toDate"
+          (ngModelChange)="onFilterChange()"
+        />
+
+      </div>
+
+
+
+      <div class="filter-field">
+
+        <label for="sortBy">
+          Sort By
+        </label>
+
+        <select
+          id="sortBy"
+          [(ngModel)]="sortBy"
+          (ngModelChange)="onSortChange()"
+        >
+
+          <option value="name">
+            Name
+          </option>
+
+          <option value="company">
+            Company
+          </option>
+
+          <option value="validity">
+            Validity
+          </option>
+
+          <option value="id">
+            Vendor ID
+          </option>
+
+          <option value="visitorId">
+            Visitor ID
+          </option>
+
+        </select>
+
+      </div>
+
+
+  
+
+      <div class="filter-field">
+
+        <label for="sortDirection">
+          Order
+        </label>
+
+        <select
+          id="sortDirection"
+          [(ngModel)]="sortDirection"
+          (ngModelChange)="onSortChange()"
+        >
+
+          <option value="asc">
+            Ascending
+          </option>
+
+          <option value="desc">
+            Descending
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+       <!-- ERROR MESSAGE -->
+ 
+
+  @if (errorMessage) {
+
+    <div class="message-card error-message">
+
+      <span class="message-icon">
+        !
+      </span>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+    </div>
+
+  }
+
+
+
+       <!-- LOADING  -->
+
+  @if (loading) {
+
+    <div class="loading-card">
+
+      <div class="loading-spinner"></div>
+
+      <span>
+        Loading vendors...
+      </span>
+
+    </div>
+
+  }
+
+
+ 
+       <!-- TABLE CARD -->
+ 
+
+  @if (!loading && !errorMessage) {
+
+    <div class="vendor-table-card">
+
+
+     
+           <!-- TABLE HEADER -->
+    
+
+      <div class="table-header">
+
+        <div>
+
+          <h2>
+            Vendor Records
+          </h2>
+
+          <p>
+
+            {{ filteredVendors.length }}
+
+            vendor{{
+
+              filteredVendors.length === 1
+                ? ''
+                : 's'
+
+            }}
+
+            found
+
+          </p>
+
+        </div>
+
+
+        <!-- <div class="record-badge">
+
+          {{ filteredVendors.length }}
+
+        </div> -->
+
+      </div>
+
+
+     
+           <!-- TABLE -->
+       
+
+      <div class="table-wrapper">
+
+        <table>
+<thead>
+  <tr>
+    <th>Vendor ID</th>
+    <th>Visitor ID</th>
+    <th>Vendor</th>
+    <th>Contact</th>
+    <th>Company</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+               <!-- TABLE BODY -->
+          
+        <tbody>
+  @for (
+    vendor of paginatedVendors;
+    track vendor.id
+  ) {
+    <tr>
+
+      <!-- VENDOR ID -->
+      <td>
+        <span class="id-badge">
+          {{ vendor.id }}
+        </span>
+      </td>
+
+      <!-- VISITOR ID -->
+      <td>
+        <span class="visitor-id">
+          {{ vendor.visitorId }}
+        </span>
+      </td>
+
+      <!-- VENDOR -->
+      <td>
+        <div class="vendor-cell">
+          <div class="vendor-info">
+            <span class="vendor-name">
+              {{ vendor.name }}
+            </span>
+
+            <span class="vendor-email">
+              {{ vendor.email }}
+            </span>
+          </div>
+        </div>
+      </td>
+
+      <!-- CONTACT -->
+      <td>
+        <div class="contact-cell">
+          <span class="mobile-number">
+            {{ vendor.mobile }}
+          </span>
+
+          <span class="contact-label">
+            Mobile
+          </span>
+        </div>
+      </td>
+
+      <!-- COMPANY -->
+      <td>
+        <span
+          class="company-name"
+          [class.no-company]="vendor.company === '-'"
+        >
+          {{ vendor.company }}
+        </span>
+      </td>
+
+      <!-- ACTIONS -->
+      <td>
+        <button
+          type="button"
+          class="view-button"
+          (click)="viewVendor(vendor.id)"
+        >
+          Edit / View
+        </button>
+      </td>
+
+    </tr>
+  }
+    @if (filteredVendors.length === 0) {
+      <tr>
+        <td
+          colspan="6"
+          class="empty-state"
+        >
+          <div class="empty-icon">
+            🏢
+          </div>
+
+          <h3>No vendors found</h3>
+
+          <p>
+            No vendors match your current filters.
+          </p>
+
+          <button
+            type="button"
+            class="empty-clear-button"
+            (click)="clearFilters()"
+          >
+            Clear Filters
+          </button>
+        </td>
+      </tr>
+    }
+  </tbody>
+        </table>
+
+      </div>
+
+
+     
+           <!-- PAGINATION -->
+     
+      @if (filteredVendors.length > 0) {
+
+        <div class="pagination">
+
+          <div class="pagination-info">
+
+            Showing
+
+            <strong>
+              {{ startRecord }}
+            </strong>
+
+            -
+
+            <strong>
+              {{ endRecord }}
+            </strong>
+
+            of
+
+            <strong>
+              {{ filteredVendors.length }}
+            </strong>
+
+            vendors
+
+          </div>
+
+
+          <div class="pagination-controls">
+
+            <button
+              type="button"
+              class="pagination-button"
+              [disabled]="currentPage === 1"
+              (click)="previousPage()"
+            >
+              ← Previous
+            </button>
+
+
+            <span class="page-number">
+
+              Page
+
+              <strong>
+                {{ currentPage }}
+              </strong>
+
+              of
+
+              <strong>
+                {{ totalPages }}
+              </strong>
+
+            </span>
+
+
+            <button
+              type="button"
+              class="pagination-button"
+              [disabled]="
+                currentPage === totalPages
+              "
+              (click)="nextPage()"
+            >
+              Next →
+            </button>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>

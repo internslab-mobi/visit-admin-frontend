@@ -1,0 +1,255 @@
+<div class="employee-add-page">
+
+  <div class="page-header">
+  <button
+    type="button"
+    class="back-button"
+    (click)="cancel()">
+    ← Back to Employees
+  </button>
+    <div>
+    <h1>Add Employee</h1>
+    <p>Create a new employee</p>
+  </div>
+  
+</div>
+
+
+  <div class="form-card">
+
+    <form
+      [formGroup]="employeeForm"
+      (ngSubmit)="submit()">
+
+      <div class="form-grid">
+
+        <!-- First Name -->
+        <div class="form-group">
+
+          <label for="firstName">
+            First Name
+          </label>
+
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            placeholder="Enter first name"
+            maxlength="100">
+
+          @if (
+            employeeForm.controls.firstName.invalid &&
+            employeeForm.controls.firstName.touched
+          ) {
+
+            <small class="error-text">
+              First name is required.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Last Name -->
+        <div class="form-group">
+
+          <label for="lastName">
+            Last Name
+          </label>
+
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            placeholder="Enter last name"
+            maxlength="100">
+
+          @if (
+            employeeForm.controls.lastName.invalid &&
+            employeeForm.controls.lastName.touched
+          ) {
+
+            <small class="error-text">
+              Last name is required.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Email -->
+        <div class="form-group">
+
+          <label for="email">
+            Email
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="Enter email address"
+            maxlength="150">
+
+          @if (
+            employeeForm.controls.email.invalid &&
+            employeeForm.controls.email.touched
+          ) {
+
+            <small class="error-text">
+
+              @if (employeeForm.controls.email.errors?.['required']) {
+                Email is required.
+              }
+
+              @if (employeeForm.controls.email.errors?.['email']) {
+                Enter a valid email address.
+              }
+
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Mobile -->
+        <div class="form-group">
+
+          <label for="mobileNumber">
+            Mobile Number
+          </label>
+
+          <input
+            id="mobileNumber"
+            type="tel"
+            formControlName="mobileNumber"
+            placeholder="Enter mobile number"
+            maxlength="20">
+
+          @if (
+            employeeForm.controls.mobileNumber.invalid &&
+            employeeForm.controls.mobileNumber.touched
+          ) {
+
+            <small class="error-text">
+              Mobile number is required.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Department -->
+        <div class="form-group">
+
+          <label for="departmentId">
+            Department
+          </label>
+
+          <select
+            id="departmentId"
+            formControlName="departmentId">
+
+            <option value="">
+              Select department
+            </option>
+
+            @for (department of departments; track department.id) {
+
+              <option [value]="department.id">
+                {{ department.departmentName }}
+              </option>
+
+            }
+
+          </select>
+
+          @if (
+            employeeForm.controls.departmentId.invalid &&
+            employeeForm.controls.departmentId.touched
+          ) {
+
+            <small class="error-text">
+              Department is required.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Designation -->
+        <div class="form-group">
+
+          <label for="designation">
+            Designation
+          </label>
+
+          <input
+            id="designation"
+            type="text"
+            formControlName="designation"
+            placeholder="Enter designation"
+            maxlength="100">
+
+          @if (
+            employeeForm.controls.designation.invalid &&
+            employeeForm.controls.designation.touched
+          ) {
+
+            <small class="error-text">
+              Designation is required.
+            </small>
+
+          }
+
+        </div>
+
+      </div>
+
+
+      @if (errorMessage) {
+
+        <div class="form-error">
+          {{ errorMessage }}
+        </div>
+
+      }
+
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="cancel()"
+          [disabled]="isSubmitting">
+
+          Cancel
+
+        </button>
+
+        <button
+          type="submit"
+          class="save-button"
+          [disabled]="isSubmitting">
+
+          @if (isSubmitting) {
+            Saving...
+          } @else {
+            Save Employee
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
