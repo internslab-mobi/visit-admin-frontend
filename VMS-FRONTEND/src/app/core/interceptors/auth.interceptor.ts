@@ -10,7 +10,7 @@ import {
 } from 'rxjs';
 import { AuthService } from '../services/auth/auth.service';
 
-const AUTH_URL = 'http://localhost:8097';
+const AUTH_URL = 'http://localhost:8093';
 const VMS_URL = 'http://localhost:8092';
 
 export const RETRIED_AFTER_REFRESH =

@@ -30,6 +30,8 @@ import { DepartmentAddComponent } from './features/department/department-add/dep
 
 import { EmployeeAddComponent } from './features/employee/employee-add/employee-add';
 
+import { VisitorLogComponent } from './features/visitor-log/visitor-log';
+
 export const routes: Routes = [
   {
     path: '',
@@ -94,6 +96,11 @@ export const routes: Routes = [
         path: 'blacklist/:id',
         component: BlacklistDetails,
       },
+      {
+  path: 'visitor-log',
+  component: VisitorLogComponent,
+},
+      
     ],
   },
   {

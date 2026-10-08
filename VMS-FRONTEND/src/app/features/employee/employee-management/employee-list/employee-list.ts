@@ -41,6 +41,7 @@ export class EmployeeListComponent implements OnInit {
       next: (employees) => {
         console.log('Employees API Response:', employees);
         this.employees = employees;
+      
         this.filteredEmployees = employees;
 
         this.updatePagination();

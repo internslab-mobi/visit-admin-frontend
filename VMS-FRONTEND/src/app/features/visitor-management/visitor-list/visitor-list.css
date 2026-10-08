@@ -217,24 +217,29 @@
 
 
 .filter-grid {
+  width: 100%;
+  max-width: 100%;
+
   display: grid;
 
   grid-template-columns:
-    minmax(260px, 2fr)
-    minmax(150px, 1fr)
-    minmax(145px, 1fr)
-    minmax(145px, 1fr)
-    minmax(150px, 1fr)
-    minmax(150px, 1fr);
+    minmax(0, 2fr)
+    repeat(4, minmax(0, 1fr));
 
   gap: 14px;
 
   align-items: end;
+
+  box-sizing: border-box;
 }
 
 .filter-field {
   min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
+
+
 
 .filter-field label {
   display: block;

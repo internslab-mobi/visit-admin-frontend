@@ -1,0 +1,483 @@
+<div class="visitor-log-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+       ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+      <h1>Visitor Log</h1>
+
+      <p>
+        Search and review visitor activity for security
+        and compliance audits.
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SEARCH & FILTERS
+       ===================================================== -->
+
+  <div class="filter-card">
+
+    <!-- Search -->
+
+    <div class="search-field">
+
+      <label for="search">
+        Search Visitor Log
+      </label>
+
+      <input
+        id="search"
+        type="text"
+        [(ngModel)]="search"
+        (ngModelChange)="onSearchChange()"
+        placeholder="Search visitor name, ID, email, mobile or host name"
+        autocomplete="off"
+      />
+
+    </div>
+
+
+    <div class="filters-row">
+
+      <!-- From Date -->
+
+      <div class="filter-field">
+
+        <label for="fromDate">
+          From Date
+        </label>
+
+        <input
+          id="fromDate"
+          type="date"
+          [(ngModel)]="fromDate"
+          (ngModelChange)="onFilterChange()"
+        />
+
+      </div>
+
+
+      <!-- To Date -->
+
+      <div class="filter-field">
+
+        <label for="toDate">
+          To Date
+        </label>
+
+        <input
+          id="toDate"
+          type="date"
+          [(ngModel)]="toDate"
+          (ngModelChange)="onFilterChange()"
+        />
+
+      </div>
+
+
+      <!-- Host -->
+
+      <div class="filter-field">
+
+        <label for="host">
+          Host
+        </label>
+
+        <select
+          id="host"
+          [(ngModel)]="selectedHostId"
+          (ngModelChange)="onFilterChange()"
+        >
+
+          <option value="">
+            All Hosts
+          </option>
+
+          @for (host of hosts; track host.id) {
+
+            <option [value]="host.id">
+              {{ host.name }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <!-- Visitor Type -->
+
+      <div class="filter-field">
+
+        <label for="visitorType">
+          Visitor Type
+        </label>
+
+        <select
+          id="visitorType"
+          [(ngModel)]="selectedVisitorType"
+          (ngModelChange)="onFilterChange()"
+        >
+
+          <option value="">
+            All Types
+          </option>
+
+          @for (type of visitorTypes; track type) {
+
+            <option [value]="type">
+              {{ type }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <!-- Reset -->
+
+      <div class="filter-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="resetFilters()"
+        >
+          Reset
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       RESULTS
+       ===================================================== -->
+
+  <div class="results-card">
+
+
+    <!-- Initial State -->
+
+    @if (!hasSearched) {
+
+      <div class="empty-state">
+
+        <h3>
+          Search Visitor Logs
+        </h3>
+
+        <p>
+          Start typing a visitor or host name,
+          visitor ID, email or mobile number,
+          or select a filter to load visitor activity.
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- Loading -->
+
+    @if (hasSearched && loading) {
+
+      <div class="empty-state">
+
+        <h3>
+          Loading Visitor Logs
+        </h3>
+
+        <p>
+          Fetching visitor activity...
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- No Results -->
+
+    @if (
+      hasSearched &&
+      !loading &&
+      visitorLogs.length === 0
+    ) {
+
+      <div class="empty-state">
+
+        <h3>
+          No Visitor Records Found
+        </h3>
+
+        <p>
+          No visitor activity matches the current
+          search and filters.
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- =================================================
+         TABLE
+         ================================================= -->
+
+    @if (
+      hasSearched &&
+      !loading &&
+      visitorLogs.length > 0
+    ) {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Visitor
+              </th>
+
+              <th>
+                Reference
+              </th>
+
+              <th>
+                Type
+              </th>
+
+              <th>
+                Company
+              </th>
+
+              <th>
+                Host
+              </th>
+
+              <th>
+                Visit Date
+              </th>
+
+              <th>
+                Arrival
+              </th>
+
+              <th>
+                Departure
+              </th>
+
+              <th>
+                Status
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              log of visitorLogs;
+              track log.visitId
+            ) {
+
+              <tr>
+
+                <!-- Visitor -->
+
+                <td>
+
+                  <div class="visitor-cell">
+
+                    <strong>
+                      {{ log.visitorName }}
+                    </strong>
+
+                    <span>
+                      {{ log.visitorId }}
+                    </span>
+
+                  </div>
+
+                </td>
+
+
+                <!-- Reference -->
+
+                <td>
+                  {{ log.visitReference }}
+                </td>
+
+
+                <!-- Type -->
+
+                <td>
+
+                  <span class="type-badge">
+
+                    {{ log.visitorType }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- Company -->
+
+                <td>
+                  {{ log.companyName || '-' }}
+                </td>
+
+
+                <!-- Host -->
+
+                <td>
+                  {{ log.hostName }}
+                </td>
+
+
+                <!-- Visit Date -->
+
+                <td>
+                  {{ log.visitDate }}
+                </td>
+
+
+                <!-- Arrival -->
+
+                <td>
+                  {{
+                    formatDateTime(
+                      log.checkedInAt ||
+                      log.expectedArrivalAt
+                    )
+                  }}
+                </td>
+
+
+                <!-- Departure -->
+
+                <td>
+                  {{
+                    formatDateTime(
+                      log.checkedOutAt ||
+                      log.expectedDepartureAt
+                    )
+                  }}
+                </td>
+
+
+                <!-- Status -->
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="{
+                      'status-registered':
+                        log.status === 'REGISTERED',
+
+                      'status-checked-in':
+                        log.status === 'CHECKED_IN',
+
+                      'status-checked-out':
+                        log.status === 'CHECKED_OUT',
+
+                      'status-cancelled':
+                        log.status === 'CANCELLED',
+
+                      'status-no-show':
+                        log.status === 'NO_SHOW'
+                    }"
+                  >
+
+                    {{ formatStatus(log.status) }}
+
+                  </span>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- =================================================
+           PAGINATION
+           ================================================= -->
+
+      @if (totalPages > 1) {
+
+        <div class="pagination">
+
+          <button
+            type="button"
+            [disabled]="currentPage === 0 || loading"
+            (click)="goToPage(currentPage - 1)"
+          >
+            Previous
+          </button>
+
+
+          @for (
+            page of getPageNumbers();
+            track page
+          ) {
+
+            <button
+              type="button"
+              [class.active]="page === currentPage"
+              [disabled]="loading"
+              (click)="goToPage(page)"
+            >
+              {{ page + 1 }}
+            </button>
+
+          }
+
+
+          <button
+            type="button"
+            [disabled]="
+              currentPage >= totalPages - 1 ||
+              loading
+            "
+            (click)="goToPage(currentPage + 1)"
+          >
+            Next
+          </button>
+
+        </div>
+
+      }
+
+    }
+
+  </div>
+
+</div>

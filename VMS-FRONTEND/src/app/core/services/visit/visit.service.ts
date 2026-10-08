@@ -3,13 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { API_CONFIG } from '../../../../environments/environment.dev';
-
+import { HttpParams } from '@angular/common/http';
 import {
   RegistrationRequest,
   RegistrationResponse
 } from '../../models/registration/registration.model';
 
 import { VisitDetailResponse } from '../../models/visit/visit-detail.model';
+import {
+  VisitorLogPage
+} from '../../models/visitor-log/visitor-log.model';
 
 
 export interface VisitDashboardResponse {
@@ -57,29 +60,34 @@ export class VisitService {
 
 
   getDashboardVisits(
-  sortDirection: 'ASC' | 'DESC',
-  sortBy: 'id' | 'name' | 'company' | 'visitDate'
-): Observable<VisitDashboardResponse[]> {
-  return this.http.get<VisitDashboardResponse[]>(
-    this.apiUrl,
-    {
-      params: {
-        sortDirection,
-        sortBy
+    sortDirection: 'ASC' | 'DESC',
+    sortBy: 'id' | 'name' | 'company' | 'visitDate'
+  ): Observable<VisitDashboardResponse[]> {
+
+    return this.http.get<VisitDashboardResponse[]>(
+      this.apiUrl,
+      {
+        params: {
+          sortDirection,
+          sortBy
+        }
       }
-    }
-  );
-}
+    );
+  }
+
 
   getVisitDetails(
-      visitId: string
-    ): Observable<VisitDetailResponse> {
-      return this.http.get<VisitDetailResponse>(
-        `${this.apiUrl}/${visitId}`
-      );
-    }
+    visitId: string
+  ): Observable<VisitDetailResponse> {
+
+    return this.http.get<VisitDetailResponse>(
+      `${this.apiUrl}/${visitId}`
+    );
+  }
+
 
   getVisitorPhoto(visitorId: string): Observable<Blob> {
+
     return this.http.get(
       `${API_CONFIG.BASE_URL}/api/documents/visitor/${encodeURIComponent(visitorId)}/photo`,
       {
@@ -88,59 +96,116 @@ export class VisitService {
     );
   }
 
-    checkIn(
-      visitId: string,
-      request: {
-        aadharNumber?: string;
-        panNumber?: string;
-        passportNumber?: string;
-      },
-      photo: File
-    ): Observable<VisitDetailResponse> {
 
-      const formData = new FormData();
+  checkIn(
+    visitId: string,
+    request: {
+      aadharNumber?: string;
+      panNumber?: string;
+      passportNumber?: string;
+    },
+    photo: File
+  ): Observable<VisitDetailResponse> {
 
-      formData.append(
-        'request',
-        new Blob(
-          [JSON.stringify(request)],
-          { type: 'application/json' }
-        )
-      );
+    const formData = new FormData();
 
-      formData.append(
-        'photo',
-        photo
-      );
+    formData.append(
+      'request',
+      new Blob(
+        [JSON.stringify(request)],
+        { type: 'application/json' }
+      )
+    );
 
-      return this.http.patch<VisitDetailResponse>(
-        `${this.apiUrl}/${visitId}/check-in`,
-        formData
-      );
+    formData.append(
+      'photo',
+      photo
+    );
+
+    return this.http.patch<VisitDetailResponse>(
+      `${this.apiUrl}/${visitId}/check-in`,
+      formData
+    );
+  }
+
+
+  verifyIdentity(
+    visitId: string,
+    request: {
+      aadharNumber?: string;
+      panNumber?: string;
+      passportNumber?: string;
     }
+  ): Observable<void> {
 
-    verifyIdentity(
-        visitId: string,
-        request: {
-          aadharNumber?: string;
-          panNumber?: string;
-          passportNumber?: string;
-        }
-      ): Observable<void> {
-        return this.http.post<void>(
-          `${this.apiUrl}/${visitId}/verify-identity`,
-          request
-        );
-      }
+    return this.http.post<void>(
+      `${this.apiUrl}/${visitId}/verify-identity`,
+      request
+    );
+  }
 
-    checkOut(
-       visitId: string
-      ): Observable<VisitDetailResponse> {
 
-        return this.http.patch<VisitDetailResponse>(
-          `${this.apiUrl}/${visitId}/check-out`,
-          {}
-        );
-      }
+  checkOut(
+    visitId: string
+  ): Observable<VisitDetailResponse> {
 
+    return this.http.patch<VisitDetailResponse>(
+      `${this.apiUrl}/${visitId}/check-out`,
+      {}
+    );
+  }
+
+
+  cancelVisit(
+    visitId: string
+  ): Observable<VisitDetailResponse> {
+
+    return this.http.patch<VisitDetailResponse>(
+      `${this.apiUrl}/${visitId}/cancel`,
+      {}
+    );
+  }
+
+  getVisitorLog(
+  search: string = '',
+  fromDate: string = '',
+  toDate: string = '',
+  status: string = '',
+  visitorType: string = '',
+  hostId: string = '',
+  page: number = 0,
+  size: number = 10,
+  sortDirection: 'ASC' | 'DESC' = 'DESC'
+): Observable<VisitorLogPage> {
+
+  let params = new HttpParams()
+    .set('page', page.toString())
+    .set('size', size.toString())
+    .set('sortDirection', sortDirection);
+
+  if (search.trim()) {
+    params = params.set('search', search.trim());
+  }
+
+  if (fromDate) {
+    params = params.set('fromDate', fromDate);
+  }
+
+  if (toDate) {
+    params = params.set('toDate', toDate);
+  }
+
+  if (visitorType) {
+    params = params.set('visitorType', visitorType);
+  }
+
+  if (hostId) {
+    params = params.set('hostId', hostId);
+  }
+
+  return this.http.get<VisitorLogPage>(
+    `${API_CONFIG.BASE_URL}/api/visitor-log`,
+    { params }
+  );
+}
 }

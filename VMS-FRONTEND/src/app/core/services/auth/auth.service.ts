@@ -12,18 +12,28 @@ import {
   throwError,
 } from 'rxjs';
 
-const AUTH_URL = 'http://localhost:8097/api/auth';
+const AUTH_URL = 'http://localhost:8093/api/auth';
 
 export interface LoginRequest {
   email: string;
   password: string;
 }
 
+export interface UserResponse {
+  userId: string;
+  employeeId: string;
+  email: string;
+  fullName: string;
+  role: string;
+  status: string;
+  mustChangePassword: boolean;
+}
+
 export interface LoginResponse {
   userId: string;
   role: string;
   mustChangePassword: boolean;
-  message: string;
+  user: UserResponse;
 }
 
 @Injectable({
@@ -138,6 +148,20 @@ export class AuthService {
     this.currentUserSignal.set(null);
     this.restoration$ = null;
   }
+
+  logout(): Observable<void> {
+  return this.http.post<void>(
+    `${AUTH_URL}/logout`,
+    {},
+    {
+      withCredentials: true,
+    },
+  ).pipe(
+    tap(() => {
+      this.clearSession();
+    }),
+  );
+}
 
   private fetchCsrfToken(): Observable<string> {
     return this.http
