@@ -136,10 +136,26 @@
           <label>Matching Documents</label>
 
           <div class="document-list">
-            <span class="document-badge">
-              Not available
-            </span>
-          </div>
+
+  @if (record.matchingProofTypes?.length) {
+
+    @for (proofType of record.matchingProofTypes; track proofType) {
+
+      <span class="document-badge">
+        {{ proofType }}
+      </span>
+
+    }
+
+  } @else {
+
+    <span class="document-badge">
+      Not available
+    </span>
+
+  }
+
+</div>
 
         </div>
 
@@ -148,10 +164,9 @@
       <div class="verification-note">
         <span class="note-icon">ⓘ</span>
         <p>
-          Documents used for blacklist verification are not included
-          in the current API response. Original document numbers and
-          blind-index values are not displayed for security reasons.
-        </p>
+  Proof numbers and uploaded document files are not displayed
+  for security reasons.
+</p>
       </div>
 
     </div>

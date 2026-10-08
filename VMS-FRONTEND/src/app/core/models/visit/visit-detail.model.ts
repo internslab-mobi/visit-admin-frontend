@@ -21,6 +21,7 @@ export interface VisitDetailResponse {
   checkedInAt: string | null;
 
   checkedOutAt: string | null;
+  totalDurationSeconds: number | null;
 
   remarks: string | null;
 

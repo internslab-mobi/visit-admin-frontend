@@ -220,6 +220,14 @@
               <span class="meta-subtext">{{ formatVisitTime(visit.expectedDepartureAt) }}</span>
             </div>
 
+            <!-- Total Duration -->
+<div class="info-item">
+  <span class="label">Total Duration</span>
+  <span class="value">
+    {{ formatDuration(visitDetails.totalDurationSeconds) }}
+  </span>
+</div>
+
             @if (visit.remarks) {
               <div class="information-item information-item-wide">
                 <span class="field-label">Remarks</span>
