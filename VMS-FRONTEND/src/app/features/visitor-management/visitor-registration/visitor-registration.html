@@ -117,6 +117,7 @@
             <select
               id="visitorType"
               formControlName="visitorType"
+              (change)="onVisitorTypeChange()"
             >
 
               <option value="">
@@ -197,6 +198,88 @@
 
         </div>
 
+        <!-- VENDOR SELECTION -->
+
+        <div
+          class="field-group vendor-selection-field"
+          *ngIf="registrationForm.get('visitorType')?.value === 'VENDOR'"
+        >
+
+          <label for="vendorId">
+            Select Vendor
+            <span class="required" *ngIf="!isCreatingNewVendor">*</span>
+          </label>
+
+          <div
+            class="input-wrapper"
+            [class.input-error]="isInvalid('vendorId')"
+          >
+
+            <span class="input-icon">
+              ▥
+            </span>
+
+            <select
+              id="vendorId"
+              formControlName="vendorId"
+              (change)="onVendorChange()"
+              [disabled]="isCreatingNewVendor || isLoadingVendors"
+            >
+
+              <option value="">
+                {{
+                  isLoadingVendors
+                    ? 'Loading vendors...'
+                    : 'Select Vendor'
+                }}
+              </option>
+
+              <option
+                *ngFor="let vendor of vendors"
+                [value]="vendor.id"
+              >
+                {{ getVendorDisplayName(vendor) }}
+              </option>
+
+            </select>
+
+          </div>
+
+          <small class="field-hint" *ngIf="isExistingVendor">
+            Existing vendor selected. Personal details are loaded from the vendor master.
+          </small>
+
+          <small class="field-hint" *ngIf="isLoadingVendorDetails">
+            Loading vendor details...
+          </small>
+
+          <div class="vendor-create-actions">
+            <button
+              type="button"
+              class="vendor-create-button"
+              *ngIf="!isCreatingNewVendor"
+              (click)="createNewVendor()"
+            >
+              + Create New Vendor
+            </button>
+
+            <button
+              type="button"
+              class="vendor-cancel-button"
+              *ngIf="isCreatingNewVendor"
+              (click)="cancelNewVendor()"
+            >
+              Cancel New Vendor
+            </button>
+          </div>
+
+          <small class="field-hint vendor-new-hint" *ngIf="isCreatingNewVendor">
+            Enter the new vendor's personal details below. The vendor will be created when this visit is registered.
+          </small>
+
+        </div>
+
+
       </div>
 
     </section>
@@ -242,6 +325,7 @@
 
             <input
               id="firstName"
+              [class.readonly-field]="isExistingProfile"
               type="text"
               formControlName="firstName"
               placeholder="Enter first name"
@@ -280,6 +364,7 @@
 
             <input
               id="lastName"
+              [class.readonly-field]="isExistingProfile"
               type="text"
               formControlName="lastName"
               placeholder="Enter last name"
@@ -318,6 +403,9 @@
 
             <input
               id="email"
+              [class.readonly-field]="isExistingProfile"
+              (blur)="checkExistingVisitorByContact()"
+              (input)="onContactInputChanged()"
               type="email"
               formControlName="email"
               placeholder="example@domain.com"
@@ -356,6 +444,9 @@
 
             <input
               id="mobileNumber"
+              [class.readonly-field]="isExistingProfile"
+              (blur)="checkExistingVisitorByContact()"
+              (input)="onContactInputChanged()"
               type="tel"
               formControlName="mobileNumber"
               maxlength="10"
@@ -382,7 +473,8 @@
 
           <label for="companyName">
             Company / Organization
-            <span class="optional">(Optional)</span>
+            <span class="required" *ngIf="isCreatingNewVendor">*</span>
+            <span class="optional" *ngIf="!isCreatingNewVendor">(Optional)</span>
           </label>
 
           <div
@@ -396,6 +488,7 @@
 
             <input
               id="companyName"
+              [class.readonly-field]="isExistingProfile"
               type="text"
               formControlName="companyName"
               placeholder="Enter company name"
@@ -473,51 +566,91 @@
 
         <div class="field-group">
 
-          <label for="hostId">
+          <label for="employeeSearch">
             Person to Meet
             <span class="required">*</span>
           </label>
 
           <div
-            class="input-wrapper"
+            class="employee-autocomplete"
             [class.input-error]="isInvalid('hostId')"
           >
 
-            <span class="input-icon">
-              ♙
-            </span>
+            <div class="input-wrapper">
+              <span class="input-icon">♙</span>
 
-            <select
-              id="hostId"
-              formControlName="hostId"
-              (change)="onEmployeeChange()"
+              <input
+                id="employeeSearch"
+                type="text"
+                autocomplete="off"
+                [value]="employeeSearchTerm"
+                (input)="employeeSearchTerm = $any($event.target).value; onEmployeeSearchInput()"
+                (focus)="openEmployeeDropdown()"
+                (blur)="closeEmployeeDropdown()"
+                [placeholder]="isLoadingEmployees ? 'Loading employees...' : 'Search by name or employee ID'"
+                [disabled]="isLoadingEmployees"
+                role="combobox"
+                [attr.aria-expanded]="isEmployeeDropdownOpen"
+                aria-controls="employee-search-results"
+              />
+
+              <button
+                *ngIf="employeeSearchTerm && !isLoadingEmployees"
+                type="button"
+                class="employee-clear-button"
+                aria-label="Clear employee selection"
+                (mousedown)="$event.preventDefault()"
+                (click)="employeeSearchTerm = ''; registrationForm.get('hostId')?.reset(); registrationForm.patchValue({departmentName: ''}); onEmployeeSearchInput()"
+              >
+                ×
+              </button>
+            </div>
+
+            <div
+              id="employee-search-results"
+              class="employee-search-dropdown"
+              *ngIf="isEmployeeDropdownOpen && !isLoadingEmployees"
             >
 
-              <option value="">
-                {{
-                  isLoadingEmployees
-                    ? 'Loading employees...'
-                    : 'Select Employee'
-                }}
-              </option>
-
-              <option
-                *ngFor="let employee of employees"
-                [value]="employee.id"
+              <button
+                type="button"
+                class="employee-search-option"
+                *ngFor="let employee of filteredEmployees"
+                (mousedown)="selectEmployee(employee)"
               >
-                {{ getEmployeeDisplayName(employee) }}
-              </option>
+                <span class="employee-option-name">
+                  {{ employee.firstName }} {{ employee.lastName }}
+                </span>
+                <span class="employee-option-id">
+                  {{ getEmployeeDisplayName(employee).split(' — ')[0] }}
+                </span>
+              </button>
 
-            </select>
+              <div
+                class="employee-search-empty"
+                *ngIf="filteredEmployees.length === 0"
+              >
+                {{ getEmployeeSearchResultText() }}
+              </div>
+
+              <div
+                class="employee-search-footer"
+                *ngIf="filteredEmployees.length > 0"
+              >
+                {{ getEmployeeSearchResultText() }}
+              </div>
+
+            </div>
 
           </div>
 
-          <div
-            *ngIf="isInvalid('hostId')"
-            class="error-message"
-          >
+          <div *ngIf="isInvalid('hostId')" class="error-message">
             Please select the person to meet.
           </div>
+
+          <small class="field-hint">
+            Type the employee name or ID to search and select.
+          </small>
 
         </div>
 
@@ -680,7 +813,7 @@
 
 
    
-         <!-- 5. NATIONALITY & ID PROOF -->
+     <!-- 5. NATIONALITY & ID PROOF -->
          
 
     <section class="form-section">
@@ -707,6 +840,14 @@
           Select nationality and provide the required identification details.
         </span>
 
+      </div>
+
+      <div
+        class="vendor-proof-note"
+        *ngIf="isExistingProfile && !isLoadingVendorDetails"
+      >
+        <span class="vendor-proof-icon">✓</span>
+        <span>Existing visitor details are loaded. Existing supporting/proof documents are shown below when available; enter the proof number below for identity verification.</span>
       </div>
 
 
@@ -904,48 +1045,7 @@
     </section>
 
 
-   
-     <!-- VENDOR - VALIDITY -->
-    
-<div
-  class="field-group"
-  *ngIf="
-    registrationForm.get('visitorType')?.value === 'VENDOR'
-  "
->
-
-  <label for="validity">
-    Validity
-    <span class="required">*</span>
-  </label>
-
-  <div
-    class="input-wrapper"
-    [class.input-error]="isInvalid('validity')"
-  >
-
-    <span class="input-icon">
-      📅
-    </span>
-
-    <input
-      id="validity"
-      type="datetime-local"
-      formControlName="validity"
-    />
-
-  </div>
-
-  <div
-    *ngIf="isInvalid('validity')"
-    class="error-message"
-  >
-    Please select the vendor validity date and time.
-  </div>
-
-</div>
-   
-         <!-- 6. DOCUMENTS -->
+     <!-- 6. DOCUMENTS -->
          
 
     <section class="form-section">
@@ -963,11 +1063,58 @@
       </div>
 
       <p class="field-hint">
-        Upload supporting documents if required.
+        Upload supporting documents if required for existing visitor, documents neccessary for new registration
       </p>
 
 
       <div class="documents-upload-section">
+
+        <!-- EXISTING VENDOR DOCUMENTS -->
+
+        <div
+          class="existing-vendor-documents"
+          *ngIf="isExistingProfile && !isLoadingVendorDetails"
+        >
+
+          <div class="existing-documents-header">
+            <strong>Existing Proof / Supporting Documents</strong>
+            <span *ngIf="hasExistingVendorDocuments()">
+              {{ existingVendorDocuments.length }} available
+            </span>
+          </div>
+
+          <div
+            class="existing-document-item"
+            *ngFor="let document of existingVendorDocuments"
+          >
+            <div class="document-info">
+              <div class="document-icon">📄</div>
+              <div class="document-details">
+                <strong>{{ getDocumentName(document.documentPath) }}</strong>
+                <small *ngIf="document.createdAt">
+                  Uploaded {{ document.createdAt | date:'dd MMM yyyy, hh:mm a' }}
+                </small>
+              </div>
+            </div>
+
+            <a
+              class="view-document-button"
+              [href]="getDocumentViewUrl(document.documentId)"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View
+            </a>
+          </div>
+
+          <div
+            class="no-existing-documents"
+            *ngIf="!hasExistingVendorDocuments()"
+          >
+            No existing supporting documents are available.
+          </div>
+
+        </div>
 
         <!-- SELECTED DOCUMENTS -->
 
@@ -1214,7 +1361,7 @@
   </section>
 
 </div>
-```
+
 
   </main>
 

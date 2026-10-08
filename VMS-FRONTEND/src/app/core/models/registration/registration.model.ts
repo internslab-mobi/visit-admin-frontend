@@ -39,7 +39,6 @@ nationality: Nationality;
  aadharNumber: string | null;
   panNumber: string | null;
   passportNumber: string | null;
-   validity: string | null;
 }
 
 

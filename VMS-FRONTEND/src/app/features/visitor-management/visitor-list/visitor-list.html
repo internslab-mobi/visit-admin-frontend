@@ -333,11 +333,11 @@
       </div>
 
 
-      <div class="record-badge">
+      <!-- <div class="record-badge">
 
         {{ filteredVisitors.length }}
 
-      </div>
+      </div> -->
 
     </div>
 
@@ -351,45 +351,44 @@
       <table>
 
 
-        <!-- TABLE HEAD -->
+    <thead>
+  <tr>
+    <!-- VISITOR ID -->
+    <th>
+      Visitor ID
+    </th>
 
-        <thead>
+    <!-- VISITOR -->
+    <th>
+      Visitor
+    </th>
 
-          <tr>
+    <!-- CONTACT -->
+    <th>
+      Contact
+    </th>
 
-            <th>
-              Visitor
-            </th>
+    <!-- COMPANY -->
+    <th>
+      Company
+    </th>
 
-            <th>
-              Contact
-            </th>
+    <!-- VISITOR TYPE -->
+    <th>
+      Type
+    </th>
 
-            <th>
-              Company
-            </th>
+    <!-- LAST VISIT -->
+    <th>
+      Last Visit
+    </th>
 
-            <th>
-              Type
-            </th>
-
-            <th>
-              Last Visit
-            </th>
-
-            <th>
-              Visitor ID
-            </th>
-
-            <th>
-              Actions
-            </th>
-
-          </tr>
-
-        </thead>
-
-
+    <!-- ACTIONS -->
+    <th>
+      Actions
+    </th>
+  </tr>
+</thead>
         <!-- TABLE BODY -->
 
         <tbody>
@@ -401,219 +400,98 @@
           ) {
 
 
-            <tr>
-
-
-          
-                   <!-- VISITOR -->
-             
-
-              <td>
-
-                <div class="visitor-cell">
-
-
-                  <div class="avatar">
-
-                    {{ visitor.name
-                      .charAt(0)
-                      .toUpperCase()
-                    }}
-
-                  </div>
-
-
-                  <div class="visitor-info">
-
-                    <span class="visitor-name">
-
-                      {{ visitor.name }}
-
-                    </span>
-
-
-                    <span class="visitor-email">
-
-                      {{ visitor.email }}
-
-                    </span>
-
-                  </div>
-
-                </div>
-
-              </td>
-
-
-          
-                   <!-- CONTACT -->
-             
-
-              <td>
-
-                <div class="contact-cell">
-
-                  <span class="mobile-number">
-
-                    {{ visitor.mobile }}
-
-                  </span>
-
-
-                  <span class="contact-label">
-
-                    Mobile
-
-                  </span>
-
-                </div>
-
-              </td>
-
-
-          
-                   <!-- COMPANY -->
-             
-
-              <td>
-
-                <span
-                  class="company-name"
-                  [class.no-company]="
-                    visitor.company === '-'
-                  "
-                >
-
-                  {{ visitor.company }}
-
-                </span>
-
-              </td>
-
-
-          
-                   <!-- VISITOR TYPE -->
-             
-
-              <td>
-
-
-                @if (
-                  visitor.visitorType !== '-'
-                ) {
-
-
-                  <span
-                    class="visitor-type"
-
-                    [class.type-visitor]="
-                      visitor.visitorType === 'VISITOR'
-                    "
-
-                    [class.type-guest]="
-                      visitor.visitorType === 'GUEST'
-                    "
-
-                    [class.type-vendor]="
-                      visitor.visitorType === 'VENDOR'
-                    "
-                  >
-
-                    {{ getVisitorTypeLabel(
-                         visitor.visitorType
-                       ) }}
-
-                  </span>
-
-
-                } @else {
-
-
-                  <span class="no-type">
-
-                    -
-
-                  </span>
-
-
-                }
-
-
-              </td>
-
-
-          
-                   <!-- LAST VISIT -->
-             
-
-              <td>
-
-
-                <div class="visit-date-cell">
-
-
-                  <span class="visit-date">
-
-                    {{ formatVisitDate(
-                         visitor.lastVisitDate
-                       ) }}
-
-                  </span>
-
-
-                  @if (
-                    visitor.lastVisitDate
-                  ) {
-
-                    <span class="visit-time">
-
-                      {{ formatVisitTime(
-                           visitor.lastVisitDate
-                         ) }}
-
-                    </span>
-
-                  }
-
-
-                </div>
-
-              </td>
-
-
-          
-                   <!-- VISITOR ID -->
-             
-
-              <td>
-
-                <span class="visitor-id">
-
-                  {{ visitor.id }}
-
-                </span>
-
-              </td>
-
-
-          
-                   <!-- ACTION -->
-             
-
-              <td>
-
-                <button
-  class="action-button"
-  type="button"
-  (click)="editVisitor(visitor.id)"
->
-  Edit
-</button>
-
-              </td>
-
-
-            </tr>
+           <tr>
+
+  <!-- VISITOR ID -->
+  <td>
+    <span class="visitor-id">
+      {{ visitor.id }}
+    </span>
+  </td>
+
+  <!-- VISITOR -->
+  <td>
+    <div class="visitor-cell">
+      <!-- <div class="avatar">
+        {{ visitor.name.charAt(0).toUpperCase() }}
+      </div> -->
+
+      <div class="visitor-info">
+        <span class="visitor-name">
+          {{ visitor.name }}
+        </span>
+
+        <!-- <span class="visitor-email">
+          {{ visitor.email }}
+        </span> -->
+      </div>
+    </div>
+  </td>
+
+  <!-- CONTACT -->
+  <td>
+    <div class="contact-cell">
+      <span class="mobile-number">
+        {{ visitor.mobile }}
+      </span>
+
+    
+    </div>
+  </td>
+
+  <!-- COMPANY -->
+  <td>
+    <span
+      class="company-name"
+      [class.no-company]="visitor.company === '-'"
+    >
+      {{ visitor.company }}
+    </span>
+  </td>
+
+  <!-- VISITOR TYPE -->
+  <td>
+    @if (visitor.visitorType !== '-') {
+      <span
+        class="visitor-type"
+        [class.type-visitor]="visitor.visitorType === 'VISITOR'"
+        [class.type-guest]="visitor.visitorType === 'GUEST'"
+        [class.type-vendor]="visitor.visitorType === 'VENDOR'"
+      >
+        {{ getVisitorTypeLabel(visitor.visitorType) }}
+      </span>
+    } @else {
+      <span class="no-type">-</span>
+    }
+  </td>
+
+  <!-- LAST VISIT -->
+  <td>
+    <div class="visit-date-cell">
+      <span class="visit-date">
+        {{ formatVisitDate(visitor.lastVisitDate) }}
+      </span>
+
+      @if (visitor.lastVisitDate) {
+        <span class="visit-time">
+          {{ formatVisitTime(visitor.lastVisitDate) }}
+        </span>
+      }
+    </div>
+  </td>
+
+  <!-- ACTION -->
+  <td>
+    <button
+      class="action-button"
+      type="button"
+      (click)="editVisitor(visitor.id)"
+    >
+      Edit / View
+    </button>
+  </td>
+
+</tr>
 
 
           }

@@ -30,7 +30,14 @@ import {
 
 import { EmployeeService } from '../../../core/services/employee/employee.service';
 import { VisitService } from '../../../core/services/visit/visit.service';
-import { ProofDocumentService } from '../../../core/services/proof-document/proof-document.service';
+import { ProofDocumentService } from '../../../core/services/document/proof-document.service';
+import { VendorService, VendorResponse } from '../../../core/services/vendor/vendor.service';
+import {
+  VisitorService,
+  VisitorDocument,
+  VisitorEditResponse,
+  VisitorResponse
+} from '../../../core/services/visitor/visitor.service';
 
 
 @Component({
@@ -53,6 +60,8 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   private readonly employeeService = inject(EmployeeService);
   private readonly visitService = inject(VisitService);
   private readonly proofDocumentService = inject(ProofDocumentService);
+  private readonly vendorService = inject(VendorService);
+  private readonly visitorService = inject(VisitorService);
   private readonly cdr = inject(ChangeDetectorRef);
 
 
@@ -61,6 +70,17 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   
 
   employees: Employee[] = [];
+  vendors: VendorResponse[] = [];
+  visitors: VisitorResponse[] = [];
+  existingVendorDocuments: VisitorDocument[] = [];
+  selectedVendorId: string | null = null;
+  selectedVisitorId: string | null = null;
+  isExistingVendor = false;
+  isExistingVisitor = false;
+  isCreatingNewVendor = false;
+  isLoadingVendors = false;
+  isLoadingVisitors = false;
+  isLoadingVendorDetails = false;
 
 
   
@@ -78,6 +98,8 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
       '',
       Validators.required
     ],
+
+    vendorId: [''],
 
     firstName: [
       '',
@@ -169,9 +191,6 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
     passportNumber: this.fb.control<string | null>(null),
 
-    validity: this.fb.control<string | null>(null),
-
-
     // ------------------------------------------------------------------------
     // Documents
     // ------------------------------------------------------------------------
@@ -185,6 +204,10 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   
 
   isLoadingEmployees = false;
+  employeeSearchTerm = '';
+  filteredEmployees: Employee[] = [];
+  isEmployeeDropdownOpen = false;
+  private readonly maxEmployeeSearchResults = 50;
   isSubmitting = false;
 
   registrationSuccess = false;
@@ -210,6 +233,8 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.loadEmployees();
+    this.loadVendors();
+    this.loadVisitors();
 
     const currentTime = this.getCurrentDateTime();
 
@@ -284,6 +309,13 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
               employee => employee.status === 'ACTIVE'
             );
 
+          this.employeeSearchTerm = '';
+          this.filteredEmployees = this.employees.slice(
+            0,
+            this.maxEmployeeSearchResults
+          );
+          this.isEmployeeDropdownOpen = false;
+
           this.isLoadingEmployees = false;
 
           this.cdr.detectChanges();
@@ -313,40 +345,586 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
 
-  onEmployeeChange(): void {
+  onEmployeeSearchInput(): void {
 
-    const hostId =
-      this.registrationForm.get('hostId')?.value;
+    const term =
+      this.employeeSearchTerm.trim().toLowerCase();
 
-
-    const employee =
-      this.employees.find(
-        item => item.id === hostId
+    if (!term) {
+      this.filteredEmployees = this.employees.slice(
+        0,
+        this.maxEmployeeSearchResults
       );
+      this.isEmployeeDropdownOpen = true;
+      return;
+    }
 
+    this.filteredEmployees = this.employees
+      .filter(employee => {
+        const employeeId = String(
+          (employee as any).employeeCode ??
+          employee.id ??
+          ''
+        ).toLowerCase();
+
+        const firstName = String(employee.firstName ?? '').toLowerCase();
+        const lastName = String(employee.lastName ?? '').toLowerCase();
+        const fullName = `${firstName} ${lastName}`.trim();
+
+        return (
+          employeeId.includes(term) ||
+          firstName.includes(term) ||
+          lastName.includes(term) ||
+          fullName.includes(term)
+        );
+      })
+      .slice(0, this.maxEmployeeSearchResults);
+
+    this.isEmployeeDropdownOpen = true;
+  }
+
+  openEmployeeDropdown(): void {
+    if (this.isLoadingEmployees) {
+      return;
+    }
+
+    this.onEmployeeSearchInput();
+    this.isEmployeeDropdownOpen = true;
+  }
+
+  closeEmployeeDropdown(): void {
+    setTimeout(() => {
+      this.isEmployeeDropdownOpen = false;
+      this.cdr.detectChanges();
+    }, 150);
+  }
+
+  selectEmployee(employee: Employee): void {
+    this.employeeSearchTerm = this.getEmployeeDisplayName(employee);
+    this.isEmployeeDropdownOpen = false;
 
     this.registrationForm.patchValue({
-      departmentName:
-        employee?.departmentName ?? ''
+      hostId: employee.id
+    });
+
+    this.setDepartmentFromEmployee(employee);
+    this.registrationForm.get('hostId')?.markAsTouched();
+  }
+
+  onEmployeeChange(): void {
+    const hostId = this.registrationForm.get('hostId')?.value;
+
+    const employee = this.employees.find(
+      item => String(item.id) === String(hostId)
+    );
+
+    if (!employee) {
+      this.registrationForm.patchValue({
+        departmentName: ''
+      });
+      return;
+    }
+
+    this.employeeSearchTerm = this.getEmployeeDisplayName(employee);
+    this.setDepartmentFromEmployee(employee);
+  }
+
+  private setDepartmentFromEmployee(employee: Employee): void {
+    const departmentName =
+      (employee as any).department?.departmentName ??
+      (employee as any).department?.name ??
+      (employee as any).departmentName ??
+      '';
+
+    this.registrationForm.patchValue({
+      departmentName
+    });
+
+    this.cdr.detectChanges();
+  }
+
+  getEmployeeDisplayName(employee: Employee): string {
+    const employeeId = String(
+      (employee as any).employeeCode ??
+      employee.id ??
+      ''
+    );
+
+    const name = `${employee.firstName ?? ''} ${employee.lastName ?? ''}`.trim();
+
+    return `${employeeId} — ${name}`;
+  }
+
+  getEmployeeSearchResultText(): string {
+    const count = this.filteredEmployees.length;
+
+    if (count === 0) {
+      return this.employeeSearchTerm.trim()
+        ? 'No matching employees found.'
+        : 'No active employees found.';
+    }
+
+    return count === this.maxEmployeeSearchResults
+      ? `Showing first ${this.maxEmployeeSearchResults} matches. Refine your search.`
+      : `${count} employee${count === 1 ? '' : 's'} found.`;
+  }
+
+
+  
+
+  // Vendor / Existing Visitor
+
+  private loadVendors(): void {
+
+    this.isLoadingVendors = true;
+
+    const subscription =
+      this.vendorService.getVendors().subscribe({
+
+        next: (vendors: VendorResponse[]) => {
+          this.vendors = vendors;
+          this.isLoadingVendors = false;
+          this.cdr.detectChanges();
+        },
+
+        error: (error: any) => {
+          console.error('Failed to load vendors:', error);
+          this.vendors = [];
+          this.isLoadingVendors = false;
+          this.errorMessage =
+            error?.error?.message ?? 'Unable to load vendors.';
+          this.cdr.detectChanges();
+        }
+      });
+
+    this.subscriptions.add(subscription);
+  }
+
+  private loadVisitors(): void {
+
+    this.isLoadingVisitors = true;
+
+    const subscription =
+      this.visitorService.getVisitors().subscribe({
+
+        next: (visitors: VisitorResponse[]) => {
+          this.visitors = visitors;
+          this.isLoadingVisitors = false;
+          this.cdr.detectChanges();
+        },
+
+        error: (error: any) => {
+          console.error('Failed to load visitors:', error);
+          this.visitors = [];
+          this.isLoadingVisitors = false;
+        }
+      });
+
+    this.subscriptions.add(subscription);
+  }
+
+  getVendorDisplayName(vendor: VendorResponse): string {
+    const name = `${vendor.firstName} ${vendor.lastName}`.trim();
+    const company = vendor.companyName?.trim();
+
+    return company
+      ? `${name} — ${vendor.id} (${company})`
+      : `${name} — ${vendor.id}`;
+  }
+
+  onVisitorTypeChange(): void {
+
+    const visitorType =
+      this.registrationForm.get('visitorType')?.value;
+
+    this.clearVendorSelection();
+
+    if (visitorType === 'VENDOR') {
+      this.setPersonalFieldsReadonly(true);
+      this.setNationalityReadonly(true);
+    } else {
+      this.setPersonalFieldsReadonly(false);
+      this.setNationalityReadonly(false);
+    }
+
+    this.updateCompanyValidator();
+    this.updateVendorSelectionValidator();
+  }
+
+  onVendorChange(): void {
+
+    const vendorId =
+      this.registrationForm.get('vendorId')?.value;
+
+    if (!vendorId) {
+      this.clearExistingProfile();
+      this.setPersonalFieldsReadonly(true);
+      this.setNationalityReadonly(true);
+      this.updateCompanyValidator();
+      this.updateVendorSelectionValidator();
+      return;
+    }
+
+    const vendor =
+      this.vendors.find(item => item.id === vendorId);
+
+    if (!vendor) {
+      return;
+    }
+
+    this.selectedVendorId = vendor.id;
+    this.selectedVisitorId = vendor.visitorId;
+    this.isExistingVendor = true;
+    this.isExistingVisitor = false;
+    this.isCreatingNewVendor = false;
+    this.isLoadingVendorDetails = true;
+    this.existingVendorDocuments = [];
+
+    this.registrationForm.patchValue({
+      documents: [],
+      firstName: vendor.firstName,
+      lastName: vendor.lastName,
+      email: vendor.email,
+      mobileNumber: vendor.mobileNumber,
+      companyName: vendor.companyName ?? ''
+    });
+
+    this.setPersonalFieldsReadonly(true);
+    this.setNationalityReadonly(true);
+    this.updateCompanyValidator();
+    this.updateVendorSelectionValidator();
+    this.clearMessages();
+
+    const subscription =
+      this.visitorService.getVisitorForEdit(vendor.visitorId).subscribe({
+
+        next: (details: VisitorEditResponse) => {
+          this.existingVendorDocuments = details.documents ?? [];
+
+          if (details.visitor?.nationality) {
+            this.registrationForm.patchValue({
+              nationality: details.visitor.nationality
+            });
+            this.applyNationalityValidators(false);
+          }
+
+          this.isLoadingVendorDetails = false;
+          this.cdr.detectChanges();
+        },
+
+        error: (error: any) => {
+          console.error('Failed to load vendor details:', error);
+          this.isLoadingVendorDetails = false;
+          this.existingVendorDocuments = [];
+          this.errorMessage =
+            error?.error?.message ??
+            'Unable to load the selected vendor details.';
+          this.cdr.detectChanges();
+        }
+      });
+
+    this.subscriptions.add(subscription);
+  }
+
+  /**
+   * For Visitor / Guest, if both email and mobile belong to the same
+   * existing visitor, reuse that visitor's master data just like Vendor.
+   */
+  checkExistingVisitorByContact(): void {
+
+    const visitorType =
+      this.registrationForm.get('visitorType')?.value;
+
+    if (visitorType === 'VENDOR' || this.isCreatingNewVendor) {
+      return;
+    }
+
+    const email = String(
+      this.registrationForm.get('email')?.value ?? ''
+    ).trim().toLowerCase();
+
+    const mobileNumber = String(
+      this.registrationForm.get('mobileNumber')?.value ?? ''
+    ).trim();
+
+    if (!email || !mobileNumber) {
+      return;
+    }
+
+    const visitorByEmail =
+      this.visitors.find(visitor =>
+        visitor.visitorType !== 'VENDOR' &&
+        visitor.email?.trim().toLowerCase() === email
+      );
+
+    const visitorByMobile =
+      this.visitors.find(visitor =>
+        visitor.visitorType !== 'VENDOR' &&
+        visitor.mobileNumber?.trim() === mobileNumber
+      );
+
+    if (
+      !visitorByEmail ||
+      !visitorByMobile ||
+      visitorByEmail.id !== visitorByMobile.id
+    ) {
+      return;
+    }
+
+    this.loadExistingVisitor(visitorByEmail);
+  }
+
+  onContactInputChanged(): void {
+
+    if (!this.isExistingVisitor || this.isExistingVendor) {
+      return;
+    }
+
+    this.isExistingVisitor = false;
+    this.selectedVisitorId = null;
+    this.existingVendorDocuments = [];
+
+    this.setPersonalFieldsReadonly(false);
+    this.setNationalityReadonly(false);
+    this.onNationalityChange();
+  }
+
+  private loadExistingVisitor(visitor: VisitorResponse): void {
+
+    if (this.isExistingVisitor && this.selectedVisitorId === visitor.id) {
+      return;
+    }
+
+    this.selectedVisitorId = visitor.id;
+    this.isExistingVisitor = true;
+    this.isExistingVendor = false;
+    this.isCreatingNewVendor = false;
+    this.isLoadingVendorDetails = true;
+    this.existingVendorDocuments = [];
+
+    this.registrationForm.patchValue({
+      firstName: visitor.firstName,
+      lastName: visitor.lastName,
+      email: visitor.email,
+      mobileNumber: visitor.mobileNumber,
+      companyName: visitor.companyName ?? '',
+      documents: []
+    });
+
+    this.setPersonalFieldsReadonly(true);
+    this.setNationalityReadonly(true);
+    this.updateCompanyValidator();
+
+    const subscription =
+      this.visitorService.getVisitorForEdit(visitor.id).subscribe({
+
+        next: (details: VisitorEditResponse) => {
+          this.existingVendorDocuments = details.documents ?? [];
+
+          this.registrationForm.patchValue({
+            firstName: details.visitor?.firstName ?? visitor.firstName,
+            lastName: details.visitor?.lastName ?? visitor.lastName,
+            email: details.visitor?.email ?? visitor.email,
+            mobileNumber: details.visitor?.mobileNumber ?? visitor.mobileNumber,
+            companyName: details.visitor?.companyName ?? visitor.companyName ?? ''
+          });
+
+          if (details.visitor?.nationality) {
+            this.registrationForm.patchValue({
+              nationality: details.visitor.nationality
+            });
+            this.applyNationalityValidators(false);
+          }
+
+          this.isLoadingVendorDetails = false;
+          this.cdr.detectChanges();
+        },
+
+        error: (error: any) => {
+          console.error('Failed to load existing visitor details:', error);
+          this.isLoadingVendorDetails = false;
+          this.existingVendorDocuments = [];
+          this.errorMessage =
+            error?.error?.message ??
+            'Unable to load the existing visitor details.';
+          this.cdr.detectChanges();
+        }
+      });
+
+    this.subscriptions.add(subscription);
+  }
+
+  createNewVendor(): void {
+
+    this.selectedVendorId = null;
+    this.selectedVisitorId = null;
+    this.isExistingVendor = false;
+    this.isExistingVisitor = false;
+    this.isCreatingNewVendor = true;
+    this.isLoadingVendorDetails = false;
+    this.existingVendorDocuments = [];
+
+    this.registrationForm.get('vendorId')?.setValue('');
+
+    this.registrationForm.patchValue({
+      firstName: '',
+      lastName: '',
+      email: '',
+      mobileNumber: '',
+      companyName: '',
+      nationality: '',
+      aadhaarNumber: null,
+      panNumber: null,
+      passportNumber: null,
+      documents: []
+    });
+
+    this.setPersonalFieldsReadonly(false);
+    this.setNationalityReadonly(false);
+    this.onNationalityChange();
+    this.updateCompanyValidator();
+    this.updateVendorSelectionValidator();
+    this.clearMessages();
+  }
+
+  cancelNewVendor(): void {
+    this.clearVendorSelection();
+  }
+
+  private clearVendorSelection(): void {
+
+    this.clearExistingProfile();
+
+    this.registrationForm.get('vendorId')?.setValue('');
+
+    this.registrationForm.patchValue({
+      firstName: '',
+      lastName: '',
+      email: '',
+      mobileNumber: '',
+      companyName: '',
+      nationality: '',
+      aadhaarNumber: null,
+      panNumber: null,
+      passportNumber: null,
+      documents: []
+    });
+
+    this.setPersonalFieldsReadonly(false);
+    this.setNationalityReadonly(
+      this.registrationForm.get('visitorType')?.value === 'VENDOR'
+    );
+    this.onNationalityChange();
+    this.updateCompanyValidator();
+    this.updateVendorSelectionValidator();
+  }
+
+  private clearExistingProfile(): void {
+    this.selectedVendorId = null;
+    this.selectedVisitorId = null;
+    this.isExistingVendor = false;
+    this.isExistingVisitor = false;
+    this.isCreatingNewVendor = false;
+    this.isLoadingVendorDetails = false;
+    this.existingVendorDocuments = [];
+  }
+
+  private setNationalityReadonly(readonly: boolean): void {
+    const control = this.registrationForm.get('nationality');
+
+    if (readonly) {
+      control?.disable({ emitEvent: false });
+    } else {
+      control?.enable({ emitEvent: false });
+    }
+  }
+
+  private setPersonalFieldsReadonly(readonly: boolean): void {
+    const fields = [
+      'firstName',
+      'lastName',
+      'email',
+      'mobileNumber',
+      'companyName'
+    ];
+
+    fields.forEach(field => {
+      const control = this.registrationForm.get(field);
+
+      if (readonly) {
+        control?.disable({ emitEvent: false });
+      } else {
+        control?.enable({ emitEvent: false });
+      }
     });
   }
 
+  private updateCompanyValidator(): void {
+    const control = this.registrationForm.get('companyName');
 
-  getEmployeeDisplayName(employee: Employee): string {
+    if (!control) {
+      return;
+    }
 
-    return `${employee.id} — ${employee.firstName} ${employee.lastName}`;
+    control.setValidators([
+      Validators.maxLength(150),
+      ...(this.isCreatingNewVendor
+        ? [Validators.required]
+        : [])
+    ]);
+
+    control.updateValueAndValidity({ emitEvent: false });
   }
 
+  private updateVendorSelectionValidator(): void {
+    const control = this.registrationForm.get('vendorId');
 
-  
+    if (!control) {
+      return;
+    }
+
+    const visitorType = this.registrationForm.get('visitorType')?.value;
+
+    control.setValidators(
+      visitorType === 'VENDOR' && !this.isCreatingNewVendor
+        ? [Validators.required]
+        : []
+    );
+
+    control.updateValueAndValidity({ emitEvent: false });
+  }
+
+  getDocumentViewUrl(documentId: string): string {
+    return this.visitorService.getDocumentViewUrl(documentId);
+  }
+
+  getDocumentName(documentPath: string): string {
+    if (!documentPath) {
+      return 'Document';
+    }
+
+    return documentPath
+      .split(/[\\/]/)
+      .pop() || 'Document';
+  }
+
+  hasExistingVendorDocuments(): boolean {
+    return this.existingVendorDocuments.length > 0;
+  }
+
+  get isExistingProfile(): boolean {
+    return this.isExistingVendor || this.isExistingVisitor;
+  }
+
   // Nationality / Proof
   
+ onNationalityChange(): void {
+    this.applyNationalityValidators(true);
+  }
 
-  onNationalityChange(): void {
-
+  private applyNationalityValidators(clearValues: boolean): void {
     const nationality =
       this.registrationForm.get('nationality')?.value;
-
 
     const aadhaarControl =
       this.registrationForm.get('aadhaarNumber');
@@ -357,46 +935,47 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
     const passportControl =
       this.registrationForm.get('passportNumber');
 
-
-    // Clear existing validators
-
     aadhaarControl?.clearValidators();
     panControl?.clearValidators();
     passportControl?.clearValidators();
 
-
-    // Clear previous values
-
-    aadhaarControl?.reset(null);
-    panControl?.reset(null);
-    passportControl?.reset(null);
-
+    if (clearValues) {
+      aadhaarControl?.reset(null);
+      panControl?.reset(null);
+      passportControl?.reset(null);
+    }
 
     if (nationality === 'DOMESTIC') {
-
       aadhaarControl?.setValidators([
         Validators.required,
         Validators.pattern(/^\d{12}$/)
       ]);
 
-
       panControl?.setValidators([
         Validators.required,
         Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)
       ]);
-
     } else if (nationality === 'INTERNATIONAL') {
-
       passportControl?.setValidators([
         Validators.required,
         Validators.maxLength(20)
       ]);
     }
 
-
     aadhaarControl?.updateValueAndValidity();
     panControl?.updateValueAndValidity();
     passportControl?.updateValueAndValidity();
+  }
+
+
+  get isDomesticExistingProfile(): boolean {
+    return this.isExistingProfile &&
+      this.registrationForm.get('nationality')?.value === 'DOMESTIC';
+  }
+
+  get isInternationalExistingProfile(): boolean {
+    return this.isExistingProfile &&
+      this.registrationForm.get('nationality')?.value === 'INTERNATIONAL';
   }
 
 
@@ -406,27 +985,27 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
   submitRegistration(): void {
 
-    this.clearMessages();
+  this.clearMessages();
 
+  if (this.registrationForm.invalid) {
+    this.registrationForm.markAllAsTouched();
 
-    if (this.registrationForm.invalid) {
+    this.errorMessage =
+      'Please complete all required fields.';
 
-      this.registrationForm.markAllAsTouched();
+    return;
+  }
 
-      this.errorMessage =
-        'Please complete all required fields.';
+  if (!this.validateSupportingDocuments()) {
+    return;
+  }
 
-      return;
-    }
+  const request =
+    this.buildRegistrationRequest();
 
-
-    const request =
-      this.buildRegistrationRequest();
-
-
-    if (!request) {
-      return;
-    }
+  if (!request) {
+    return;
+  }
 
 
     this.isSubmitting = true;
@@ -1016,12 +1595,6 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
           : null,
 
 
-      validity:
-        value.validity
-          ? String(
-              value.validity
-            )
-          : null
     };
 
 
@@ -1103,6 +1676,19 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
 
     this.createdVisit = null;
+
+    this.registrationForm.get('vendorId')?.setValue('');
+    this.selectedVendorId = null;
+    this.selectedVisitorId = null;
+    this.isExistingVendor = false;
+    this.isExistingVisitor = false;
+    this.isCreatingNewVendor = false;
+    this.existingVendorDocuments = [];
+    this.isLoadingVendorDetails = false;
+    this.setPersonalFieldsReadonly(false);
+    this.setNationalityReadonly(false);
+    this.updateCompanyValidator();
+    this.updateVendorSelectionValidator();
 
     this.registrationSuccess = false;
 
@@ -1254,5 +1840,24 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
+
+
+  private validateSupportingDocuments(): boolean {
+
+  const selectedDocuments = this.getSelectedDocuments();
+
+  const hasExistingDocuments =
+    this.existingVendorDocuments.length > 0;
+
+  if (!hasExistingDocuments && selectedDocuments.length === 0) {
+
+    this.errorMessage =
+      'No supporting document is available. Please upload at least one document.';
+
+    return false;
+  }
+
+  return true;
+}
 }
 

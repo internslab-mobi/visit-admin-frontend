@@ -1303,3 +1303,199 @@
     padding: 12px 16px;
   }
 }
+/* VENDOR SELECTION */
+
+.vendor-selection-field {
+  width: 100%;
+}
+
+.vendor-create-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.vendor-create-button,
+.vendor-cancel-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.vendor-create-button {
+  color: #1769d1;
+}
+
+.vendor-cancel-button {
+  color: #64748b;
+}
+
+.vendor-new-hint {
+  margin-top: 6px;
+}
+
+.readonly-field {
+  background: #f8fafc !important;
+  color: #475569;
+  cursor: not-allowed;
+}
+
+.vendor-proof-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 4px 0 16px;
+  padding: 10px 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #1e40af;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.vendor-proof-icon {
+  font-weight: 700;
+}
+
+/* EXISTING VENDOR DOCUMENTS */
+
+.existing-vendor-documents {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.existing-documents-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.existing-documents-header span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.existing-document-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+}
+
+.view-document-button {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border: 1px solid #2878dc;
+  border-radius: 6px;
+  color: #1769d1;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.no-existing-documents {
+  padding: 10px 12px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* Existing profile identity proof availability */
+.proof-availability-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 4px;
+}
+
+.proof-availability-card {
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  border: 1px solid #d7e6f8;
+  border-radius: 8px;
+  background: #f7fbff;
+  box-sizing: border-box;
+}
+
+.proof-availability-icon {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e7f6ed;
+  color: #18864b;
+  font-weight: 700;
+  flex: 0 0 26px;
+}
+
+.proof-availability-card div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.proof-availability-card strong {
+  font-size: 14px;
+}
+
+.proof-availability-card span:not(.proof-availability-icon) {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+@media (max-width: 700px) {
+  .proof-availability-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ============================================================
+   EMPLOYEE SEARCHABLE DROPDOWN
+   ============================================================ */
+.employee-autocomplete { position: relative; width: 100%; }
+.employee-autocomplete .input-wrapper { position: relative; }
+.employee-autocomplete input { width: 100%; padding-right: 42px; }
+.employee-search-dropdown {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 1000;
+  max-height: 280px; overflow-y: auto; background: #fff;
+  border: 1px solid #d7dce3; border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.12);
+}
+.employee-search-option {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; min-height: 46px; padding: 9px 13px;
+  border: 0; border-bottom: 1px solid #eef1f5; background: #fff;
+  text-align: left; cursor: pointer;
+}
+.employee-search-option:hover { background: #f5f8fc; }
+.employee-option-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 500; }
+.employee-option-id { flex-shrink: 0; margin-left: 12px; font-size: 12px; color: #687385; }
+.employee-search-empty, .employee-search-footer { padding: 10px 13px; font-size: 12px; color: #687385; background: #fafbfc; }
+.employee-clear-button {
+  position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
+  width: 24px; height: 24px; padding: 0; border: 0; background: transparent;
+  color: #687385; font-size: 20px; line-height: 24px; cursor: pointer;
+}
+.employee-clear-button:hover { color: #1f2937; }

@@ -7,7 +7,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { VisitorRegistrationComponent } from './features/visitor-management/visitor-registration/visitor-registration';
 
 import { VisitorEditComponent } from './features/visitor-management/visitor-edit/visitor-edit';
-
+import { VendorEditComponent }  from './features/vendor-management/vendor-edit/vendor-edit';
 import { AdminLayoutComponent } from './layout/admin-layout/admin-layout';
 
 import { VisitListComponent } from './features/visit-management/visit-list/visit-list';
@@ -72,6 +72,10 @@ export const routes: Routes = [
         path: 'vendors',
         component: VendorListComponent,
       },
+      {
+  path: 'vendors/:vendorId/edit',
+  component: VendorEditComponent
+},
       {
         path: 'employees',
         component: EmployeeListComponent,

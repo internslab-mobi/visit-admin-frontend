@@ -270,11 +270,11 @@
         </div>
 
 
-        <div class="record-badge">
+        <!-- <div class="record-badge">
 
           {{ filteredVendors.length }}
 
-        </div>
+        </div> -->
 
       </div>
 
@@ -286,293 +286,117 @@
       <div class="table-wrapper">
 
         <table>
-
-
-         
-               <!-- TABLE HEAD -->
-         
-          <thead>
-
-            <tr>
-<th>
-                Vendor ID
-              </th>
-
-              <th>
-                 Vendor
-              </th>
-
-              <th>
-                Contact
-              </th>
-
-              <th>
-                Company
-              </th>
-
-              
-
-              <th>
-                Visitor ID
-              </th>
-
-              <th>
-                Validity
-              </th>
-
-              <th>
-                Status
-              </th>
-
-              <th>
-                Actions
-              </th>
-
-            </tr>
-
-          </thead>
-
-
-         
+<thead>
+  <tr>
+    <th>Vendor ID</th>
+    <th>Visitor ID</th>
+    <th>Vendor</th>
+    <th>Contact</th>
+    <th>Company</th>
+    <th>Actions</th>
+  </tr>
+</thead>
                <!-- TABLE BODY -->
           
-          <tbody>
-
-            @for (
-              vendor of paginatedVendors;
-              track vendor.id
-            ) {
-
-              <tr>
-
-  
-                     <!-- VENDOR ID -->
-             
-
-                <td>
-
-                  <span class="id-badge">
-
-                    {{ vendor.id }}
-
-                  </span>
-
-                </td>
-
-               
-                     <!-- VENDOR -->
-             
-
-                <td>
-
-                  <div class="vendor-cell">
-
-                    <div class="avatar">
-
-                      {{ vendor.name
-                        .charAt(0)
-                        .toUpperCase()
-                      }}
-
-                    </div>
-
-
-                    <div class="vendor-info">
-
-                      <span class="vendor-name">
-
-                        {{ vendor.name }}
-
-                      </span>
-
-
-                      <span class="vendor-email">
-
-                        {{ vendor.email }}
-
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                </td>
-
-
-               
-                     <!-- CONTACT -->
-             
-
-                <td>
-
-                  <div class="contact-cell">
-
-                    <span class="mobile-number">
-
-                      {{ vendor.mobile }}
-
-                    </span>
-
-                    <span class="contact-label">
-                      Mobile
-                    </span>
-
-                  </div>
-
-                </td>
-
-
-               
-                     <!-- COMPANY -->
-             
-
-                <td>
-
-                  <span
-                    class="company-name"
-                    [class.no-company]="
-                      vendor.company === '-'
-                    "
-                  >
-
-                    {{ vendor.company }}
-
-                  </span>
-
-                </td>
-
-
-             
-
-               
-                     <!-- VISITOR ID -->
-             
-
-                <td>
-
-                  <span class="visitor-id">
-
-                    {{ vendor.visitorId }}
-
-                  </span>
-
-                </td>
-
-
-               
-                     <!-- VALIDITY -->
-             
-
-                <td>
-
-                  <div class="validity-cell">
-
-                    <span class="validity-date">
-
-                      {{ formatValidity(vendor.validity) }}
-
-                    </span>
-
-                  </div>
-
-                </td>
-
-
-               
-                     <!-- STATUS -->
-             
-
-                <td>
-
-                  <span
-                    class="validity-status"
-                    [class.active]="
-                      getValidityStatusClass(
-                        vendor.validity
-                      ) === 'active'
-                    "
-                    [class.expired]="
-                      getValidityStatusClass(
-                        vendor.validity
-                      ) === 'expired'
-                    "
-                    [class.no-validity]="
-                      getValidityStatusClass(
-                        vendor.validity
-                      ) === 'no-validity'
-                    "
-                  >
-
-                    {{ getValidityStatus(vendor.validity) }}
-
-                  </span>
-
-                </td>
-
-
-               
-                     <!-- ACTIONS -->
-             
-
-                <td>
-
-                  <button
-                    type="button"
-                    class="view-button"
-                    (click)="viewVendor(vendor.id)"
-                  >
-
-                    Edit
-
-                  </button>
-
-                </td>
-
-              </tr>
-
-            }
-
-
-           
-                 <!-- EMPTY STATE -->
-         
-            @if (filteredVendors.length === 0) {
-
-              <tr>
-
-                <td
-                  colspan="8"
-                  class="empty-state"
-                >
-
-                  <div class="empty-icon">
-                    🏢
-                  </div>
-
-                  <h3>
-                    No vendors found
-                  </h3>
-
-                  <p>
-                    No vendors match your current filters.
-                  </p>
-
-                  <button
-                    type="button"
-                    class="empty-clear-button"
-                    (click)="clearFilters()"
-                  >
-                    Clear Filters
-                  </button>
-
-                </td>
-
-              </tr>
-
-            }
-
-          </tbody>
-
+        <tbody>
+  @for (
+    vendor of paginatedVendors;
+    track vendor.id
+  ) {
+    <tr>
+
+      <!-- VENDOR ID -->
+      <td>
+        <span class="id-badge">
+          {{ vendor.id }}
+        </span>
+      </td>
+
+      <!-- VISITOR ID -->
+      <td>
+        <span class="visitor-id">
+          {{ vendor.visitorId }}
+        </span>
+      </td>
+
+      <!-- VENDOR -->
+      <td>
+        <div class="vendor-cell">
+          <div class="vendor-info">
+            <span class="vendor-name">
+              {{ vendor.name }}
+            </span>
+
+            <span class="vendor-email">
+              {{ vendor.email }}
+            </span>
+          </div>
+        </div>
+      </td>
+
+      <!-- CONTACT -->
+      <td>
+        <div class="contact-cell">
+          <span class="mobile-number">
+            {{ vendor.mobile }}
+          </span>
+
+          <span class="contact-label">
+            Mobile
+          </span>
+        </div>
+      </td>
+
+      <!-- COMPANY -->
+      <td>
+        <span
+          class="company-name"
+          [class.no-company]="vendor.company === '-'"
+        >
+          {{ vendor.company }}
+        </span>
+      </td>
+
+      <!-- ACTIONS -->
+      <td>
+        <button
+          type="button"
+          class="view-button"
+          (click)="viewVendor(vendor.id)"
+        >
+          Edit / View
+        </button>
+      </td>
+
+    </tr>
+  }
+    @if (filteredVendors.length === 0) {
+      <tr>
+        <td
+          colspan="6"
+          class="empty-state"
+        >
+          <div class="empty-icon">
+            🏢
+          </div>
+
+          <h3>No vendors found</h3>
+
+          <p>
+            No vendors match your current filters.
+          </p>
+
+          <button
+            type="button"
+            class="empty-clear-button"
+            (click)="clearFilters()"
+          >
+            Clear Filters
+          </button>
+        </td>
+      </tr>
+    }
+  </tbody>
         </table>
 
       </div>

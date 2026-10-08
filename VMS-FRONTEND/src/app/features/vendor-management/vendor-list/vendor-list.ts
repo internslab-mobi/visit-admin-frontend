@@ -547,6 +547,8 @@ export class VendorListComponent implements OnInit {
   }
 
 
+ 
+
   
     //  TOTAL
   
@@ -637,15 +639,15 @@ export class VendorListComponent implements OnInit {
     //  VIEW VENDOR
   
 
-  viewVendor(
-    vendorId: string
-  ): void {
+ viewVendor(
+  vendorId: string
+): void {
 
-    this.router.navigate([
-      '/admin/vendors',
-      vendorId
-    ]);
+  this.router.navigate([
+    '/admin/vendors',
+    vendorId,
+    'edit'
+  ]);
 
-  }
-
+}
 }
