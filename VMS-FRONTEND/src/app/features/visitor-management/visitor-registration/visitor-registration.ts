@@ -985,27 +985,27 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
   submitRegistration(): void {
 
-    this.clearMessages();
+  this.clearMessages();
 
+  if (this.registrationForm.invalid) {
+    this.registrationForm.markAllAsTouched();
 
-    if (this.registrationForm.invalid) {
+    this.errorMessage =
+      'Please complete all required fields.';
 
-      this.registrationForm.markAllAsTouched();
+    return;
+  }
 
-      this.errorMessage =
-        'Please complete all required fields.';
+  if (!this.validateSupportingDocuments()) {
+    return;
+  }
 
-      return;
-    }
+  const request =
+    this.buildRegistrationRequest();
 
-
-    const request =
-      this.buildRegistrationRequest();
-
-
-    if (!request) {
-      return;
-    }
+  if (!request) {
+    return;
+  }
 
 
     this.isSubmitting = true;
@@ -1840,5 +1840,24 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
+
+
+  private validateSupportingDocuments(): boolean {
+
+  const selectedDocuments = this.getSelectedDocuments();
+
+  const hasExistingDocuments =
+    this.existingVendorDocuments.length > 0;
+
+  if (!hasExistingDocuments && selectedDocuments.length === 0) {
+
+    this.errorMessage =
+      'No supporting document is available. Please upload at least one document.';
+
+    return false;
+  }
+
+  return true;
+}
 }
 
