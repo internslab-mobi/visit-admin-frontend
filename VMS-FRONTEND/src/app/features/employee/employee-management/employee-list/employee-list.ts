@@ -39,6 +39,7 @@ export class EmployeeListComponent implements OnInit {
   private loadEmployees(): void {
     this.employeeService.getEmployees().subscribe({
       next: (employees) => {
+        console.log('Employees API Response:', employees);
         this.employees = employees;
         this.filteredEmployees = employees;
 
@@ -71,7 +72,7 @@ export class EmployeeListComponent implements OnInit {
 
       const matchesDepartment =
         !department ||
-        employee.department.departmentName
+        employee.departmentName
           .toLowerCase()
           .includes(department);
 

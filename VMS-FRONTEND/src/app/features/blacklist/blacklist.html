@@ -71,18 +71,34 @@
       />
     </div>
 
+    
+
     <div class="filter-group">
-      <label for="status">Status</label>
-      <select
-        id="status"
-        [(ngModel)]="statusFilter"
-        (ngModelChange)="currentPage = 1"
-      >
-        <option value="">All Status</option>
-        <option value="ACTIVE">Active</option>
-        <option value="REMOVED">Removed</option>
-      </select>
-    </div>
+  <label for="sortBy">Sort By</label>
+
+  <select
+    id="sortBy"
+    [(ngModel)]="sortBy"
+    (ngModelChange)="currentPage = 1"
+  >
+    <option value="visitorName">Visitor Name</option>
+    <option value="blacklistId">Blacklist ID</option>
+    <option value="status">Status</option>
+  </select>
+</div>
+
+<div class="filter-group">
+  <label for="sortOrder">Order</label>
+
+  <select
+    id="sortOrder"
+    [(ngModel)]="sortOrder"
+    (ngModelChange)="currentPage = 1"
+  >
+    <option value="asc">Ascending</option>
+    <option value="desc">Descending</option>
+  </select>
+</div>
 
     <button
       type="button"

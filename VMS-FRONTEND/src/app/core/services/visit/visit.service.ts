@@ -57,29 +57,34 @@ export class VisitService {
 
 
   getDashboardVisits(
-  sortDirection: 'ASC' | 'DESC',
-  sortBy: 'id' | 'name' | 'company' | 'visitDate'
-): Observable<VisitDashboardResponse[]> {
-  return this.http.get<VisitDashboardResponse[]>(
-    this.apiUrl,
-    {
-      params: {
-        sortDirection,
-        sortBy
+    sortDirection: 'ASC' | 'DESC',
+    sortBy: 'id' | 'name' | 'company' | 'visitDate'
+  ): Observable<VisitDashboardResponse[]> {
+
+    return this.http.get<VisitDashboardResponse[]>(
+      this.apiUrl,
+      {
+        params: {
+          sortDirection,
+          sortBy
+        }
       }
-    }
-  );
-}
+    );
+  }
+
 
   getVisitDetails(
-      visitId: string
-    ): Observable<VisitDetailResponse> {
-      return this.http.get<VisitDetailResponse>(
-        `${this.apiUrl}/${visitId}`
-      );
-    }
+    visitId: string
+  ): Observable<VisitDetailResponse> {
+
+    return this.http.get<VisitDetailResponse>(
+      `${this.apiUrl}/${visitId}`
+    );
+  }
+
 
   getVisitorPhoto(visitorId: string): Observable<Blob> {
+
     return this.http.get(
       `${API_CONFIG.BASE_URL}/api/documents/visitor/${encodeURIComponent(visitorId)}/photo`,
       {
@@ -88,59 +93,74 @@ export class VisitService {
     );
   }
 
-    checkIn(
-      visitId: string,
-      request: {
-        aadharNumber?: string;
-        panNumber?: string;
-        passportNumber?: string;
-      },
-      photo: File
-    ): Observable<VisitDetailResponse> {
 
-      const formData = new FormData();
+  checkIn(
+    visitId: string,
+    request: {
+      aadharNumber?: string;
+      panNumber?: string;
+      passportNumber?: string;
+    },
+    photo: File
+  ): Observable<VisitDetailResponse> {
 
-      formData.append(
-        'request',
-        new Blob(
-          [JSON.stringify(request)],
-          { type: 'application/json' }
-        )
-      );
+    const formData = new FormData();
 
-      formData.append(
-        'photo',
-        photo
-      );
+    formData.append(
+      'request',
+      new Blob(
+        [JSON.stringify(request)],
+        { type: 'application/json' }
+      )
+    );
 
-      return this.http.patch<VisitDetailResponse>(
-        `${this.apiUrl}/${visitId}/check-in`,
-        formData
-      );
+    formData.append(
+      'photo',
+      photo
+    );
+
+    return this.http.patch<VisitDetailResponse>(
+      `${this.apiUrl}/${visitId}/check-in`,
+      formData
+    );
+  }
+
+
+  verifyIdentity(
+    visitId: string,
+    request: {
+      aadharNumber?: string;
+      panNumber?: string;
+      passportNumber?: string;
     }
+  ): Observable<void> {
 
-    verifyIdentity(
-        visitId: string,
-        request: {
-          aadharNumber?: string;
-          panNumber?: string;
-          passportNumber?: string;
-        }
-      ): Observable<void> {
-        return this.http.post<void>(
-          `${this.apiUrl}/${visitId}/verify-identity`,
-          request
-        );
-      }
+    return this.http.post<void>(
+      `${this.apiUrl}/${visitId}/verify-identity`,
+      request
+    );
+  }
 
-    checkOut(
-       visitId: string
-      ): Observable<VisitDetailResponse> {
 
-        return this.http.patch<VisitDetailResponse>(
-          `${this.apiUrl}/${visitId}/check-out`,
-          {}
-        );
-      }
+  checkOut(
+    visitId: string
+  ): Observable<VisitDetailResponse> {
+
+    return this.http.patch<VisitDetailResponse>(
+      `${this.apiUrl}/${visitId}/check-out`,
+      {}
+    );
+  }
+
+
+  cancelVisit(
+    visitId: string
+  ): Observable<VisitDetailResponse> {
+
+    return this.http.patch<VisitDetailResponse>(
+      `${this.apiUrl}/${visitId}/cancel`,
+      {}
+    );
+  }
 
 }

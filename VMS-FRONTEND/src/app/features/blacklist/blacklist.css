@@ -204,75 +204,101 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* =====================================================
-   FILTER SECTION
-===================================================== */
+ /* =====================================================
+    FILTER SECTION
+ ===================================================== */
 
 .filter-section {
+
   display: grid;
 
   grid-template-columns:
-    minmax(160px, 1.3fr)
-    minmax(150px, 1.1fr)
-    minmax(180px, 1.4fr)
-    minmax(135px, 0.9fr)
-    auto;
+    minmax(140px, 1.2fr)
+    minmax(130px, 1fr)
+    minmax(150px, 1.2fr)
+    minmax(125px, 0.9fr)
+    minmax(115px, 0.9fr)
+    70px;
 
   align-items: end;
+
   gap: 15px;
 
   margin-bottom: 22px;
+
   padding: 22px;
 
   background: #ffffff;
 
   border: 1px solid #e5ebf5;
+
   border-radius: 14px;
 
   box-shadow: 0 4px 16px rgba(24, 45, 83, 0.035);
 }
 
-/* Filter groups */
+
+/* =====================================================
+   FILTER GROUPS
+ ===================================================== */
 
 .filter-group {
+
   display: flex;
+
   flex-direction: column;
 
   min-width: 0;
 }
 
+
 .filter-group label {
+
   margin-bottom: 8px;
 
   color: #53627a;
 
   font-size: 11px;
+
   font-weight: 750;
+
   letter-spacing: 0.2px;
+
   line-height: 1.4;
 }
 
-/* Input fields */
+
+/* =====================================================
+   INPUT AND SELECT FIELDS
+ ===================================================== */
 
 .filter-group input,
 .filter-group select {
+
   display: block;
 
   width: 100%;
+
   min-width: 0;
+
   height: 45px;
 
   padding: 0 13px;
 
   border: 1px solid #dce4f0;
+
   border-radius: 10px;
+
   outline: none;
 
   background: #f7f9fc;
+
   color: #334155;
 
   font-family: inherit;
+
   font-size: 12px;
+
   font-weight: 500;
 
   transition:
@@ -281,37 +307,56 @@
     box-shadow 160ms ease;
 }
 
-/* Placeholder */
+
+/* =====================================================
+   PLACEHOLDER
+ ===================================================== */
 
 .filter-group input::placeholder {
+
   color: #9aa7ba;
+
   opacity: 1;
 }
 
-/* Select */
+
+/* =====================================================
+   SELECT
+ ===================================================== */
 
 .filter-group select {
+
   cursor: pointer;
 }
 
-/* Input hover */
+
+/* =====================================================
+   HOVER
+ ===================================================== */
 
 .filter-group input:hover,
 .filter-group select:hover {
+
   border-color: #b7c8e0;
+
   background: #ffffff;
 }
 
-/* Input focus */
+
+/* =====================================================
+   FOCUS
+ ===================================================== */
 
 .filter-group input:focus,
 .filter-group select:focus {
+
   border-color: #4b83f4;
+
   background: #ffffff;
 
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.11);
+  box-shadow:
+    0 0 0 3px rgba(59, 130, 246, 0.11);
 }
-
 /* =====================================================
    CLEAR FILTER BUTTON
 ===================================================== */

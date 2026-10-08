@@ -70,7 +70,7 @@ export class VisitListComponent implements OnInit {
 
         next: (visits) => {
 
-          console.log('API RESPONSE:', visits);
+          console.log('VISIT API RESPONSE:', visits);
 
           this.visitRecords =
             visits.map(visit => this.mapToVisitRecord(visit));
