@@ -1,4 +1,3 @@
-
 /* =========================================================
    1. IMPORTS
    Angular HTTP, dependency injection, signals and RxJS.
@@ -19,7 +18,6 @@ import {
   throwError,
 } from 'rxjs';
 
-
 /* =========================================================
    2. API BASE URLS
    Keep the authentication and VMS servers separate.
@@ -28,10 +26,8 @@ import {
 const AUTH_URL = 'http://localhost:8093/api/auth';
 const VMS_URL = 'http://localhost:8092';
 
-
 /* =========================================================
    3. LOGIN TYPES
-   Request and response contracts for authentication.
    ========================================================= */
 
 export interface LoginRequest {
@@ -39,17 +35,25 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface UserResponse {
+  userId: string;
+  employeeId: string;
+  email: string;
+  fullName: string;
+  role: string;
+  status: string;
+  mustChangePassword: boolean;
+}
+
 export interface LoginResponse {
   userId: string;
   role: string;
   mustChangePassword: boolean;
-  message: string;
+  user: UserResponse;
 }
-
 
 /* =========================================================
    4. PASSWORD RESET TYPES
-   Match the request and response DTOs from your backend.
    ========================================================= */
 
 export interface ForgotPasswordRequest {
@@ -76,10 +80,8 @@ export interface ResetPasswordRequest {
   confirmNewPassword: string;
 }
 
-
 /* =========================================================
    5. AUTHENTICATION SERVICE
-   Shared authentication state and API operations.
    ========================================================= */
 
 @Injectable({
@@ -97,10 +99,8 @@ export class AuthService {
 
   private refreshInFlight$: Observable<LoginResponse> | null = null;
 
-
   /* =======================================================
      6. CSRF INITIALIZATION
-     Initialize security tokens before protected requests.
      ======================================================= */
 
   initializeCsrf(): Observable<void> {
@@ -121,10 +121,8 @@ export class AuthService {
     );
   }
 
-
   /* =======================================================
      7. LOGIN
-     Preserve the existing authentication behavior.
      ======================================================= */
 
   login(request: LoginRequest): Observable<LoginResponse> {
@@ -152,10 +150,8 @@ export class AuthService {
     );
   }
 
-
   /* =======================================================
      8. REQUEST PASSWORD RESET CODE
-     Ask the backend to email an OTP to the supplied address.
      ======================================================= */
 
   requestPasswordReset(
@@ -174,10 +170,8 @@ export class AuthService {
     );
   }
 
-
   /* =======================================================
      9. VERIFY PASSWORD RESET OTP
-     The backend returns a reset token after OTP verification.
      ======================================================= */
 
   verifyResetOtp(
@@ -196,10 +190,8 @@ export class AuthService {
     );
   }
 
-
   /* =======================================================
      10. SUBMIT NEW PASSWORD
-     Send the verified reset token and both password fields.
      ======================================================= */
 
   resetPassword(
@@ -218,10 +210,8 @@ export class AuthService {
     );
   }
 
-
   /* =======================================================
      11. RESTORE SESSION
-     Preserve the existing cookie-based session restoration.
      ======================================================= */
 
   restoreSession(): Observable<boolean> {
@@ -260,10 +250,8 @@ export class AuthService {
     return this.restoration$;
   }
 
-
   /* =======================================================
      12. REFRESH SESSION
-     Preserve the existing single-flight refresh behavior.
      ======================================================= */
 
   refreshSession(): Observable<LoginResponse> {
@@ -314,10 +302,8 @@ export class AuthService {
     return refresh$;
   }
 
-
   /* =======================================================
      13. CLEAR SESSION
-     Remove in-memory user state and cached restoration.
      ======================================================= */
 
   clearSession(): void {
@@ -325,10 +311,26 @@ export class AuthService {
     this.restoration$ = null;
   }
 
+  /* =======================================================
+     14. LOGOUT
+     ======================================================= */
+
+  logout(): Observable<void> {
+    return this.http.post<void>(
+      `${AUTH_URL}/logout`,
+      {},
+      {
+        withCredentials: true,
+      },
+    ).pipe(
+      tap(() => {
+        this.clearSession();
+      }),
+    );
+  }
 
   /* =======================================================
-     14. ROLE VALIDATION
-     Only authorized application roles are accepted.
+     15. ROLE VALIDATION
      ======================================================= */
 
   private hasAllowedRole(response: LoginResponse): boolean {

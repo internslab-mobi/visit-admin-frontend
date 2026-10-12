@@ -641,6 +641,32 @@
 }
 
 /* =========================================================
+   TOTAL DURATION
+   ========================================================= */
+
+.total-duration {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.total-duration strong {
+  color: var(--text);
+
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.total-duration-value {
+  color: var(--primary);
+
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+/* =========================================================
    IDENTITY VERIFICATION
    ========================================================= */
 

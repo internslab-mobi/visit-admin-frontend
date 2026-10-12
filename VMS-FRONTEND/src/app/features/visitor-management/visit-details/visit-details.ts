@@ -28,6 +28,9 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
   visitDetails: VisitDetailResponse | null = null;
 
+  private durationTimer: ReturnType<typeof setInterval> | null = null;
+  private currentTime = Date.now();
+
   visitorPhotoUrl: string | null = null;
 
   selectedPhoto: File | null = null;
@@ -95,12 +98,16 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         this.loadVisitorPhoto(response.visitor.visitorId);
         this.loadBlacklistStatus();
 
+        this.updateDurationTimer();
+
         this.cdr.detectChanges();
       },
 
       error: () => {
         this.visitDetails = null;
         this.isBlacklistStatusLoading = false;
+
+        this.stopDurationTimer();
 
         this.cdr.detectChanges();
       },
@@ -181,7 +188,8 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
       error: (error) => {
         this.identityVerified = false;
 
-        this.identityVerificationError = error?.error?.message || 'Identity verification failed.';
+        this.identityVerificationError =
+          error?.error?.message || 'Identity verification failed.';
 
         this.isVerifyingIdentity = false;
 
@@ -256,12 +264,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     }
 
     try {
-      /*
-       * Make sure there is no previous camera session
-       * or stale captured-photo review state.
-       */
       this.stopCamera();
-
       this.clearCapturedPhoto();
 
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -293,7 +296,8 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         video.play().catch((error) => {
           console.error('Unable to start camera preview:', error);
 
-          this.photoError = 'Unable to start the camera preview. Please try again.';
+          this.photoError =
+            'Unable to start the camera preview. Please try again.';
 
           this.stopCamera();
 
@@ -452,22 +456,29 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
   }
 
   onCheckIn(): void {
-    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'REGISTERED') {
+    if (
+      !this.visitId ||
+      !this.visitDetails ||
+      this.visitDetails.status !== 'REGISTERED'
+    ) {
       return;
     }
 
     if (this.isBlacklistStatusLoading) {
-      this.checkInError = 'Check-in is unavailable while blacklist status is being verified.';
+      this.checkInError =
+        'Check-in is unavailable while blacklist status is being verified.';
       return;
     }
 
     if (this.isBlacklisted) {
-      this.checkInError = 'Check-in is unavailable while this visitor is blacklisted.';
+      this.checkInError =
+        'Check-in is unavailable while this visitor is blacklisted.';
       return;
     }
 
     if (this.blacklistStatusError) {
-      this.checkInError = 'Check-in is unavailable because blacklist status could not be verified.';
+      this.checkInError =
+        'Check-in is unavailable because blacklist status could not be verified.';
       return;
     }
 
@@ -487,35 +498,45 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     this.checkInError = null;
     this.checkInSuccess = null;
 
-    this.visitService.checkIn(this.visitId, identityRequest, this.selectedPhoto).subscribe({
-      next: (response) => {
-        if (this.visitDetails) {
-          this.visitDetails = {
-            ...this.visitDetails,
-            status: response.status,
-            checkedInAt: response.checkedInAt,
-          };
-        }
+    this.visitService
+      .checkIn(this.visitId, identityRequest, this.selectedPhoto)
+      .subscribe({
+        next: (response) => {
+          if (this.visitDetails) {
+            this.visitDetails = {
+              ...this.visitDetails,
+              status: response.status,
+              checkedInAt: response.checkedInAt,
+              totalDurationSeconds: null,
+            };
+          }
 
-        this.isCheckingIn = false;
+          this.isCheckingIn = false;
 
-        this.checkInSuccess = 'Visitor checked in successfully.';
+          this.checkInSuccess = 'Visitor checked in successfully.';
 
-        this.cdr.detectChanges();
-      },
+          this.updateDurationTimer();
 
-      error: (error) => {
-        this.checkInError = error?.error?.message || 'Unable to check in visitor.';
+          this.cdr.detectChanges();
+        },
 
-        this.isCheckingIn = false;
+        error: (error) => {
+          this.checkInError =
+            error?.error?.message || 'Unable to check in visitor.';
 
-        this.cdr.detectChanges();
-      },
-    });
+          this.isCheckingIn = false;
+
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   onCheckOut(): void {
-    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'CHECKED_IN') {
+    if (
+      !this.visitId ||
+      !this.visitDetails ||
+      this.visitDetails.status !== 'CHECKED_IN'
+    ) {
       return;
     }
 
@@ -525,11 +546,15 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
     this.visitService.checkOut(this.visitId).subscribe({
       next: (response) => {
+        console.log('Checkout response:', response);
+        console.log('Total duration:', response.totalDurationSeconds);
+
         if (this.visitDetails) {
           this.visitDetails = {
             ...this.visitDetails,
             status: response.status,
             checkedOutAt: response.checkedOutAt,
+            totalDurationSeconds: response.totalDurationSeconds,
           };
         }
 
@@ -537,11 +562,14 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
         this.checkOutSuccess = 'Visitor checked out successfully.';
 
+        this.stopDurationTimer();
+
         this.cdr.detectChanges();
       },
 
       error: (error) => {
-        this.checkOutError = error?.error?.message || 'Unable to check out visitor.';
+        this.checkOutError =
+          error?.error?.message || 'Unable to check out visitor.';
 
         this.isCheckingOut = false;
 
@@ -569,7 +597,11 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
   }
 
   onCancelVisit(): void {
-    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'REGISTERED') {
+    if (
+      !this.visitId ||
+      !this.visitDetails ||
+      this.visitDetails.status !== 'REGISTERED'
+    ) {
       return;
     }
 
@@ -588,11 +620,14 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         this.showCancelConfirmation = false;
         this.isCancellingVisit = false;
 
+        this.stopDurationTimer();
+
         this.cdr.detectChanges();
       },
 
       error: (error) => {
-        this.cancelVisitError = error?.error?.message || 'Unable to cancel visit.';
+        this.cancelVisitError =
+          error?.error?.message || 'Unable to cancel visit.';
 
         this.isCancellingVisit = false;
 
@@ -622,9 +657,43 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         console.error('Blacklist status request failed:', error);
 
         this.isBlacklistStatusLoading = false;
-        this.blacklistStatusError = 'Unable to determine blacklist status.';
+        this.blacklistStatusError =
+          'Unable to determine blacklist status.';
       },
     });
+  }
+
+  /**
+   * Starts or stops the live duration timer depending
+   * on the current visit status.
+   */
+  private updateDurationTimer(): void {
+    this.stopDurationTimer();
+
+    if (
+      !this.visitDetails ||
+      this.visitDetails.status !== 'CHECKED_IN' ||
+      !this.visitDetails.checkedInAt
+    ) {
+      return;
+    }
+
+    this.currentTime = Date.now();
+
+    this.durationTimer = setInterval(() => {
+      this.currentTime = Date.now();
+      this.cdr.detectChanges();
+    }, 1000);
+  }
+
+  /**
+   * Stops the live duration timer.
+   */
+  private stopDurationTimer(): void {
+    if (this.durationTimer) {
+      clearInterval(this.durationTimer);
+      this.durationTimer = null;
+    }
   }
 
   formatVisitDate(dateTime: string | null | undefined): string {
@@ -651,6 +720,71 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     }).format(new Date(dateTime));
   }
 
+  getVisitDayLabel(): string {
+    if (!this.visitDetails) {
+      return '';
+    }
+
+    return this.formatVisitDate(this.visitDetails.expectedArrivalAt);
+  }
+
+  formatDuration(
+    totalSeconds: number | null,
+    status: string,
+    checkedInAt: string | null
+  ): string {
+    if (status === 'REGISTERED') {
+      return 'Not started';
+    }
+
+    if (status === 'CANCELLED' || status === 'NO_SHOW') {
+      return 'Not applicable';
+    }
+
+    if (status === 'CHECKED_IN') {
+      if (!checkedInAt) {
+        return 'In progress';
+      }
+
+      const startTime = new Date(checkedInAt).getTime();
+
+      const elapsedSeconds = Math.max(
+        0,
+        Math.floor((this.currentTime - startTime) / 1000)
+      );
+
+      return this.formatSeconds(elapsedSeconds);
+    }
+
+    if (status === 'CHECKED_OUT' && totalSeconds !== null) {
+      return this.formatSeconds(totalSeconds);
+    }
+
+    return 'Not applicable';
+  }
+
+  private formatSeconds(totalSeconds: number): string {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const parts: string[] = [];
+
+    if (hours > 0) {
+      parts.push(`${hours}h`);
+    }
+
+    if (minutes > 0) {
+      parts.push(`${minutes}m`);
+    }
+
+    if (seconds > 0 || parts.length === 0) {
+      parts.push(`${seconds}s`);
+    }
+
+    return parts.join(' ');
+  }
+
   getStatusLabel(status: string): string {
     switch (status) {
       case 'REGISTERED':
@@ -675,6 +809,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopCamera();
+    this.stopDurationTimer();
 
     if (this.visitorPhotoUrl) {
       URL.revokeObjectURL(this.visitorPhotoUrl);
@@ -684,11 +819,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
       URL.revokeObjectURL(this.photoPreviewUrl);
     }
 
-    /*
-     * capturedPhotoPreviewUrl is normally already cleared
-     * by stopCamera(), but keeping this cleanup makes
-     * destruction safe even if the state changes later.
-     */
     if (this.capturedPhotoPreviewUrl) {
       URL.revokeObjectURL(this.capturedPhotoPreviewUrl);
     }

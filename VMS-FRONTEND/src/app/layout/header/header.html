@@ -53,32 +53,69 @@
 
 
     <!-- User Profile -->
-    <div class="admin-profile">
+<div class="profile-wrapper">
 
-      <div class="profile-avatar">
-        <span>A</span>
-      </div>
+  <div
+    class="admin-profile"
+    (click)="toggleProfileMenu()"
+  >
 
-      <div class="profile-info">
-        <span class="profile-name">Admin User</span>
-        <span class="profile-role">Administrator</span>
-      </div>
+    <div class="profile-avatar">
+      <span>
+        {{ currentUser()?.user?.fullName?.charAt(0)?.toUpperCase() }}
+      </span>
+    </div>
 
-      <svg
-        class="dropdown-icon"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="m7 10 5 5 5-5"/>
-      </svg>
+    <div class="profile-info">
+      <span class="profile-name">
+        {{ currentUser()?.user?.fullName }}
+      </span>
+
+      <span class="profile-role">
+        {{ currentUser()?.user?.role }}
+      </span>
+    </div>
+
+    <svg
+      class="dropdown-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m7 10 5 5 5-5"/>
+    </svg>
+
+  </div>
+
+
+  @if (isProfileMenuOpen()) {
+  <div class="profile-dropdown">
+
+    <div class="logout-message">
+      <span>Clicking logout will sign you out</span>
+      <span>of the Visitor Management System.</span>
+    </div>
+
+    <div class="dropdown-divider"></div>
+
+    <button
+      type="button"
+      class="profile-dropdown-item logout-item"
+      (click)="logout(); $event.stopPropagation()"
+    >
+      Logout
+    </button>
+
+  </div>
+}
+
+</div>
 
     </div>
 
-  </div>
 
 </header>

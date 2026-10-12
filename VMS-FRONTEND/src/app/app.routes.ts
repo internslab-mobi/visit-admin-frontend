@@ -36,6 +36,9 @@ import { BlacklistDetails } from './features/blacklist-details/blacklist-details
 // Admin layout
 import { AdminLayoutComponent } from './layout/admin-layout/admin-layout';
 
+// Visitor log
+import { VisitorLogComponent } from './features/visitor-log/visitor-log';
+
 export const routes: Routes = [
   // Redirect the root URL to the login page.
   {
@@ -50,13 +53,11 @@ export const routes: Routes = [
     component: LoginComponent,
   },
 
-  // Public password recovery page.
-  // This must stay outside the protected /admin route.
+  // Public password recovery pages.
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent,
   },
-
   {
     path: 'reset-password',
     component: ResetPasswordComponent,
@@ -133,6 +134,12 @@ export const routes: Routes = [
       {
         path: 'blacklist/:id',
         component: BlacklistDetails,
+      },
+
+      // Visitor log.
+      {
+        path: 'visitor-log',
+        component: VisitorLogComponent,
       },
     ],
   },
