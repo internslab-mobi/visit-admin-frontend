@@ -5,10 +5,6 @@ import { Observable } from 'rxjs';
 import { API_CONFIG } from '../../../../environments/environment.dev';
 
 
-/* =========================================================
-   NDA DOCUMENT RESPONSE
-========================================================= */
-
 export interface NdaDocumentResponse {
   documentId: string;
   documentPath: string;
@@ -18,11 +14,6 @@ export interface NdaDocumentResponse {
     overwrittenBy: string | null;
 }
 
-
-/* =========================================================
-   NDA DOCUMENT SERVICE
-========================================================= */
-
 @Injectable({
   providedIn: 'root'
 })
@@ -30,25 +21,12 @@ export class NdaDocumentService {
 
   private readonly http = inject(HttpClient);
 
-  /*
-   * NDA lifecycle APIs
-   */
   private readonly ndaApiUrl =
     `${API_CONFIG.BASE_URL}/api/nda`;
 
-  /*
-   * Existing document APIs
-   * Used only for viewing/downloading the actual file.
-   */
   private readonly documentApiUrl =
     `${API_CONFIG.BASE_URL}/api/documents`;
 
-
-  /* =======================================================
-     GET LATEST NDA
-     
-     GET /api/nda/{visitorId}/latest
-  ======================================================= */
 
   getLatestNda(
     visitorId: string
@@ -61,12 +39,6 @@ export class NdaDocumentService {
   }
 
 
-  /* =======================================================
-     GET NDA HISTORY
-
-     GET /api/nda/{visitorId}/history
-  ======================================================= */
-
   getNdaHistory(
     visitorId: string
   ): Observable<NdaDocumentResponse[]> {
@@ -77,16 +49,6 @@ export class NdaDocumentService {
 
   }
 
-
-  /* =======================================================
-     UPLOAD NEW NDA
-
-     POST /api/nda/{visitorId}/upload-new
-
-     FormData:
-       ndaFile
-       validUntil
-  ======================================================= */
 
   uploadNewNda(
     visitorId: string,
@@ -107,15 +69,7 @@ export class NdaDocumentService {
   }
 
 
-  /* =======================================================
-     EXTEND NDA VALIDITY
-
-     POST /api/nda/{visitorId}/extend
-
-     FormData:
-       supportingDocument
-       newValidUntil
-  ======================================================= */
+  
 
   extendNdaValidity(
     visitorId: string,
@@ -136,12 +90,6 @@ export class NdaDocumentService {
   }
 
 
-  /* =======================================================
-     GET NDA DOWNLOAD URL
-
-     Existing DocumentController endpoint
-  ======================================================= */
-
   getNdaDownloadUrl(
     visitorId: string
   ): string {
@@ -150,12 +98,6 @@ export class NdaDocumentService {
 
   }
 
-
-  /* =======================================================
-     VIEW DOCUMENT
-
-     Existing DocumentController endpoint
-  ======================================================= */
 
   getDocumentViewUrl(
     documentId: string

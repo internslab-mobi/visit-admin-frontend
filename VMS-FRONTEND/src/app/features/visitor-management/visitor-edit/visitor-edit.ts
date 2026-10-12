@@ -42,16 +42,14 @@ import {
 export class VisitorEditComponent implements OnInit {
 
 
-  /* =====================================================
-     SERVICES
-  ===================================================== */
 
   private readonly visitorService =
     inject(VisitorService);
 
+    //activated router gets the detail from current router
   private readonly route =
     inject(ActivatedRoute);
-
+//router helps to navigate to another page/router
   private readonly router =
     inject(Router);
 
@@ -60,9 +58,7 @@ export class VisitorEditComponent implements OnInit {
 
     private readonly blacklistService = inject(BlacklistService);
 
-  /* =====================================================
-     STATE
-  ===================================================== */
+
 
   visitorId = '';
 
@@ -89,9 +85,7 @@ export class VisitorEditComponent implements OnInit {
   successMessage = '';
 
 
-  /* =====================================================
-     FORM
-  ===================================================== */
+
 
   firstName = '';
 
@@ -104,16 +98,12 @@ export class VisitorEditComponent implements OnInit {
   companyName = '';
 
 
-  /* =====================================================
-     PHOTO
-  ===================================================== */
 
   photoUrl = '';
 
 
-  /* =====================================================
-     INITIALIZATION
-  ===================================================== */
+  
+
 
   ngOnInit(): void {
 
@@ -138,9 +128,6 @@ export class VisitorEditComponent implements OnInit {
   }
 
 
-  /* =====================================================
-     LOAD VISITOR
-  ===================================================== */
 
   private loadVisitor(): void {
 
@@ -170,9 +157,6 @@ export class VisitorEditComponent implements OnInit {
             response.blacklisted;
 
 
-          /* -------------------------
-             Editable fields
-          ------------------------- */
 
           this.firstName =
             response.visitor.firstName ?? '';
@@ -189,10 +173,6 @@ export class VisitorEditComponent implements OnInit {
           this.companyName =
             response.visitor.companyName ?? '';
 
-
-          /* -------------------------
-             Current photo
-          ------------------------- */
 
           this.photoUrl =
             this.visitorService
@@ -269,9 +249,8 @@ private loadDocuments(): void {
 
 }
 
-  /* =====================================================
-     SAVE
-  ===================================================== */
+
+
 
   saveChanges(): void {
 
@@ -373,9 +352,8 @@ private loadDocuments(): void {
   }
 
 
-  /* =====================================================
-     CANCEL
-  ===================================================== */
+  
+
 
   cancel(): void {
 
@@ -386,16 +364,14 @@ private loadDocuments(): void {
   }
 
 
-  /* =====================================================
-     DOCUMENT DISPLAY
-  ===================================================== */
+  
+
+
 
   
 
 
-  /* =====================================================
-     VISIT DISPLAY
-  ===================================================== */
+
 
   getRegistrationLabel(
     type: string | null
@@ -495,9 +471,6 @@ private loadDocuments(): void {
   }
 
 
-  /* =====================================================
-     DOCUMENT VIEW
-  ===================================================== */
 
   viewDocument(document: VisitorDocument): void {
 
@@ -513,9 +486,7 @@ private loadDocuments(): void {
 
 }
 
-  /* =====================================================
-     BLACKLIST
-  ===================================================== */
+
 
   // addToBlacklist(): void {
 

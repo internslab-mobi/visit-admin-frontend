@@ -176,10 +176,6 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
     ],
 
 
-    // ------------------------------------------------------------------------
-    // Nationality & ID Proof
-    // ------------------------------------------------------------------------
-
     nationality: this.fb.control<string | null>(
       '',
       Validators.required
@@ -191,11 +187,7 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
     passportNumber: this.fb.control<string | null>(null),
 
-    // ------------------------------------------------------------------------
-    // Documents
-    // ------------------------------------------------------------------------
-
-    documents: this.fb.control<File[]>([])
+       documents: this.fb.control<File[]>([])
   });
 
 
@@ -1025,12 +1017,12 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
           this.createdVisit = response;
 
 
-          /*
-           * Registration is successful.
-           *
-           * Now upload proof documents separately
-           * using the visitorId returned by the backend.
-           */
+          
+          // Registration is successful.
+          
+          //  Now upload proof documents separately
+          //  using the visitorId returned by the backend.
+          
 
           const files =
             this.getSelectedDocuments();
@@ -1048,10 +1040,10 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
           } else {
 
-            /*
-             * No proof documents selected.
-             * Registration is already complete.
-             */
+            
+            //  No proof documents selected.
+            //  Registration is already complete.
+            
 
             this.registrationSuccess = true;
 
@@ -1241,10 +1233,7 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
       Array.from(files);
 
 
-    // ------------------------------------------------------------------------
-    // Validate files
-    // ------------------------------------------------------------------------
-
+   
     for (const file of newFiles) {
 
       if (!allowedTypes.includes(file.type)) {
@@ -1270,17 +1259,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
     }
 
 
-    // ------------------------------------------------------------------------
-    // Get existing files
-    // ------------------------------------------------------------------------
-
     const existingFiles =
       this.getSelectedDocuments();
 
-
-    // ------------------------------------------------------------------------
-    // Append new files
-    // ------------------------------------------------------------------------
 
     const updatedFiles = [
       ...existingFiles,
