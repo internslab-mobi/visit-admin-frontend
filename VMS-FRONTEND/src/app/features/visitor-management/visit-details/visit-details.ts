@@ -127,13 +127,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Builds the identity request expected by the backend.
-   *
-   * The same request is used for both:
-   * - identity verification
-   * - check-in
-   */
   private buildIdentityRequest(): {
     aadharNumber?: string;
     panNumber?: string;
