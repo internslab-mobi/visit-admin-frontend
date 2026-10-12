@@ -34,4 +34,5 @@ export interface BlacklistResponse {
   updatedBy: string | null;
 
   visitorType: VisitorType | null;
+  matchingProofTypes: string[];
 }

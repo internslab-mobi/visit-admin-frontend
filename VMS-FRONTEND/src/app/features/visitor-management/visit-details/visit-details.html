@@ -453,6 +453,18 @@
             </div>
 
 
+            <div class="information-item">
+  <span class="field-label">Total Duration</span>
+
+  <strong>
+    {{ formatDuration(
+      visitDetails.totalDurationSeconds,
+      visitDetails.status,
+      visitDetails.checkedInAt
+    ) }}
+  </strong>
+</div>
+
             @if (visit.remarks) {
 
               <div class="information-item information-item-wide">
