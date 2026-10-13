@@ -49,6 +49,7 @@ export interface LoginResponse {
   userId: string;
   role: string;
   mustChangePassword: boolean;
+  message: string;
   user: UserResponse;
 }
 

@@ -6,17 +6,13 @@ import { API_CONFIG } from '../../../../environments/environment.dev';
 import { HttpParams } from '@angular/common/http';
 import {
   RegistrationRequest,
-  RegistrationResponse
+  RegistrationResponse,
 } from '../../models/registration/registration.model';
 
 import { VisitDetailResponse } from '../../models/visit/visit-detail.model';
-import {
-  VisitorLogPage
-} from '../../models/visitor-log/visitor-log.model';
-
+import { VisitorLogPage } from '../../models/visitor-log/visitor-log.model';
 
 export interface VisitDashboardResponse {
-
   visitId: string;
   visitReference: string;
 
@@ -36,66 +32,57 @@ export interface VisitDashboardResponse {
   status: string;
 }
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class VisitService {
-
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl =
-    `${API_CONFIG.BASE_URL}/api/visits`;
+  private readonly apiUrl = `${API_CONFIG.BASE_URL}/api/visits`;
 
-
-  register(
-    request: RegistrationRequest
-  ): Observable<RegistrationResponse> {
-
-    return this.http.post<RegistrationResponse>(
-      this.apiUrl,
-      request
-    );
+  register(request: RegistrationRequest): Observable<RegistrationResponse> {
+    return this.http.post<RegistrationResponse>(this.apiUrl, request);
   }
-
 
   getDashboardVisits(
     sortDirection: 'ASC' | 'DESC',
-    sortBy: 'id' | 'name' | 'company' | 'visitDate'
+    sortBy: 'id' | 'name' | 'company' | 'visitDate',
   ): Observable<VisitDashboardResponse[]> {
-
-    return this.http.get<VisitDashboardResponse[]>(
-      this.apiUrl,
-      {
-        params: {
-          sortDirection,
-          sortBy
-        }
-      }
-    );
+    return this.http.get<VisitDashboardResponse[]>(this.apiUrl, {
+      params: {
+        sortDirection,
+        sortBy,
+      },
+    });
   }
 
-
-  getVisitDetails(
-    visitId: string
-  ): Observable<VisitDetailResponse> {
-
-    return this.http.get<VisitDetailResponse>(
-      `${this.apiUrl}/${visitId}`
-    );
+  getVisitDetails(visitId: string): Observable<VisitDetailResponse> {
+    return this.http.get<VisitDetailResponse>(`${this.apiUrl}/${visitId}`);
   }
 
+ 
+getVisitPhoto(visitId: string): Observable<Blob> {
+  return this.http.get(
+    `${this.apiUrl}/${encodeURIComponent(visitId)}/photo`,
+    {
+      responseType: 'blob',
+    },
+  );
+}
 
-  getVisitorPhoto(visitorId: string): Observable<Blob> {
 
-    return this.http.get(
-      `${API_CONFIG.BASE_URL}/api/documents/visitor/${encodeURIComponent(visitorId)}/photo`,
-      {
-        responseType: 'blob'
-      }
+
+  uploadNda(visitorId: string, ndaFile: File, validUntil: string): Observable<unknown> {
+    const formData = new FormData();
+
+    formData.append('ndaFile', ndaFile);
+    formData.append('validUntil', validUntil);
+
+    return this.http.post(
+      `${API_CONFIG.BASE_URL}/api/nda/${encodeURIComponent(visitorId)}/upload-new`,
+      formData,
     );
   }
-
 
   checkIn(
     visitId: string,
@@ -104,30 +91,16 @@ export class VisitService {
       panNumber?: string;
       passportNumber?: string;
     },
-    photo: File
+    photo: File,
   ): Observable<VisitDetailResponse> {
-
     const formData = new FormData();
 
-    formData.append(
-      'request',
-      new Blob(
-        [JSON.stringify(request)],
-        { type: 'application/json' }
-      )
-    );
+    formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
 
-    formData.append(
-      'photo',
-      photo
-    );
+    formData.append('photo', photo);
 
-    return this.http.patch<VisitDetailResponse>(
-      `${this.apiUrl}/${visitId}/check-in`,
-      formData
-    );
+    return this.http.patch<VisitDetailResponse>(`${this.apiUrl}/${visitId}/check-in`, formData);
   }
-
 
   verifyIdentity(
     visitId: string,
@@ -135,77 +108,55 @@ export class VisitService {
       aadharNumber?: string;
       panNumber?: string;
       passportNumber?: string;
-    }
+    },
   ): Observable<void> {
-
-    return this.http.post<void>(
-      `${this.apiUrl}/${visitId}/verify-identity`,
-      request
-    );
+    return this.http.post<void>(`${this.apiUrl}/${visitId}/verify-identity`, request);
   }
 
-
-  checkOut(
-    visitId: string
-  ): Observable<VisitDetailResponse> {
-
-    return this.http.patch<VisitDetailResponse>(
-      `${this.apiUrl}/${visitId}/check-out`,
-      {}
-    );
+  checkOut(visitId: string): Observable<VisitDetailResponse> {
+    return this.http.patch<VisitDetailResponse>(`${this.apiUrl}/${visitId}/check-out`, {});
   }
 
-
-  cancelVisit(
-    visitId: string
-  ): Observable<VisitDetailResponse> {
-
-    return this.http.patch<VisitDetailResponse>(
-      `${this.apiUrl}/${visitId}/cancel`,
-      {}
-    );
+  cancelVisit(visitId: string): Observable<VisitDetailResponse> {
+    return this.http.patch<VisitDetailResponse>(`${this.apiUrl}/${visitId}/cancel`, {});
   }
 
   getVisitorLog(
-  search: string = '',
-  fromDate: string = '',
-  toDate: string = '',
-  status: string = '',
-  visitorType: string = '',
-  hostId: string = '',
-  page: number = 0,
-  size: number = 10,
-  sortDirection: 'ASC' | 'DESC' = 'DESC'
-): Observable<VisitorLogPage> {
+    search: string = '',
+    fromDate: string = '',
+    toDate: string = '',
+    status: string = '',
+    visitorType: string = '',
+    hostId: string = '',
+    page: number = 0,
+    size: number = 10,
+    sortDirection: 'ASC' | 'DESC' = 'DESC',
+  ): Observable<VisitorLogPage> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sortDirection', sortDirection);
 
-  let params = new HttpParams()
-    .set('page', page.toString())
-    .set('size', size.toString())
-    .set('sortDirection', sortDirection);
+    if (search.trim()) {
+      params = params.set('search', search.trim());
+    }
 
-  if (search.trim()) {
-    params = params.set('search', search.trim());
+    if (fromDate) {
+      params = params.set('fromDate', fromDate);
+    }
+
+    if (toDate) {
+      params = params.set('toDate', toDate);
+    }
+
+    if (visitorType) {
+      params = params.set('visitorType', visitorType);
+    }
+
+    if (hostId) {
+      params = params.set('hostId', hostId);
+    }
+
+    return this.http.get<VisitorLogPage>(`${API_CONFIG.BASE_URL}/api/visitor-log`, { params });
   }
-
-  if (fromDate) {
-    params = params.set('fromDate', fromDate);
-  }
-
-  if (toDate) {
-    params = params.set('toDate', toDate);
-  }
-
-  if (visitorType) {
-    params = params.set('visitorType', visitorType);
-  }
-
-  if (hostId) {
-    params = params.set('hostId', hostId);
-  }
-
-  return this.http.get<VisitorLogPage>(
-    `${API_CONFIG.BASE_URL}/api/visitor-log`,
-    { params }
-  );
-}
 }
