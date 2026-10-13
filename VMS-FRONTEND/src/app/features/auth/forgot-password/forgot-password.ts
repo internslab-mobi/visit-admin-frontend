@@ -1,8 +1,8 @@
-
 import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  OnDestroy,
   QueryList,
   ViewChildren,
   inject,
@@ -20,7 +20,7 @@ import { AuthService } from '../../../core/services/auth/auth.service';
   templateUrl: './forgot-password.html',
   styleUrl: './forgot-password.css',
 })
-export class ForgotPasswordComponent {
+export class ForgotPasswordComponent implements OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
@@ -37,6 +37,15 @@ export class ForgotPasswordComponent {
 
   isLoading = false;
   errorMessage = '';
+
+  resendCountdown = 0;
+  isResending = false;
+
+  private countdownInterval: ReturnType<typeof setInterval> | null = null;
+
+  get canResendCode(): boolean {
+    return this.resendCountdown === 0 && !this.isLoading && !this.isResending;
+  }
 
   get maskedEmail(): string {
     const email = this.email.trim();
@@ -72,7 +81,81 @@ export class ForgotPasswordComponent {
       .requestPasswordReset({ email: this.email.trim() })
       .pipe(
         finalize(() => {
+          console.log('[ForgotPassword] Request finalized');
           this.isLoading = false;
+          this.cdr.detectChanges();
+        }),
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('[ForgotPassword] Success response:', response);
+          this.otp = '';
+          this.otpDigits = Array(6).fill('');
+          this.errorMessage = '';
+          this.step = 'otp';
+          this.startResendCountdown();
+          this.cdr.detectChanges();
+        },
+
+        error: (error) => {
+          console.error('[ForgotPassword] Request failed:', error);
+          if (error.status === 0) {
+            this.errorMessage = 'Unable to connect to the server. Please try again.';
+          } else if (error.status === 404) {
+            this.errorMessage =
+              error.error?.message ??
+              'No active account found for this email. Please check your email address or contact your administrator.';
+          } else if (error.status === 429) {
+            this.errorMessage =
+              error.error?.message ?? 'Too many requests. Please try again later.';
+          } else {
+            this.errorMessage = 'We could not process your request. Please try again later.';
+          }
+
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
+  private startResendCountdown(): void {
+    this.stopResendCountdown();
+    this.resendCountdown = 60;
+
+    this.countdownInterval = setInterval(() => {
+      if (this.resendCountdown > 0) {
+        this.resendCountdown--;
+      }
+
+      if (this.resendCountdown === 0) {
+        this.stopResendCountdown();
+      }
+
+      this.cdr.detectChanges();
+    }, 1000);
+  }
+
+  private stopResendCountdown(): void {
+    if (this.countdownInterval !== null) {
+      clearInterval(this.countdownInterval);
+      this.countdownInterval = null;
+    }
+  }
+
+  resendCode(): void {
+    if (!this.canResendCode) {
+      return;
+    }
+
+    this.errorMessage = '';
+    this.isResending = true;
+
+    this.authService
+      .resendPasswordResetCode({
+        email: this.email.trim(),
+      })
+      .pipe(
+        finalize(() => {
+          this.isResending = false;
           this.cdr.detectChanges();
         }),
       )
@@ -80,21 +163,19 @@ export class ForgotPasswordComponent {
         next: () => {
           this.otp = '';
           this.otpDigits = Array(6).fill('');
-          this.errorMessage = '';
-          this.step = 'otp';
+          this.startResendCountdown();
           this.cdr.detectChanges();
         },
         error: (error) => {
           if (error.status === 0) {
-            this.errorMessage =
-              'Unable to connect to the server. Please try again.';
+            this.errorMessage = 'Unable to connect to the server. Please try again.';
+          } else if (error.status === 404) {
+            this.errorMessage = error.error?.message ?? 'No active account found for this email.';
           } else if (error.status === 429) {
             this.errorMessage =
-              error.error?.message ??
-              'Too many requests. Please try again later.';
+              error.error?.message ?? 'Please wait before requesting another code.';
           } else {
-            this.errorMessage =
-              'We could not process your request. Please try again later.';
+            this.errorMessage = 'Unable to resend the verification code. Please try again later.';
           }
 
           this.cdr.detectChanges();
@@ -149,10 +230,7 @@ export class ForgotPasswordComponent {
     const pastedText = event.clipboardData?.getData('text') ?? '';
     const digits = pastedText.replace(/\D/g, '').slice(0, 6);
 
-    this.otpDigits = Array.from(
-      { length: 6 },
-      (_, index) => digits[index] ?? '',
-    );
+    this.otpDigits = Array.from({ length: 6 }, (_, index) => digits[index] ?? '');
 
     this.otp = this.otpDigits.join('');
     this.errorMessage = '';
@@ -173,8 +251,7 @@ export class ForgotPasswordComponent {
 
     if (!/^\d{6}$/.test(this.otp)) {
       form.control.markAllAsTouched();
-      this.errorMessage =
-        'Enter all six digits of the verification code.';
+      this.errorMessage = 'Enter all six digits of the verification code.';
       return;
     }
 
@@ -206,20 +283,13 @@ export class ForgotPasswordComponent {
         },
         error: (error) => {
           if (error.status === 0) {
-            this.errorMessage =
-              'Unable to connect to the server. Please try again.';
-          } else if (
-            error.status === 400 ||
-            error.status === 401
-          ) {
-            this.errorMessage =
-              'The code is invalid or expired. Please try again.';
+            this.errorMessage = 'Unable to connect to the server. Please try again.';
+          } else if (error.status === 400 || error.status === 401) {
+            this.errorMessage = 'The code is invalid or expired. Please try again.';
           } else if (error.status === 429) {
-            this.errorMessage =
-              'Too many attempts. Please wait before trying again.';
+            this.errorMessage = 'Too many attempts. Please wait before trying again.';
           } else {
-            this.errorMessage =
-              'We could not verify the code. Please try again later.';
+            this.errorMessage = 'We could not verify the code. Please try again later.';
           }
 
           this.cdr.detectChanges();
@@ -234,5 +304,8 @@ export class ForgotPasswordComponent {
     this.otp = '';
     this.otpDigits = Array(6).fill('');
     this.errorMessage = '';
+  }
+  ngOnDestroy(): void {
+    this.stopResendCountdown();
   }
 }
