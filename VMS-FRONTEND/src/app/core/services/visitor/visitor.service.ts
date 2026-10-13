@@ -108,11 +108,13 @@ export interface VisitorVisit {
 
   checkedOutAt: string | null;
 
+  totalDurationSeconds: number | null;
+
   remarks: string | null;
 
   status: string;
 
-  duration:string | null;
+  // duration:string | null;
 
 }
 

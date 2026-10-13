@@ -818,7 +818,7 @@
 
 
 <td>
-  {{ visit.duration || '-' }}
+    {{ formatVisitDuration(visit.totalDurationSeconds, visit.status) }}
 </td>
 
                   <td>
