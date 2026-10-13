@@ -25,6 +25,8 @@ import {
   VisitorDocument
 } from '../../../core/services/visitor/visitor.service';
 
+import { VisitDurationComponent } from '../../../shared/components/visit-duration/visit-duration';
+
 import { AuthService } from '../../../core/services/auth/auth.service';
 @Component({
   selector: 'app-visitor-edit',
@@ -32,7 +34,8 @@ import { AuthService } from '../../../core/services/auth/auth.service';
   standalone: true,
 
   imports: [
-    FormsModule
+    FormsModule,
+    VisitDurationComponent
   ],
 
   templateUrl: './visitor-edit.html',
@@ -58,6 +61,7 @@ export class VisitorEditComponent implements OnInit {
 
     private readonly blacklistService = inject(BlacklistService);
 private readonly authService = inject(AuthService);
+
 
 
   visitorId = '';
@@ -487,50 +491,50 @@ private loadDocuments(): void {
   );
 
 }
-formatVisitDuration(
-  totalSeconds: number | null,
-  status: string
-): string {
-  if (status === 'REGISTERED') {
-    return 'Not started';
-  }
+// formatVisitDuration(
+//   totalSeconds: number | null,
+//   status: string
+// ): string {
+//   if (status === 'REGISTERED') {
+//     return 'Not started';
+//   }
 
-  if (status === 'CANCELLED' || status === 'NO_SHOW') {
-    return 'Not applicable';
-  }
+//   if (status === 'CANCELLED' || status === 'NO_SHOW') {
+//     return 'Not applicable';
+//   }
 
-  if (status === 'CHECKED_IN') {
-    return 'In progress';
-  }
+//   if (status === 'CHECKED_IN') {
+//     return 'In progress';
+//   }
 
-  if (status === 'CHECKED_OUT' && totalSeconds !== null) {
-    return this.formatSeconds(totalSeconds);
-  }
+//   if (status === 'CHECKED_OUT' && totalSeconds !== null) {
+//     return this.formatSeconds(totalSeconds);
+//   }
 
-  return '-';
-}
+//   return '-';
+// }
 
-private formatSeconds(totalSeconds: number): string {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
+// private formatSeconds(totalSeconds: number): string {
+//   const hours = Math.floor(totalSeconds / 3600);
+//   const minutes = Math.floor((totalSeconds % 3600) / 60);
+//   const seconds = totalSeconds % 60;
 
-  const parts: string[] = [];
+//   const parts: string[] = [];
 
-  if (hours > 0) {
-    parts.push(`${hours}h`);
-  }
+//   if (hours > 0) {
+//     parts.push(`${hours}h`);
+//   }
 
-  if (minutes > 0) {
-    parts.push(`${minutes}m`);
-  }
+//   if (minutes > 0) {
+//     parts.push(`${minutes}m`);
+//   }
 
-  if (seconds > 0 || parts.length === 0) {
-    parts.push(`${seconds}s`);
-  }
+//   if (seconds > 0 || parts.length === 0) {
+//     parts.push(`${seconds}s`);
+//   }
 
-  return parts.join(' ');
-}
+//   return parts.join(' ');
+// }
 
   // addToBlacklist(): void {
 
