@@ -38,9 +38,7 @@ export interface VisitorEditResponse {
 }
 
 
-/* =========================================================
-   VISITOR
-========================================================= */
+
 
 export interface VisitorEditVisitor {
 
@@ -61,9 +59,6 @@ export interface VisitorEditVisitor {
 }
 
 
-/* =========================================================
-   VENDOR
-========================================================= */
 
 export interface VisitorVendor {
 
@@ -71,10 +66,6 @@ export interface VisitorVendor {
 
 }
 
-
-/* =========================================================
-   DOCUMENT
-========================================================= */
 
 export interface VisitorDocument {
 
@@ -87,9 +78,7 @@ export interface VisitorDocument {
 }
 
 
-/* =========================================================
-   VISIT
-========================================================= */
+
 
 export interface VisitorVisit {
 
@@ -119,16 +108,18 @@ export interface VisitorVisit {
 
   checkedOutAt: string | null;
 
+  totalDurationSeconds: number | null;
+
   remarks: string | null;
 
   status: string;
 
+  // duration:string | null;
+
 }
 
 
-/* =========================================================
-   BLACKLIST
-========================================================= */
+
 
 export interface VisitorBlacklist {
 
@@ -143,9 +134,6 @@ export interface VisitorBlacklist {
 }
 
 
-/* =========================================================
-   UPDATE VISITOR REQUEST
-========================================================= */
 
 export interface UpdateVisitorRequest {
 
@@ -162,9 +150,7 @@ export interface UpdateVisitorRequest {
 }
 
 
-/* =========================================================
-   SERVICE
-========================================================= */
+
 
 @Injectable({
   providedIn: 'root'
@@ -177,10 +163,6 @@ export class VisitorService {
     `${API_CONFIG.BASE_URL}/api/visitors`;
 
 
-  /* =======================================================
-     GET ALL VISITORS
-  ======================================================= */
-
   getVisitors(): Observable<VisitorResponse[]> {
 
     return this.http.get<VisitorResponse[]>(
@@ -190,9 +172,6 @@ export class VisitorService {
   }
 
 
-  /* =======================================================
-     GET VISITOR EDIT DETAILS
-  ======================================================= */
 
   getVisitorForEdit(
     visitorId: string
@@ -204,10 +183,6 @@ export class VisitorService {
 
   }
 
-
-  /* =======================================================
-     UPDATE VISITOR
-  ======================================================= */
 
   updateVisitor(
     visitorId: string,
@@ -221,10 +196,6 @@ export class VisitorService {
 
   }
 
-
-  /* =======================================================
-     GET CURRENT VISITOR PHOTO
-  ======================================================= */
 
   getVisitorPhotoUrl(
     visitorId: string

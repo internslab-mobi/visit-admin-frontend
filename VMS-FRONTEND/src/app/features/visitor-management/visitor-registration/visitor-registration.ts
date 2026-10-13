@@ -176,10 +176,6 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
     ],
 
 
-    // ------------------------------------------------------------------------
-    // Nationality & ID Proof
-    // ------------------------------------------------------------------------
-
     nationality: this.fb.control<string | null>(
       '',
       Validators.required
@@ -191,11 +187,7 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
     passportNumber: this.fb.control<string | null>(null),
 
-    // ------------------------------------------------------------------------
-    // Documents
-    // ------------------------------------------------------------------------
-
-    documents: this.fb.control<File[]>([])
+       documents: this.fb.control<File[]>([])
   });
 
 
@@ -1025,12 +1017,12 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
           this.createdVisit = response;
 
 
-          /*
-           * Registration is successful.
-           *
-           * Now upload proof documents separately
-           * using the visitorId returned by the backend.
-           */
+          
+          // Registration is successful.
+          
+          //  Now upload proof documents separately
+          //  using the visitorId returned by the backend.
+          
 
           const files =
             this.getSelectedDocuments();
@@ -1048,10 +1040,10 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
           } else {
 
-            /*
-             * No proof documents selected.
-             * Registration is already complete.
-             */
+            
+            //  No proof documents selected.
+            //  Registration is already complete.
+            
 
             this.registrationSuccess = true;
 
@@ -1241,10 +1233,7 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
       Array.from(files);
 
 
-    // ------------------------------------------------------------------------
-    // Validate files
-    // ------------------------------------------------------------------------
-
+   
     for (const file of newFiles) {
 
       if (!allowedTypes.includes(file.type)) {
@@ -1270,17 +1259,9 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
     }
 
 
-    // ------------------------------------------------------------------------
-    // Get existing files
-    // ------------------------------------------------------------------------
-
     const existingFiles =
       this.getSelectedDocuments();
 
-
-    // ------------------------------------------------------------------------
-    // Append new files
-    // ------------------------------------------------------------------------
 
     const updatedFiles = [
       ...existingFiles,
@@ -1303,300 +1284,121 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
 
 
   getSelectedDocuments(): File[] {
+  const files = this.registrationForm.get('documents')?.value;
+  return Array.isArray(files) ? files : [];
+}
 
-    const files =
-      this.registrationForm
-        .get('documents')
-        ?.value;
-
-
-    return Array.isArray(files)
-      ? files
-      : [];
+removeDocument(index: number): void {
+  const files = this.getSelectedDocuments();
+  if (index < 0 || index >= files.length) {
+    return;
   }
 
+  const updatedFiles = files.filter((_, fileIndex) => fileIndex !== index);
 
-  removeDocument(index: number): void {
+  this.registrationForm.patchValue({
+    documents: updatedFiles
+  });
 
-    const files =
-      this.getSelectedDocuments();
-
-
-    if (
-      index < 0 ||
-      index >= files.length
-    ) {
-      return;
-    }
+  this.errorMessage = '';
+}
 
 
-    const updatedFiles =
-      files.filter(
-        (_, fileIndex) =>
-          fileIndex !== index
-      );
+ getSelectedDocumentNames(): string {
+  const files = this.getSelectedDocuments();
 
-
-    this.registrationForm.patchValue({
-      documents: updatedFiles
-    });
-
-
-    this.errorMessage = '';
+  if (files.length === 0) {
+    return '';
   }
 
-
-  getSelectedDocumentNames(): string {
-
-    const files =
-      this.getSelectedDocuments();
-
-
-    if (files.length === 0) {
-      return '';
-    }
-
-
-    if (files.length === 1) {
-      return files[0].name;
-    }
-
-
-    return `${files.length} documents selected`;
+  if (files.length === 1) {
+    return files[0].name;
   }
 
+  return `${files.length} documents selected`;
+}
 
-  formatFileSize(size: number): string {
-
-    if (size < 1024) {
-      return `${size} B`;
-    }
-
-
-    if (size < 1024 * 1024) {
-      return `${(size / 1024).toFixed(1)} KB`;
-    }
-
-
-    return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+formatFileSize(size: number): string {
+  if (size < 1024) {
+    return `${size} B`;
   }
+
+  if (size < 1024 * 1024) {
+    return `${(size / 1024).toFixed(1)} KB`;
+  }
+
+  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+  private buildRegistrationRequest(): RegistrationRequest | null {
+  const value = this.registrationForm.getRawValue();
+
+  const arrival = this.parseDateTime(value.expectedArrivalAt);
+  const departure = this.parseDateTime(value.expectedDepartureAt);
+
+  if (!arrival || !departure) {
+    this.errorMessage = 'Please enter valid arrival and departure date and time.';
+    return null;
+  }
+
+  if (departure <= arrival) {
+    this.errorMessage = 'Expected departure time must be after expected arrival time.';
+    return null;
+  }
+
+  const visitDate = this.formatDate(arrival);
+
+  if (this.formatDate(departure) !== visitDate) {
+    this.errorMessage = 'Expected arrival and departure must be on the same date.';
+    return null;
+  }
+
+  // Convert nationality-specific proof fields
+  // into backend fields
+ 
+  let proofType: ProofType | null = null;
+  let proofNumber: string | null = null;
+
+  const nationality = value.nationality as Nationality | null;
+
+  if (nationality === 'DOMESTIC') {
+    
+
+    if (value.aadhaarNumber) {
+      proofType = 'AADHAAR';
+      proofNumber = String(value.aadhaarNumber).trim();
+    }
+  }
+   else if (nationality === 'INTERNATIONAL') {
+    if (value.passportNumber) {
+      proofType = 'PASSPORT';
+      proofNumber = String(value.passportNumber).trim();
+    }
+  }
+
 
 
   
-  // Build backend request
-  
-
-  private buildRegistrationRequest():
-    RegistrationRequest | null {
-
-    const value =
-      this.registrationForm.getRawValue();
-
-
-    const arrival =
-      this.parseDateTime(
-        value.expectedArrivalAt
-      );
-
-
-    const departure =
-      this.parseDateTime(
-        value.expectedDepartureAt
-      );
-
-
-    if (!arrival || !departure) {
-
-      this.errorMessage =
-        'Please enter valid arrival and departure date and time.';
-
-      return null;
-    }
-
-
-    if (departure <= arrival) {
-
-      this.errorMessage =
-        'Expected departure time must be after expected arrival time.';
-
-      return null;
-    }
-
-
-    const visitDate =
-      this.formatDate(arrival);
-
-
-    if (
-      this.formatDate(departure) !== visitDate
-    ) {
-
-      this.errorMessage =
-        'Expected arrival and departure must be on the same date.';
-
-      return null;
-    }
-
-
-    // ------------------------------------------------------------------------
-    // Convert nationality-specific proof fields
-    // into backend fields
-    // ------------------------------------------------------------------------
-
-    let proofType: ProofType | null = null;
-
-    let proofNumber: string | null = null;
-
-
-    const nationality =
-      value.nationality as Nationality | null;
-
-
-    if (nationality === 'DOMESTIC') {
-
-      /*
-       * For domestic visitors, the form requires
-       * both Aadhaar and PAN.
-       *
-       * RegistrationRequest supports only one
-       * proofType/proofNumber, so Aadhaar is used
-       * as the primary proof.
-       */
-
-      if (value.aadhaarNumber) {
-
-        proofType = 'AADHAAR';
-
-        proofNumber =
-          String(
-            value.aadhaarNumber
-          ).trim();
-      }
-
-
-    } else if (
-      nationality === 'INTERNATIONAL'
-    ) {
-
-      if (value.passportNumber) {
-
-        proofType = 'PASSPORT';
-
-        proofNumber =
-          String(
-            value.passportNumber
-          ).trim();
-      }
-    }
-
-
-    // ------------------------------------------------------------------------
-    // Create request
-    // ------------------------------------------------------------------------
-
     const request: RegistrationRequest = {
+  registrationType: value.registrationType as RegistrationType,
+  visitorType: value.visitorType as VisitorType,
+  firstName: String(value.firstName ?? '').trim(),
+  lastName: String(value.lastName ?? '').trim(),
+  email: String(value.email ?? '').trim().toLowerCase(),
+  mobileNumber: String(value.mobileNumber ?? '').trim(),
+  companyName: String(value.companyName ?? '').trim(),
+  purpose: String(value.purpose ?? '').trim(),
+  hostId: String(value.hostId ?? '').trim(),
+  visitDate,
 
-      registrationType:
-        value.registrationType as RegistrationType,
-
-
-      visitorType:
-        value.visitorType as VisitorType,
-
-
-      firstName:
-        String(
-          value.firstName ?? ''
-        ).trim(),
-
-
-      lastName:
-        String(
-          value.lastName ?? ''
-        ).trim(),
-
-
-      email:
-        String(
-          value.email ?? ''
-        )
-          .trim()
-          .toLowerCase(),
-
-
-      mobileNumber:
-        String(
-          value.mobileNumber ?? ''
-        ).trim(),
-
-
-      companyName:
-        String(
-          value.companyName ?? ''
-        ).trim(),
-
-
-      purpose:
-        String(
-          value.purpose ?? ''
-        ).trim(),
-
-
-      hostId:
-        String(
-          value.hostId ?? ''
-        ).trim(),
-
-
-      visitDate,
-
-
-      expectedArrivalTime:
-        this.formatTime(arrival),
-
-
-      expectedDepartureTime:
-        this.formatTime(departure),
-
-
-      remarks:
-        value.remarks
-          ? String(
-              value.remarks
-            ).trim()
-          : null,
-
-
-      nationality:
-        nationality as Nationality,
-
-
-      aadharNumber:
-        value.aadhaarNumber
-          ? String(
-              value.aadhaarNumber
-            ).trim()
-          : null,
-
-
-      panNumber:
-        value.panNumber
-          ? String(
-              value.panNumber
-            ).trim()
-          : null,
-
-
-      passportNumber:
-        value.passportNumber
-          ? String(
-              value.passportNumber
-            ).trim()
-          : null,
-
-
-    };
-
+  expectedArrivalTime: this.formatTime(arrival),
+  expectedDepartureTime: this.formatTime(departure),
+  remarks: value.remarks ? String(value.remarks).trim() : null,
+  nationality: nationality as Nationality,
+  aadharNumber: value.aadhaarNumber ? String(value.aadhaarNumber).trim() : null,
+  panNumber: value.panNumber ? String(value.panNumber).trim() : null,
+  passportNumber: value.passportNumber ? String(value.passportNumber).trim() : null,
+};
 
     return request;
   }
@@ -1732,128 +1534,44 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   
   // Date / time helpers
   
+private parseDateTime(value: string): Date | null {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
 
-  private parseDateTime(
-    value: string
-  ): Date | null {
+private formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
-    if (!value) {
-      return null;
-    }
+  private formatTime(date: Date): string {
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${hours}:${minutes}:${seconds}`;
+}
 
+  
 
-    const date =
-      new Date(value);
+private getCurrentDateTime(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
 
-
-    return Number.isNaN(
-      date.getTime()
-    )
-      ? null
-      : date;
-  }
-
-
-  private formatDate(
-    date: Date
-  ): string {
-
-    const year =
-      date.getFullYear();
-
-
-    const month =
-      String(
-        date.getMonth() + 1
-      ).padStart(2, '0');
-
-
-    const day =
-      String(
-        date.getDate()
-      ).padStart(2, '0');
-
-
-    return `${year}-${month}-${day}`;
-  }
-
-
-  private formatTime(
-    date: Date
-  ): string {
-
-    const hours =
-      String(
-        date.getHours()
-      ).padStart(2, '0');
-
-
-    const minutes =
-      String(
-        date.getMinutes()
-      ).padStart(2, '0');
-
-
-    const seconds =
-      String(
-        date.getSeconds()
-      ).padStart(2, '0');
-
-
-    return `${hours}:${minutes}:${seconds}`;
-  }
-
-
-  private getCurrentDateTime(): string {
-
-    const now =
-      new Date();
-
-
-    const year =
-      now.getFullYear();
-
-
-    const month =
-      String(
-        now.getMonth() + 1
-      ).padStart(2, '0');
-
-
-    const day =
-      String(
-        now.getDate()
-      ).padStart(2, '0');
-
-
-    const hours =
-      String(
-        now.getHours()
-      ).padStart(2, '0');
-
-
-    const minutes =
-      String(
-        now.getMinutes()
-      ).padStart(2, '0');
-
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  }
-
-
-  private validateSupportingDocuments(): boolean {
-
+private validateSupportingDocuments(): boolean {
   const selectedDocuments = this.getSelectedDocuments();
-
-  const hasExistingDocuments =
-    this.existingVendorDocuments.length > 0;
+  const hasExistingDocuments = this.existingVendorDocuments.length > 0;
 
   if (!hasExistingDocuments && selectedDocuments.length === 0) {
-
-    this.errorMessage =
-      'No supporting document is available. Please upload at least one document.';
-
+    this.errorMessage = 'No supporting document is available. Please upload at least one document.';
     return false;
   }
 

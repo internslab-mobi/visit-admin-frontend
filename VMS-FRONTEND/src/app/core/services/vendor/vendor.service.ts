@@ -5,9 +5,6 @@ import { Observable } from 'rxjs';
 import { API_CONFIG } from '../../../../environments/environment.dev';
 
 
-/* =========================================================
-   VENDOR RESPONSE
-========================================================= */
 
 export interface VendorResponse {
 
@@ -87,9 +84,7 @@ export interface VendorEditResponse {
 
   blacklisted: boolean;
 }
-/* =========================================================
-   SERVICE
-========================================================= */
+
 
 @Injectable({
   providedIn: 'root'
@@ -102,9 +97,7 @@ export class VendorService {
     `${API_CONFIG.BASE_URL}/api/vendors`;
 
 
-  /* =======================================================
-     GET ALL VENDORS
-  ======================================================= */
+
 
   getVendors(): Observable<VendorResponse[]> {
 
@@ -115,9 +108,6 @@ export class VendorService {
   }
 
 
-  /* =======================================================
-     GET VENDOR BY ID
-  ======================================================= */
 
   getVendorById(
     vendorId: string
@@ -139,9 +129,6 @@ getVendorEditDetails(
 }
 
 
-  /* =======================================================
-     UPLOAD PROOF DOCUMENTS
-  ======================================================= */
 
   uploadProofDocuments(
     visitorId: string,

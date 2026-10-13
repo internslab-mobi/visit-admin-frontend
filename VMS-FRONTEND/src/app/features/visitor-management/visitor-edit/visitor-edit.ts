@@ -25,14 +25,17 @@ import {
   VisitorDocument
 } from '../../../core/services/visitor/visitor.service';
 
+import { VisitDurationComponent } from '../../../shared/components/visit-duration/visit-duration';
 
+import { AuthService } from '../../../core/services/auth/auth.service';
 @Component({
   selector: 'app-visitor-edit',
 
   standalone: true,
 
   imports: [
-    FormsModule
+    FormsModule,
+    VisitDurationComponent
   ],
 
   templateUrl: './visitor-edit.html',
@@ -42,16 +45,14 @@ import {
 export class VisitorEditComponent implements OnInit {
 
 
-  /* =====================================================
-     SERVICES
-  ===================================================== */
 
   private readonly visitorService =
     inject(VisitorService);
 
+    //activated router gets the detail from current router
   private readonly route =
     inject(ActivatedRoute);
-
+//router helps to navigate to another page/router
   private readonly router =
     inject(Router);
 
@@ -59,10 +60,9 @@ export class VisitorEditComponent implements OnInit {
     inject(ChangeDetectorRef);
 
     private readonly blacklistService = inject(BlacklistService);
+private readonly authService = inject(AuthService);
 
-  /* =====================================================
-     STATE
-  ===================================================== */
+
 
   visitorId = '';
 
@@ -88,10 +88,8 @@ export class VisitorEditComponent implements OnInit {
 
   successMessage = '';
 
+isAdmin = false;
 
-  /* =====================================================
-     FORM
-  ===================================================== */
 
   firstName = '';
 
@@ -104,23 +102,20 @@ export class VisitorEditComponent implements OnInit {
   companyName = '';
 
 
-  /* =====================================================
-     PHOTO
-  ===================================================== */
 
   photoUrl = '';
 
 
-  /* =====================================================
-     INITIALIZATION
-  ===================================================== */
+  
+
 
   ngOnInit(): void {
 
+    this.isAdmin =
+  this.authService.currentUser()?.role === 'ADMIN';
+
     this.visitorId =
-      this.route.snapshot.paramMap.get(
-        'visitorId'
-      ) ?? '';
+      this.route.snapshot.paramMap.get('visitorId') ?? '';
 
     if (!this.visitorId) {
 
@@ -132,15 +127,13 @@ export class VisitorEditComponent implements OnInit {
       return;
     }
 
+    
     this.loadVisitor();
 
     this.loadDocuments();
   }
 
 
-  /* =====================================================
-     LOAD VISITOR
-  ===================================================== */
 
   private loadVisitor(): void {
 
@@ -170,9 +163,6 @@ export class VisitorEditComponent implements OnInit {
             response.blacklisted;
 
 
-          /* -------------------------
-             Editable fields
-          ------------------------- */
 
           this.firstName =
             response.visitor.firstName ?? '';
@@ -189,10 +179,6 @@ export class VisitorEditComponent implements OnInit {
           this.companyName =
             response.visitor.companyName ?? '';
 
-
-          /* -------------------------
-             Current photo
-          ------------------------- */
 
           this.photoUrl =
             this.visitorService
@@ -269,9 +255,8 @@ private loadDocuments(): void {
 
 }
 
-  /* =====================================================
-     SAVE
-  ===================================================== */
+
+
 
   saveChanges(): void {
 
@@ -373,9 +358,8 @@ private loadDocuments(): void {
   }
 
 
-  /* =====================================================
-     CANCEL
-  ===================================================== */
+  
+
 
   cancel(): void {
 
@@ -386,16 +370,14 @@ private loadDocuments(): void {
   }
 
 
-  /* =====================================================
-     DOCUMENT DISPLAY
-  ===================================================== */
+  
+
+
 
   
 
 
-  /* =====================================================
-     VISIT DISPLAY
-  ===================================================== */
+
 
   getRegistrationLabel(
     type: string | null
@@ -495,9 +477,6 @@ private loadDocuments(): void {
   }
 
 
-  /* =====================================================
-     DOCUMENT VIEW
-  ===================================================== */
 
   viewDocument(document: VisitorDocument): void {
 
@@ -512,10 +491,50 @@ private loadDocuments(): void {
   );
 
 }
+// formatVisitDuration(
+//   totalSeconds: number | null,
+//   status: string
+// ): string {
+//   if (status === 'REGISTERED') {
+//     return 'Not started';
+//   }
 
-  /* =====================================================
-     BLACKLIST
-  ===================================================== */
+//   if (status === 'CANCELLED' || status === 'NO_SHOW') {
+//     return 'Not applicable';
+//   }
+
+//   if (status === 'CHECKED_IN') {
+//     return 'In progress';
+//   }
+
+//   if (status === 'CHECKED_OUT' && totalSeconds !== null) {
+//     return this.formatSeconds(totalSeconds);
+//   }
+
+//   return '-';
+// }
+
+// private formatSeconds(totalSeconds: number): string {
+//   const hours = Math.floor(totalSeconds / 3600);
+//   const minutes = Math.floor((totalSeconds % 3600) / 60);
+//   const seconds = totalSeconds % 60;
+
+//   const parts: string[] = [];
+
+//   if (hours > 0) {
+//     parts.push(`${hours}h`);
+//   }
+
+//   if (minutes > 0) {
+//     parts.push(`${minutes}m`);
+//   }
+
+//   if (seconds > 0 || parts.length === 0) {
+//     parts.push(`${seconds}s`);
+//   }
+
+//   return parts.join(' ');
+// }
 
   // addToBlacklist(): void {
 
