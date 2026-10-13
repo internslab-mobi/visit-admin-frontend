@@ -90,8 +90,7 @@ export interface ResetPasswordRequest {
 export class AuthService {
   private readonly http = inject(HttpClient);
 
-  private readonly currentUserSignal =
-    signal<LoginResponse | null>(null);
+  private readonly currentUserSignal = signal<LoginResponse | null>(null);
 
   readonly currentUser = this.currentUserSignal.asReadonly();
 
@@ -116,9 +115,7 @@ export class AuthService {
   }
 
   initializeSecurityTokens(): Observable<void> {
-    return this.initializeCsrf().pipe(
-      switchMap(() => this.initializeVmsCsrf()),
-    );
+    return this.initializeCsrf().pipe(switchMap(() => this.initializeVmsCsrf()));
   }
 
   /* =======================================================
@@ -128,20 +125,13 @@ export class AuthService {
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.initializeSecurityTokens().pipe(
       switchMap(() =>
-        this.http.post<LoginResponse>(
-          `${AUTH_URL}/login`,
-          request,
-          {
-            withCredentials: true,
-          },
-        ),
+        this.http.post<LoginResponse>(`${AUTH_URL}/login`, request, {
+          withCredentials: true,
+        }),
       ),
 
       tap((response) => {
-        if (
-          !response.mustChangePassword &&
-          this.hasAllowedRole(response)
-        ) {
+        if (!response.mustChangePassword && this.hasAllowedRole(response)) {
           this.currentUserSignal.set(response);
         } else {
           this.currentUserSignal.set(null);
@@ -154,13 +144,27 @@ export class AuthService {
      8. REQUEST PASSWORD RESET CODE
      ======================================================= */
 
-  requestPasswordReset(
+  requestPasswordReset(request: ForgotPasswordRequest): Observable<PasswordResetMessageResponse> {
+    return this.initializeCsrf().pipe(
+      switchMap(() =>
+        this.http.post<PasswordResetMessageResponse>(`${AUTH_URL}/forgot-password`, request, {
+          withCredentials: true,
+        }),
+      ),
+    );
+  }
+
+  /* =======================================================
+     RESEND PASSWORD RESET CODE
+     ======================================================= */
+
+  resendPasswordResetCode(
     request: ForgotPasswordRequest,
   ): Observable<PasswordResetMessageResponse> {
     return this.initializeCsrf().pipe(
       switchMap(() =>
         this.http.post<PasswordResetMessageResponse>(
-          `${AUTH_URL}/forgot-password`,
+          `${AUTH_URL}/forgot-password/resend`,
           request,
           {
             withCredentials: true,
@@ -174,18 +178,12 @@ export class AuthService {
      9. VERIFY PASSWORD RESET OTP
      ======================================================= */
 
-  verifyResetOtp(
-    request: VerifyOtpRequest,
-  ): Observable<VerifyOtpResponse> {
+  verifyResetOtp(request: VerifyOtpRequest): Observable<VerifyOtpResponse> {
     return this.initializeCsrf().pipe(
       switchMap(() =>
-        this.http.post<VerifyOtpResponse>(
-          `${AUTH_URL}/verify-reset-otp`,
-          request,
-          {
-            withCredentials: true,
-          },
-        ),
+        this.http.post<VerifyOtpResponse>(`${AUTH_URL}/verify-reset-otp`, request, {
+          withCredentials: true,
+        }),
       ),
     );
   }
@@ -194,18 +192,12 @@ export class AuthService {
      10. SUBMIT NEW PASSWORD
      ======================================================= */
 
-  resetPassword(
-    request: ResetPasswordRequest,
-  ): Observable<PasswordResetMessageResponse> {
+  resetPassword(request: ResetPasswordRequest): Observable<PasswordResetMessageResponse> {
     return this.initializeCsrf().pipe(
       switchMap(() =>
-        this.http.post<PasswordResetMessageResponse>(
-          `${AUTH_URL}/reset-password`,
-          request,
-          {
-            withCredentials: true,
-          },
-        ),
+        this.http.post<PasswordResetMessageResponse>(`${AUTH_URL}/reset-password`, request, {
+          withCredentials: true,
+        }),
       ),
     );
   }
@@ -220,7 +212,7 @@ export class AuthService {
     }
 
     if (!this.restoration$) {
-      this.restoration$ = this.initializeSecurityTokens().pipe(
+      const restoration$ = this.initializeSecurityTokens().pipe(
         switchMap(() =>
           this.http.post<LoginResponse>(
             `${AUTH_URL}/refresh`,
@@ -232,9 +224,7 @@ export class AuthService {
         ),
 
         map((response) => {
-          const allowed =
-            !response.mustChangePassword &&
-            this.hasAllowedRole(response);
+          const allowed = !response.mustChangePassword && this.hasAllowedRole(response);
 
           this.currentUserSignal.set(allowed ? response : null);
 
@@ -243,8 +233,14 @@ export class AuthService {
 
         catchError(() => of(false)),
 
+        finalize(() => {
+          this.restoration$ = null;
+        }),
+
         shareReplay(1),
       );
+
+      this.restoration$ = restoration$;
     }
 
     return this.restoration$;
@@ -271,16 +267,12 @@ export class AuthService {
       ),
 
       tap((response) => {
-        const allowed =
-          !response.mustChangePassword &&
-          this.hasAllowedRole(response);
+        const allowed = !response.mustChangePassword && this.hasAllowedRole(response);
 
         this.currentUserSignal.set(allowed ? response : null);
 
         if (!allowed) {
-          throw new Error(
-            'The refreshed session is not authorized.',
-          );
+          throw new Error('The refreshed session is not authorized.');
         }
       }),
 
@@ -316,17 +308,19 @@ export class AuthService {
      ======================================================= */
 
   logout(): Observable<void> {
-    return this.http.post<void>(
-      `${AUTH_URL}/logout`,
-      {},
-      {
-        withCredentials: true,
-      },
-    ).pipe(
-      tap(() => {
-        this.clearSession();
-      }),
-    );
+    return this.http
+      .post<void>(
+        `${AUTH_URL}/logout`,
+        {},
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        tap(() => {
+          this.clearSession();
+        }),
+      );
   }
 
   /* =======================================================
@@ -334,9 +328,6 @@ export class AuthService {
      ======================================================= */
 
   private hasAllowedRole(response: LoginResponse): boolean {
-    return (
-      response.role === 'ADMIN' ||
-      response.role === 'FRONT_DESK'
-    );
+    return response.role === 'ADMIN' || response.role === 'FRONT_DESK';
   }
 }
