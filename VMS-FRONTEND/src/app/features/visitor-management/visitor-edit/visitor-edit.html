@@ -1,0 +1,943 @@
+<div class="edit-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <button
+        type="button"
+        class="back-button"
+        (click)="cancel()"
+      >
+        ←
+        <span>Back to Visitor List</span>
+      </button>
+
+      <div class="title-row">
+
+        <h1>Edit Visitor</h1>
+
+        @if (visitor) {
+          <span class="visitor-id-badge">
+            {{ visitor.id }}
+          </span>
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       LOADING
+  ====================================================== -->
+
+  @if (loading) {
+
+    <div class="loading-card">
+
+      <div class="loading-spinner"></div>
+
+      <span>
+        Loading visitor details...
+      </span>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  @if (!loading && errorMessage) {
+
+    <div class="message-card error-message">
+
+      <span class="message-icon">!</span>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+    </div>
+
+  }
+
+
+  @if (!loading && visitor) {
+
+    <!-- ===================================================
+         TOP SECTION
+    ==================================================== -->
+
+  
+    <!-- <div class="top-grid"> -->
+<div
+  class="top-grid"
+  [class.full-width]="!vendor && !blacklisted"
+>
+
+      <!-- ================================================
+           VISITOR INFORMATION
+      ================================================= -->
+
+      <section class="card visitor-card">
+
+        <div class="card-header">
+
+          <div class="card-title-wrapper">
+
+            <div class="card-icon blue-icon">
+              👤
+            </div>
+
+            <div>
+              <h2>Visitor Information</h2>
+              <p>
+                Personal and contact information
+              </p>
+            </div>
+
+          </div>
+            @if (!vendor && !blacklisted) {
+    <button
+      type="button"
+      class="blacklist-button header-blacklist-button"
+      (click)="addToBlacklist()"
+    >
+      <span>+</span>
+      Add to Blacklist
+    </button>
+  }
+
+        </div>
+
+
+        <div class="visitor-content">
+
+
+          <!-- ============================================
+               CURRENT PHOTO
+          ============================================= -->
+
+          <div class="photo-section">
+
+            <div class="photo-wrapper">
+
+              <img
+                [src]="photoUrl"
+                alt="Current visitor photo"
+                class="visitor-photo"
+              />
+
+            </div>
+
+            <span class="photo-label">
+              Current Photo
+            </span>
+
+          </div>
+
+
+          <!-- ============================================
+               FORM FIELDS
+          ============================================= -->
+
+          <div class="visitor-fields">
+
+
+            <!-- ROW 1 -->
+
+            <div class="field-row">
+
+              <div class="field-group">
+
+                <label>
+                  Visitor ID
+                </label>
+
+                <input
+                  type="text"
+                  [value]="visitor.id"
+                  readonly
+                  class="readonly-input"
+                />
+
+              </div>
+
+
+              <div class="field-group">
+
+                <label>
+                  Visitor Type
+                </label>
+
+                <input
+                  type="text"
+                  [value]="getVisitorTypeLabel(visitor.visitorType)"
+                  readonly
+                  class="readonly-input"
+                />
+
+              </div>
+
+            </div>
+
+
+            <!-- ROW 2 -->
+
+            <div class="field-row">
+
+              <div class="field-group">
+
+                <label>
+                  First Name
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="firstName"
+                  autocomplete="given-name"
+                />
+
+              </div>
+
+
+              <div class="field-group">
+
+                <label>
+                  Nationality
+                </label>
+
+                <input
+                  type="text"
+                  [value]="visitor.nationality || '-'"
+                  readonly
+                  class="readonly-input"
+                />
+
+              </div>
+
+            </div>
+
+
+            <!-- ROW 3 -->
+
+            <div class="field-row">
+
+              <div class="field-group">
+
+                <label>
+                  Last Name
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="lastName"
+                  autocomplete="family-name"
+                />
+
+              </div>
+
+
+              <div class="field-group">
+
+                <!-- intentionally empty for alignment -->
+
+              </div>
+
+            </div>
+
+
+            <!-- ROW 4 -->
+
+            <div class="field-row">
+
+              <div class="field-group">
+
+                <label>
+                  Email
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="email"
+                  [(ngModel)]="email"
+                  autocomplete="email"
+                />
+
+              </div>
+
+
+              <div class="field-group">
+
+                <label>
+                  Mobile
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="tel"
+                  [(ngModel)]="mobileNumber"
+                  autocomplete="tel"
+                />
+
+              </div>
+
+            </div>
+
+
+            <!-- ROW 5 -->
+
+            <div class="field-row">
+
+              <div class="field-group full-width">
+
+                <label>
+                  Company
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="companyName"
+                  autocomplete="organization"
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================================
+           RIGHT SIDE
+      ================================================= -->
+
+      <div class="right-column">
+
+
+        <!-- ==============================================
+             VENDOR INFORMATION
+        =============================================== -->
+
+        @if (vendor) {
+
+          <section class="card vendor-card">
+
+            <div class="card-header vendor-header">
+
+              <div class="card-title-wrapper">
+
+                <div class="card-icon green-icon">
+                  🏢
+                </div>
+
+                <div>
+                  <h2>Vendor Information</h2>
+                  <p>
+                    Vendor information
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="vendor-content">
+
+              <div class="field-group">
+
+                <label>
+                  Vendor ID
+                </label>
+
+                <input
+                  type="text"
+                  [value]="vendor.vendorId"
+                  readonly
+                  class="readonly-input"
+                />
+
+              </div>
+
+            </div>
+
+          </section>
+
+        }
+
+
+        <!-- ==============================================
+             BLACKLIST
+        =============================================== -->
+@if (vendor || blacklisted) {
+        <section
+          class="card blacklist-card"
+          [class.is-blacklisted]="blacklisted"
+        >
+
+          <div class="card-header blacklist-header">
+
+            <div class="card-title-wrapper">
+
+              <div class="card-icon red-icon">
+                🛡
+              </div>
+
+              <div>
+                <h2>Blacklist</h2>
+                <p>
+                  Current blacklist status
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="blacklist-content">
+
+
+            @if (!blacklisted) {
+
+              <div class="blacklist-status safe-status">
+
+                <span class="status-icon">
+                  ✓
+                </span>
+
+                <span>
+                  This visitor is not currently blacklisted.
+                </span>
+
+              </div>
+
+
+              <button
+                type="button"
+                class="blacklist-button"
+                (click)="addToBlacklist()"
+              >
+
+                <span>+</span>
+
+                Add to Blacklist
+
+              </button>
+
+            }
+
+
+            @if (blacklisted && blacklist) {
+
+              <div class="blacklist-status danger-status">
+
+                <span class="status-icon">
+                  !
+                </span>
+
+                <div>
+
+                  <strong>
+                    This visitor is currently blacklisted.
+                  </strong>
+
+                  <span>
+                    Reason:
+                    {{ blacklist.reason || 'Not specified' }}
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <div class="blacklist-details">
+
+                <div class="blacklist-detail-row">
+
+                  <span>
+                    Blacklisted On
+                  </span>
+
+                  <strong>
+                    {{ formatDate(blacklist.createdAt) }}
+                  </strong>
+
+                </div>
+
+                <div class="blacklist-detail-row">
+
+                  <span>
+                    Status
+                  </span>
+
+                  <strong>
+                    {{ blacklist.status }}
+                  </strong>
+
+                </div>
+
+              </div>
+
+
+              <button
+                type="button"
+                class="remove-blacklist-button"
+                (click)="removeFromBlacklist()"
+              >
+
+                Remove from Blacklist
+
+              </button>
+
+            }
+
+          </div>
+
+        </section>
+    }
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         SUCCESS / ERROR MESSAGE
+    ==================================================== -->
+
+    @if (successMessage) {
+
+      <div class="message-card success-message">
+
+        <span class="message-icon">
+          ✓
+        </span>
+
+        {{ successMessage }}
+
+      </div>
+
+    }
+
+
+    @if (errorMessage) {
+
+      <div class="message-card error-message">
+
+        <span class="message-icon">
+          !
+        </span>
+
+        {{ errorMessage }}
+
+      </div>
+
+    }
+
+
+    <!-- ===================================================
+         DOCUMENTS
+    ==================================================== -->
+<section class="card documents-card">
+
+  <div class="card-header">
+
+    <div class="card-title-wrapper">
+
+      <div class="card-icon blue-icon">
+        📄
+      </div>
+
+      <div>
+        <h2>Documents</h2>
+
+        <p>
+          Proof documents associated with this visitor
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="table-wrapper">
+
+    @if (documents.length > 0) {
+
+      <table>
+
+        <thead>
+          <tr>
+
+            <th>
+              Document
+            </th>
+
+            <th>
+              Uploaded On
+            </th>
+
+          </tr>
+        </thead>
+
+
+        <tbody>
+
+          @for (
+            document of documents;
+            track document.documentId
+          ) {
+
+            <tr>
+
+              <td>
+
+                <button
+                  type="button"
+                  class="document-button"
+                  (click)="viewDocument(document)"
+                >
+
+                  <span class="document-icon">
+                    📄
+                  </span>
+
+                  View Document
+
+                </button>
+
+              </td>
+
+
+              <td>
+
+                {{ formatDate(document.createdAt) }}
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    }
+
+
+    @if (documents.length === 0) {
+
+      <div class="empty-section">
+
+        <span class="empty-icon">
+          📄
+        </span>
+
+        <span>
+          No proof documents available.
+        </span>
+
+      </div>
+
+    }
+
+  </div>
+
+</section>
+
+    <!-- ===================================================
+         VISIT HISTORY
+    ==================================================== -->
+
+    <section class="card visits-card">
+
+      <div class="card-header">
+
+        <div class="card-title-wrapper">
+
+          <div class="card-icon blue-icon">
+            📅
+          </div>
+
+          <div>
+
+            <h2>Visit History</h2>
+
+            <p>
+              Previous and current visits for this visitor
+            </p>
+
+          </div>
+
+        </div>
+
+        <span class="count-badge">
+          {{ visits.length }}
+        </span>
+
+      </div>
+
+
+      <div class="table-wrapper visits-table-wrapper">
+
+        @if (visits.length > 0) {
+
+          <table class="visits-table">
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Visit ID
+                </th>
+
+                <th>
+                  Registration Type
+                </th>
+
+                <th>
+                  Purpose
+                </th>
+
+                <th>
+                  Host
+                </th>
+
+                <th>
+                  Department
+                </th>
+
+                <th>
+                  Expected Arrival
+                </th>
+
+                <th>
+                  Expected Departure
+                </th>
+
+                <th>
+                  Check-in
+                </th>
+
+                <th>
+                  Check-out
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th>
+                  Remarks
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                visit of visits;
+                track visit.visitId
+              ) {
+
+                <tr>
+
+                  <td>
+
+                    <span class="visit-id">
+                      {{ visit.visitId }}
+                    </span>
+
+                  </td>
+
+
+                  <td>
+
+                    {{ getRegistrationLabel(
+                      visit.registrationType
+                    ) }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ visit.purpose || '-' }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ visit.hostName || '-' }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ visit.departmentName || '-' }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ formatDateTime(
+                      visit.expectedArrivalAt
+                    ) }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ formatDateTime(
+                      visit.expectedDepartureAt
+                    ) }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ formatDateTime(
+                      visit.checkedInAt
+                    ) }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ formatDateTime(
+                      visit.checkedOutAt
+                    ) }}
+
+                  </td>
+
+
+                  <td>
+
+                    <span
+                      class="status-badge"
+                      [class]="
+                        'status-' +
+                        getStatusClass(
+                          visit.status
+                        )
+                      "
+                    >
+
+                      {{ visit.status }}
+
+                    </span>
+
+                  </td>
+
+
+                  <td>
+
+                    {{ visit.remarks || '-' }}
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        }
+
+
+        @if (visits.length === 0) {
+
+          <div class="empty-section">
+
+            <span class="empty-icon">
+              📅
+            </span>
+
+            <span>
+              No visit history available.
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         ACTIONS
+    ==================================================== -->
+
+    <div class="page-actions">
+
+      <button
+        type="button"
+        class="cancel-button"
+        (click)="cancel()"
+        [disabled]="saving"
+      >
+        Cancel
+      </button>
+
+
+      <button
+        type="button"
+        class="save-button"
+        (click)="saveChanges()"
+        [disabled]="saving"
+      >
+
+        @if (saving) {
+
+          <span class="button-spinner"></span>
+
+          Saving...
+
+        } @else {
+
+          Save Changes
+
+        }
+
+      </button>
+
+    </div>
+
+  }
+
+</div>

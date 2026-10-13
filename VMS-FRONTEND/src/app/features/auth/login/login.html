@@ -1,0 +1,174 @@
+
+<!-- Main login page: two-column layout on desktop -->
+<main class="login-page">
+
+  <!-- Left visual panel: brand and product introduction -->
+  <aside class="visual-panel">
+
+    <!-- Desktop brand -->
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">V</div>
+      <div>
+        <h1>Visitor Management</h1>
+        <p>Administration Portal</p>
+      </div>
+    </div>
+
+    <!-- Product introduction -->
+    <div class="visual-content">
+      <p class="visual-label">VISITOR MANAGEMENT SYSTEM</p>
+      <h2>Every visit.<br />Under control.</h2>
+      <p class="visual-description">
+        Manage visitor registrations and check-ins
+        from one simple, secure workspace.
+      </p>
+    </div>
+
+    <!-- Left panel footer -->
+    <div class="visual-footer">
+      Secure access · Streamlined operations
+    </div>
+
+  </aside>
+
+
+  <!-- Right login panel -->
+  <section class="login-panel">
+
+    <!-- Mobile-only brand: visible when the left panel is hidden -->
+    <div class="mobile-brand">
+      <div class="brand-mark" aria-hidden="true">V</div>
+      <div>
+        <h1>Visitor Management</h1>
+        <p>Administration Portal</p>
+      </div>
+    </div>
+
+    <!-- Main login content -->
+    <div class="login-content">
+
+      <!-- Login heading -->
+      <div class="welcome">
+        <p class="eyebrow">SECURE ACCESS</p>
+        <h2>Welcome back</h2>
+        <p class="subtitle">
+          Sign in to continue to your workspace.
+        </p>
+      </div>
+
+
+      <!-- Login form -->
+      <form
+        #loginForm="ngForm"
+        (ngSubmit)="onSubmit(loginForm)"
+        novalidate
+      >
+
+        <!-- Work email field -->
+        <div class="form-field">
+          <label for="email">Work email</label>
+
+          <input
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="email"
+            #emailControl="ngModel"
+            placeholder="you@company.com"
+            autocomplete="username"
+            required
+            email
+            [disabled]="isLoading"
+            [attr.aria-invalid]="
+              emailControl.invalid &&
+              (emailControl.touched || loginForm.submitted)
+            "
+          />
+
+          <!-- Email validation message -->
+          @if (
+            emailControl.invalid &&
+            (emailControl.touched || loginForm.submitted)
+          ) {
+            <p class="field-error">
+              @if (emailControl.hasError('required')) {
+                Enter your work email.
+              } @else if (emailControl.hasError('email')) {
+                Enter a valid email address.
+              }
+            </p>
+          }
+        </div>
+
+
+        <!-- Password field -->
+        <div class="form-field">
+          <label for="password">Password</label>
+
+          <input
+            id="password"
+            name="password"
+            type="password"
+            [(ngModel)]="password"
+            #passwordControl="ngModel"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+            [disabled]="isLoading"
+            [attr.aria-invalid]="
+              passwordControl.invalid &&
+              (passwordControl.touched || loginForm.submitted)
+            "
+          />
+
+          <!-- Password validation message -->
+          @if (
+            passwordControl.invalid &&
+            (passwordControl.touched || loginForm.submitted)
+          ) {
+            <p class="field-error">Enter your password.</p>
+          }
+
+          <!-- Forgot password navigation -->
+          <div class="forgot-password">
+            <a routerLink="/forgot-password">Forgot password?</a>
+          </div>
+        </div>
+
+
+        <!-- Authentication error: positioned above the submit button -->
+        @if (errorMessage) {
+          <div class="error-message" role="alert">
+            <span class="error-icon" aria-hidden="true">!</span>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
+
+
+        <!-- Submit button -->
+        <button
+          class="login-button"
+          type="submit"
+          [disabled]="isLoading"
+        >
+          @if (isLoading) {
+            <span>Signing in...</span>
+            <span class="loading-indicator" aria-hidden="true"></span>
+          } @else {
+            <span>Sign in</span>
+            <span aria-hidden="true">→</span>
+          }
+        </button>
+
+      </form>
+
+
+      <!-- Security reassurance -->
+      <p class="security-note">
+        <span aria-hidden="true">🔒</span>
+        Protected access for authorized personnel
+      </p>
+
+    </div>
+  </section>
+</main>

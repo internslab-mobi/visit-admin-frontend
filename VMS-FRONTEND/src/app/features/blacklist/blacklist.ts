@@ -1,0 +1,173 @@
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+
+import { BlacklistService } from '../../core/services/blacklist/blacklist.service';
+import { BlacklistResponse } from '../../core/models/blacklist/blacklist.model';
+
+@Component({
+  selector: 'app-blacklist',
+  imports: [FormsModule, RouterLink],
+  templateUrl: './blacklist.html',
+  styleUrl: './blacklist.css',
+})
+export class Blacklist implements OnInit {
+
+  blacklistRecords: BlacklistResponse[] = [];
+
+  currentPage = 1;
+  pageSize = 10;
+
+  isLoading = false;
+
+  visitorNameFilter = '';
+  visitorIdFilter = '';
+  reasonFilter = '';
+  sortBy = 'visitorName';
+  sortOrder = 'asc';
+
+  constructor(
+    private blacklistService: BlacklistService,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this.loadBlacklistRecords();
+  }
+
+  loadBlacklistRecords(): void {
+
+    this.isLoading = true;
+
+    this.blacklistService.getAllBlacklistRecords().subscribe({
+      next: (records) => {
+        console.log('Blacklist API Response:', records);
+        this.blacklistRecords = records;
+        console.log('Blacklist RECORDS:', this.blacklistRecords);
+        this.currentPage = 1;
+        this.isLoading = false;
+
+        this.changeDetectorRef.detectChanges();
+      },
+
+      error: (error) => {
+
+        console.error('Failed to load blacklist records:', error);
+
+        this.isLoading = false;
+
+        this.changeDetectorRef.detectChanges();
+      }
+    });
+  }
+
+  get filteredRecords(): BlacklistResponse[] {
+
+  const visitorName = this.visitorNameFilter.trim().toLowerCase();
+  const visitorId = this.visitorIdFilter.trim().toLowerCase();
+  const reason = this.reasonFilter.trim().toLowerCase();
+
+  const filtered = this.blacklistRecords.filter(record => {
+
+    const matchesVisitorName =
+      !visitorName ||
+      record.visitorName.toLowerCase().includes(visitorName);
+
+    const matchesVisitorId =
+      !visitorId ||
+      record.visitorId.toLowerCase().includes(visitorId);
+
+    const matchesReason =
+      !reason ||
+      record.reason.toLowerCase().includes(reason);
+
+
+    return (
+      matchesVisitorName &&
+      matchesVisitorId &&
+      matchesReason 
+    );
+  });
+
+  return filtered.sort((a, b) => {
+
+    let valueA = '';
+    let valueB = '';
+
+    if (this.sortBy === 'visitorName') {
+      valueA = a.visitorName.toLowerCase();
+      valueB = b.visitorName.toLowerCase();
+    }
+
+    if (this.sortBy === 'blacklistId') {
+      valueA = a.id.toLowerCase();
+      valueB = b.id.toLowerCase();
+    }
+
+    if (this.sortBy === 'status') {
+      valueA = a.status.toLowerCase();
+      valueB = b.status.toLowerCase();
+    }
+
+    const comparison = valueA.localeCompare(valueB);
+
+    return this.sortOrder === 'asc'
+      ? comparison
+      : -comparison;
+  });
+}
+
+  get totalPages(): number {
+
+    return Math.max(
+      1,
+      Math.ceil(this.filteredRecords.length / this.pageSize)
+    );
+  }
+
+  get paginatedRecords(): BlacklistResponse[] {
+
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+
+    return this.filteredRecords.slice(startIndex, endIndex);
+  }
+
+  getActiveCount(): number {
+  return this.blacklistRecords.filter(
+    record => record.status === 'ACTIVE'
+  ).length;
+}
+
+getRemovedCount(): number {
+  return this.blacklistRecords.filter(
+    record => record.status === 'REMOVED'
+  ).length;
+}
+
+  clearFilters(): void {
+
+    this.visitorNameFilter = '';
+    this.visitorIdFilter = '';
+    this.reasonFilter = '';
+
+    this.sortBy = 'blacklistId';
+    this.sortOrder = 'asc';
+
+    this.currentPage = 1;
+  }
+
+  previousPage(): void {
+
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  nextPage(): void {
+
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+}
