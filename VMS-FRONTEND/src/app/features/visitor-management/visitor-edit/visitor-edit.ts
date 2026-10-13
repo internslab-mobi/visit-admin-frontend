@@ -25,7 +25,7 @@ import {
   VisitorDocument
 } from '../../../core/services/visitor/visitor.service';
 
-
+import { AuthService } from '../../../core/services/auth/auth.service';
 @Component({
   selector: 'app-visitor-edit',
 
@@ -57,7 +57,7 @@ export class VisitorEditComponent implements OnInit {
     inject(ChangeDetectorRef);
 
     private readonly blacklistService = inject(BlacklistService);
-
+private readonly authService = inject(AuthService);
 
 
   visitorId = '';
@@ -84,7 +84,7 @@ export class VisitorEditComponent implements OnInit {
 
   successMessage = '';
 
-
+isAdmin = false;
 
 
   firstName = '';
@@ -107,10 +107,11 @@ export class VisitorEditComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.isAdmin =
+  this.authService.currentUser()?.role === 'ADMIN';
+
     this.visitorId =
-      this.route.snapshot.paramMap.get(
-        'visitorId'
-      ) ?? '';
+      this.route.snapshot.paramMap.get('visitorId') ?? '';
 
     if (!this.visitorId) {
 
@@ -122,6 +123,7 @@ export class VisitorEditComponent implements OnInit {
       return;
     }
 
+    
     this.loadVisitor();
 
     this.loadDocuments();
@@ -485,7 +487,28 @@ private loadDocuments(): void {
   );
 
 }
+formatDuration(visit: VisitorVisit): string {
+  if (visit.status === 'REGISTERED') {
+    return 'Not started';
+  }
 
+  if (
+    visit.status === 'CANCELLED' ||
+    visit.status === 'NO_SHOW'
+  ) {
+    return 'Not applicable';
+  }
+
+  if (visit.status === 'CHECKED_IN') {
+    return visit.duration || 'In progress';
+  }
+
+  if (visit.status === 'CHECKED_OUT') {
+    return visit.duration || '-';
+  }
+
+  return 'Not applicable';
+}
 
 
   // addToBlacklist(): void {

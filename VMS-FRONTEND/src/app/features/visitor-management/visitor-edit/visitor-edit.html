@@ -94,7 +94,7 @@
             </div>
 
           </div>
-            @if (!vendor && !blacklisted) {
+            @if (isAdmin &&  !vendor && !blacklisted) {
     <button
       type="button"
       class="blacklist-button header-blacklist-button"
@@ -390,8 +390,8 @@
 
           <div class="blacklist-content">
 
-
-            @if (!blacklisted) {
+ @if (!blacklisted ) {
+           
 
               <div class="blacklist-status safe-status">
 
@@ -405,7 +405,8 @@
 
               </div>
 
-
+            }
+             @if (!blacklisted && isAdmin) {
               <button
                 type="button"
                 class="blacklist-button"
@@ -473,7 +474,7 @@
 
               </div>
 
-
+@if (isAdmin) {
               <button
                 type="button"
                 class="remove-blacklist-button"
@@ -484,7 +485,7 @@
 
               </button>
 
-            }
+            }}
 
           </div>
 
@@ -713,6 +714,12 @@
                   Check-out
                 </th>
 
+                
+<th>
+  Total Duration
+</th>
+
+
                 <th>
                   Status
                 </th>
@@ -809,6 +816,10 @@
 
                   </td>
 
+
+<td>
+  {{ visit.duration || '-' }}
+</td>
 
                   <td>
 
