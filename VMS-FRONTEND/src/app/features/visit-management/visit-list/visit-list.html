@@ -59,7 +59,7 @@
       <input
         id="visitSearch"
         type="text"
-        placeholder="Name, email, mobile or visit ID"
+        placeholder="Name, email, visit refs, mobile or visit ID"
         [(ngModel)]="searchText"
         (ngModelChange)="onFilterChange()"
       />
@@ -152,18 +152,6 @@
         Checked In
       </option>
 
-      <option value="CHECKED_OUT">
-        Checked Out
-      </option>
-
-      <option value="CANCELLED">
-        Cancelled
-      </option>
-
-      <option value="NO_SHOW">
-        No Show
-      </option>
-
     </select>
 
   </div>
@@ -189,10 +177,9 @@
   <label for="visitSort">Sort By</label>
   <select id="visitSort"
           [(ngModel)]="sortBy"
-          (ngModelChange)="onFilterChange()">
+          (ngModelChange)="onSortChange()">
     <option value="id">Visit ID</option>
     <option value="name">Name</option>
-    <option value="company">Company</option>
     <option value="visitDate">Visit Date</option>
   </select>
 </div>
@@ -245,12 +232,11 @@
           <th>Name</th>
 
           <th>Email</th>
+          <th>Visit Reference</th>
 
           <th>Mobile</th>
 
           <th>Visitor Type</th>
-
-          <th>Company</th>
 
           <th>Status</th>
 
@@ -281,6 +267,8 @@
               {{ visit.email }}
             </td>
 
+            <td>{{ visit.visitReference }}</td>
+
             <td>
               {{ visit.mobile }}
             </td>
@@ -290,18 +278,11 @@
             </td>
 
             <td>
-              {{ visit.company }}
-            </td>
-
-            <td>
 
               <span
                 class="status"
                 [class.status-registered]="visit.status === 'REGISTERED'"
                 [class.status-checked-in]="visit.status === 'CHECKED_IN'"
-                [class.status-checked-out]="visit.status === 'CHECKED_OUT'"
-                [class.status-cancelled]="visit.status === 'CANCELLED'"
-                [class.status-no-show]="visit.status === 'NO_SHOW'"
               >
                 {{ getStatusLabel(visit.status) }}
               </span>

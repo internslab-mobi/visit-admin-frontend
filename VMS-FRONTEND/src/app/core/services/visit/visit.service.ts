@@ -199,6 +199,10 @@ export class VisitService {
     params = params.set('visitorType', visitorType);
   }
 
+  if (status) {
+  params = params.set('status', status);
+}
+
   if (hostId) {
     params = params.set('hostId', hostId);
   }

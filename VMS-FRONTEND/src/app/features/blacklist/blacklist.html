@@ -61,17 +61,19 @@
     </div>
 
     <div class="filter-group">
-      <label for="reason">Reason</label>
-      <input
-        id="reason"
-        type="text"
-        placeholder="Search by reason"
-        [(ngModel)]="reasonFilter"
-        (ngModelChange)="currentPage = 1"
-      />
-    </div>
+  <label for="visitorType">Visitor Type</label>
 
-    
+  <select
+    id="visitorType"
+    [(ngModel)]="visitorTypeFilter"
+    (ngModelChange)="currentPage = 1"
+  >
+    <option value="">All Visitor Types</option>
+    <option value="VISITOR">Visitor</option>
+    <option value="GUEST">Guest</option>
+    <option value="VENDOR">Vendor</option>
+  </select>
+</div>
 
     <div class="filter-group">
   <label for="sortBy">Sort By</label>
@@ -82,6 +84,7 @@
     (ngModelChange)="currentPage = 1"
   >
     <option value="visitorName">Visitor Name</option>
+    <option value="visitorType">Visitor Type</option>
     <option value="blacklistId">Blacklist ID</option>
     <option value="status">Status</option>
   </select>
@@ -132,15 +135,26 @@
   } @else {
 
     <!-- Blacklist Table -->
-    <div class="table-section">
+    <!-- Blacklist Table -->
+<div class="table-section">
 
-      <table>
+  <!-- Table Header -->
+  <div class="table-header">
+    <h2>Blacklist Records</h2>
+
+    <span class="record-count">
+      {{ filteredRecords.length }} records
+    </span>
+  </div>
+
+  <table>
 
         <thead>
           <tr>
             <th>Blacklist ID</th>
             <th>Visitor ID</th>
             <th>Visitor Name</th>
+            <th>Visitor Type</th>
             <th>Reason</th>
             <th>Added On</th>
             <th>Added By</th>
@@ -160,6 +174,8 @@
               <td>{{ record.visitorId }}</td>
 
               <td>{{ record.visitorName }}</td>
+
+              <td>{{ record.visitorType ?? 'N/A' }}</td>
 
               <td>{{ record.reason }}</td>
 

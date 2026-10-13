@@ -22,7 +22,7 @@ export class Blacklist implements OnInit {
 
   visitorNameFilter = '';
   visitorIdFilter = '';
-  reasonFilter = '';
+  visitorTypeFilter = '';
   sortBy = 'visitorName';
   sortOrder = 'asc';
 
@@ -65,7 +65,7 @@ export class Blacklist implements OnInit {
 
   const visitorName = this.visitorNameFilter.trim().toLowerCase();
   const visitorId = this.visitorIdFilter.trim().toLowerCase();
-  const reason = this.reasonFilter.trim().toLowerCase();
+  const visitorType = this.visitorTypeFilter.trim().toLowerCase();
 
   const filtered = this.blacklistRecords.filter(record => {
 
@@ -77,15 +77,15 @@ export class Blacklist implements OnInit {
       !visitorId ||
       record.visitorId.toLowerCase().includes(visitorId);
 
-    const matchesReason =
-      !reason ||
-      record.reason.toLowerCase().includes(reason);
+    const matchesVisitorType =
+      !visitorType ||
+      (record.visitorType ?? '').toString().toLowerCase() === visitorType;
 
 
     return (
       matchesVisitorName &&
       matchesVisitorId &&
-      matchesReason 
+      matchesVisitorType
     );
   });
 
@@ -98,6 +98,11 @@ export class Blacklist implements OnInit {
       valueA = a.visitorName.toLowerCase();
       valueB = b.visitorName.toLowerCase();
     }
+  
+    if (this.sortBy === 'visitorType') {
+  valueA = (a.visitorType ?? '').toString().toLowerCase();
+  valueB = (b.visitorType ?? '').toString().toLowerCase();
+}
 
     if (this.sortBy === 'blacklistId') {
       valueA = a.id.toLowerCase();
@@ -149,7 +154,7 @@ getRemovedCount(): number {
 
     this.visitorNameFilter = '';
     this.visitorIdFilter = '';
-    this.reasonFilter = '';
+    this.visitorTypeFilter = '';
 
     this.sortBy = 'blacklistId';
     this.sortOrder = 'asc';
