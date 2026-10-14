@@ -20,24 +20,52 @@
 
 
   <!-- Summary Cards -->
-  <div class="summary-cards">
+  <!-- Summary Cards -->
+<div class="summary-cards">
 
-    <div class="summary-card">
-      <span class="card-label">Total Visits</span>
-      <span class="card-value">{{ totalVisits }}</span>
-    </div>
-
-    <div class="summary-card">
-      <span class="card-label">Today's Visits</span>
-      <span class="card-value">{{ todayVisits }}</span>
-    </div>
-
-    <div class="summary-card">
-      <span class="card-label">Currently On-Premises</span>
-      <span class="card-value">{{ checkedInVisits }}</span>
-    </div>
-
+  <div
+    class="summary-card"
+    role="button"
+    tabindex="0"
+    [class.active]="selectedSummaryFilter === 'UPCOMING'"
+    [attr.aria-pressed]="selectedSummaryFilter === 'UPCOMING'"
+    (click)="onSummaryCardClick('UPCOMING')"
+    (keydown.enter)="onSummaryCardClick('UPCOMING')"
+    (keydown.space)="$event.preventDefault(); onSummaryCardClick('UPCOMING')"
+  >
+    <span class="card-label">Upcoming Registrations</span>
+    <span class="card-value">{{ upcomingRegistrations }}</span>
   </div>
+
+  <div
+    class="summary-card"
+    role="button"
+    tabindex="0"
+    [class.active]="selectedSummaryFilter === 'TODAY'"
+    [attr.aria-pressed]="selectedSummaryFilter === 'TODAY'"
+    (click)="onSummaryCardClick('TODAY')"
+    (keydown.enter)="onSummaryCardClick('TODAY')"
+    (keydown.space)="$event.preventDefault(); onSummaryCardClick('TODAY')"
+  >
+    <span class="card-label">Today's Visits</span>
+    <span class="card-value">{{ todayVisits }}</span>
+  </div>
+
+  <div
+    class="summary-card"
+    role="button"
+    tabindex="0"
+    [class.active]="selectedSummaryFilter === 'ON_PREMISES'"
+    [attr.aria-pressed]="selectedSummaryFilter === 'ON_PREMISES'"
+    (click)="onSummaryCardClick('ON_PREMISES')"
+    (keydown.enter)="onSummaryCardClick('ON_PREMISES')"
+    (keydown.space)="$event.preventDefault(); onSummaryCardClick('ON_PREMISES')"
+  >
+    <span class="card-label">Currently On-Premises</span>
+    <span class="card-value">{{ checkedInVisits }}</span>
+  </div>
+
+</div>
 
 </div>
 
@@ -167,6 +195,7 @@
     <input
       id="visitDate"
       type="date"
+      [min]="minVisitDate"
       [(ngModel)]="selectedDate"
       (ngModelChange)="onFilterChange()"
     />

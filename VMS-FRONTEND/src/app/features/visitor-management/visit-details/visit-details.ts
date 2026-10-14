@@ -107,10 +107,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     return identityRequest;
   }
 
-  /**
-   * Identity verification becomes invalid whenever
-   * the identity values are changed after verification.
-   */
   onIdentityFieldChanged(): void {
     if (this.identityVerified) {
       this.identityVerified = false;
@@ -333,9 +329,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
-  /**
-   * Releases the browser camera stream.
-   */
   private stopCameraStream(): void {
     if (this.cameraStream) {
       this.cameraStream.getTracks().forEach((track) => {
@@ -452,7 +445,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
         this.checkInSuccess = 'Visitor checked in successfully.';
 
-        //this.updateDurationTimer();
+        this.updateDurationTimer();
         if (this.visitDetails) {
           this.loadVisitorPhoto(this.visitDetails.visitId);
         }
@@ -549,7 +542,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         this.showCancelConfirmation = false;
         this.isCancellingVisit = false;
 
-        //this.stopDurationTimer();
+        this.stopDurationTimer();
 
         this.cdr.detectChanges();
       },
@@ -632,7 +625,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         }
 
         this.loadBlacklistStatus();
-        //this.updateDurationTimer();
+        this.updateDurationTimer();
 
         this.cdr.detectChanges();
       },
@@ -642,7 +635,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         this.isBlacklistStatusLoading = false;
 
         this.clearVisitorPhoto();
-        //this.stopDurationTimer();
+        this.stopDurationTimer();
 
         this.cdr.detectChanges();
       },

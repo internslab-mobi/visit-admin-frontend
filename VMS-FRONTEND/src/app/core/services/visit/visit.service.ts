@@ -70,8 +70,6 @@ getVisitPhoto(visitId: string): Observable<Blob> {
   );
 }
 
-
-
   uploadNda(visitorId: string, ndaFile: File, validUntil: string): Observable<unknown> {
     const formData = new FormData();
 
