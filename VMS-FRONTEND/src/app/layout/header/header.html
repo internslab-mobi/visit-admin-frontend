@@ -62,17 +62,17 @@
 
     <div class="profile-avatar">
       <span>
-        {{ currentUser()?.user?.fullName?.charAt(0)?.toUpperCase() }}
+        {{ currentUser()?.user?.fullName?.charAt(0)?.toUpperCase() || '?' }}
       </span>
     </div>
 
     <div class="profile-info">
       <span class="profile-name">
-        {{ currentUser()?.user?.fullName }}
+        {{ currentUser()?.user?.fullName || 'Loading profile...' }}
       </span>
 
       <span class="profile-role">
-        {{ currentUser()?.user?.role }}
+       {{ currentUser()?.user?.role || '' }}
       </span>
     </div>
 

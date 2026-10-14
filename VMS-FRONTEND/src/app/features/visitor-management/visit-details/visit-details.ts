@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ChangeDetectorRef,
-  ViewChild,
-  ElementRef,
-  inject,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy,  ChangeDetectorRef, ViewChild, ElementRef, inject} from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -32,6 +24,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
   private currentTime = Date.now();
 
   visitorPhotoUrl: string | null = null;
+  private photoRequestId = 0;
 
   selectedPhoto: File | null = null;
   photoPreviewUrl: string | null = null;
@@ -69,6 +62,10 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
   isBlacklisted = false;
   blacklistStatusError: string | null = null;
 
+  ndaUploading = false;
+  ndaUploadError = '';
+  ndaUploadSuccess = '';
+
   @ViewChild('videoElement')
   cameraVideo?: ElementRef<HTMLVideoElement>;
 
@@ -86,52 +83,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.visitId = this.route.snapshot.paramMap.get('visitId');
-
-    if (!this.visitId) {
-      return;
-    }
-
-    this.visitService.getVisitDetails(this.visitId).subscribe({
-      next: (response) => {
-        this.visitDetails = response;
-
-        this.loadVisitorPhoto(response.visitor.visitorId);
-        this.loadBlacklistStatus();
-
-        this.updateDurationTimer();
-
-        this.cdr.detectChanges();
-      },
-
-      error: () => {
-        this.visitDetails = null;
-        this.isBlacklistStatusLoading = false;
-
-        this.stopDurationTimer();
-
-        this.cdr.detectChanges();
-      },
-    });
-  }
-
-  loadVisitorPhoto(visitorId: string): void {
-    this.visitService.getVisitorPhoto(visitorId).subscribe({
-      next: (blob) => {
-        if (this.visitorPhotoUrl) {
-          URL.revokeObjectURL(this.visitorPhotoUrl);
-        }
-
-        this.visitorPhotoUrl = URL.createObjectURL(blob);
-
-        this.cdr.detectChanges();
-      },
-
-      error: () => {
-        this.visitorPhotoUrl = null;
-
-        this.cdr.detectChanges();
-      },
-    });
+    this.loadVisitDetails();
   }
 
   private buildIdentityRequest(): {
@@ -188,8 +140,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
       error: (error) => {
         this.identityVerified = false;
 
-        this.identityVerificationError =
-          error?.error?.message || 'Identity verification failed.';
+        this.identityVerificationError = error?.error?.message || 'Identity verification failed.';
 
         this.isVerifyingIdentity = false;
 
@@ -296,8 +247,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         video.play().catch((error) => {
           console.error('Unable to start camera preview:', error);
 
-          this.photoError =
-            'Unable to start the camera preview. Please try again.';
+          this.photoError = 'Unable to start the camera preview. Please try again.';
 
           this.stopCamera();
 
@@ -403,10 +353,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Clears a captured photo that has not yet been
-   * transferred into selectedPhoto.
-   */
   private clearCapturedPhoto(): void {
     if (this.capturedPhotoPreviewUrl) {
       URL.revokeObjectURL(this.capturedPhotoPreviewUrl);
@@ -456,29 +402,22 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
   }
 
   onCheckIn(): void {
-    if (
-      !this.visitId ||
-      !this.visitDetails ||
-      this.visitDetails.status !== 'REGISTERED'
-    ) {
+    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'REGISTERED') {
       return;
     }
 
     if (this.isBlacklistStatusLoading) {
-      this.checkInError =
-        'Check-in is unavailable while blacklist status is being verified.';
+      this.checkInError = 'Check-in is unavailable while blacklist status is being verified.';
       return;
     }
 
     if (this.isBlacklisted) {
-      this.checkInError =
-        'Check-in is unavailable while this visitor is blacklisted.';
+      this.checkInError = 'Check-in is unavailable while this visitor is blacklisted.';
       return;
     }
 
     if (this.blacklistStatusError) {
-      this.checkInError =
-        'Check-in is unavailable because blacklist status could not be verified.';
+      this.checkInError = 'Check-in is unavailable because blacklist status could not be verified.';
       return;
     }
 
@@ -498,45 +437,40 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     this.checkInError = null;
     this.checkInSuccess = null;
 
-    this.visitService
-      .checkIn(this.visitId, identityRequest, this.selectedPhoto)
-      .subscribe({
-        next: (response) => {
-          if (this.visitDetails) {
-            this.visitDetails = {
-              ...this.visitDetails,
-              status: response.status,
-              checkedInAt: response.checkedInAt,
-              totalDurationSeconds: null,
-            };
-          }
+    this.visitService.checkIn(this.visitId, identityRequest, this.selectedPhoto).subscribe({
+      next: (response) => {
+        if (this.visitDetails) {
+          this.visitDetails = {
+            ...this.visitDetails,
+            status: response.status,
+            checkedInAt: response.checkedInAt,
+            totalDurationSeconds: null,
+          };
+        }
 
-          this.isCheckingIn = false;
+        this.isCheckingIn = false;
 
-          this.checkInSuccess = 'Visitor checked in successfully.';
+        this.checkInSuccess = 'Visitor checked in successfully.';
 
-          this.updateDurationTimer();
+        //this.updateDurationTimer();
+        if (this.visitDetails) {
+          this.loadVisitorPhoto(this.visitDetails.visitId);
+        }
+        this.cdr.detectChanges();
+      },
 
-          this.cdr.detectChanges();
-        },
+      error: (error) => {
+        this.checkInError = error?.error?.message || 'Unable to check in visitor.';
 
-        error: (error) => {
-          this.checkInError =
-            error?.error?.message || 'Unable to check in visitor.';
+        this.isCheckingIn = false;
 
-          this.isCheckingIn = false;
-
-          this.cdr.detectChanges();
-        },
-      });
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   onCheckOut(): void {
-    if (
-      !this.visitId ||
-      !this.visitDetails ||
-      this.visitDetails.status !== 'CHECKED_IN'
-    ) {
+    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'CHECKED_IN') {
       return;
     }
 
@@ -568,8 +502,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
       },
 
       error: (error) => {
-        this.checkOutError =
-          error?.error?.message || 'Unable to check out visitor.';
+        this.checkOutError = error?.error?.message || 'Unable to check out visitor.';
 
         this.isCheckingOut = false;
 
@@ -597,11 +530,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
   }
 
   onCancelVisit(): void {
-    if (
-      !this.visitId ||
-      !this.visitDetails ||
-      this.visitDetails.status !== 'REGISTERED'
-    ) {
+    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'REGISTERED') {
       return;
     }
 
@@ -620,20 +549,155 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         this.showCancelConfirmation = false;
         this.isCancellingVisit = false;
 
-        this.stopDurationTimer();
+        //this.stopDurationTimer();
 
         this.cdr.detectChanges();
       },
 
       error: (error) => {
-        this.cancelVisitError =
-          error?.error?.message || 'Unable to cancel visit.';
+        this.cancelVisitError = error?.error?.message || 'Unable to cancel visit.';
 
         this.isCancellingVisit = false;
 
         this.cdr.detectChanges();
       },
     });
+  }
+
+  ndaFile: File | null = null;
+  ndaValidUntil = '';
+  today = new Date().toLocaleDateString('en-CA');
+
+  onNdaFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+
+    if (file && file.type !== 'application/pdf') {
+      input.value = '';
+      this.ndaFile = null;
+      return;
+    }
+
+    this.ndaFile = file;
+  }
+
+  uploadNda(): void {
+    const visit = this.visitDetails;
+
+    if (
+      !visit ||
+      visit.visitorType !== 'VENDOR' ||
+      !visit.visitor.visitorId ||
+      !this.ndaFile ||
+      !this.ndaValidUntil ||
+      this.ndaUploading
+    ) {
+      return;
+    }
+
+    this.ndaUploading = true;
+    this.ndaUploadError = '';
+    this.ndaUploadSuccess = '';
+
+    this.visitService
+      .uploadNda(visit.visitor.visitorId, this.ndaFile, this.ndaValidUntil)
+      .subscribe({
+        next: () => {
+          this.ndaUploading = false;
+          this.ndaUploadSuccess = 'NDA uploaded successfully.';
+          this.ndaFile = null;
+
+          // Refresh visit details so the latest NDA status is displayed.
+          this.loadVisitDetails();
+        },
+        error: (error) => {
+          this.ndaUploading = false;
+          this.ndaUploadError = error?.error?.message ?? 'Failed to upload NDA. Please try again.';
+        },
+      });
+  }
+  private loadVisitDetails(): void {
+    if (!this.visitId) {
+      return;
+    }
+
+    this.visitService.getVisitDetails(this.visitId).subscribe({
+      next: (response) => {
+        this.visitDetails = response;
+
+        if (response.status === 'CHECKED_IN' || response.status === 'CHECKED_OUT') {
+          this.loadVisitorPhoto(response.visitId);
+        } else {
+          this.clearVisitorPhoto();
+        }
+
+        this.loadBlacklistStatus();
+        //this.updateDurationTimer();
+
+        this.cdr.detectChanges();
+      },
+
+      error: () => {
+        this.visitDetails = null;
+        this.isBlacklistStatusLoading = false;
+
+        this.clearVisitorPhoto();
+        //this.stopDurationTimer();
+
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  loadVisitorPhoto(visitId: string): void {
+    const status = this.visitDetails?.status;
+
+    if (status !== 'CHECKED_IN' && status !== 'CHECKED_OUT') {
+      this.clearVisitorPhoto();
+      return;
+    }
+
+    const requestId = ++this.photoRequestId;
+
+    this.visitService.getVisitPhoto(visitId).subscribe({
+      next: (blob) => {
+        // Ignore responses from older requests.
+        if (requestId !== this.photoRequestId) {
+          return;
+        }
+
+        const currentStatus = this.visitDetails?.status;
+
+        if (currentStatus !== 'CHECKED_IN' && currentStatus !== 'CHECKED_OUT') {
+          this.clearVisitorPhoto();
+          return;
+        }
+
+        this.clearVisitorPhoto();
+        this.visitorPhotoUrl = URL.createObjectURL(blob);
+
+        this.cdr.detectChanges();
+      },
+
+      error: () => {
+        if (requestId !== this.photoRequestId) {
+          return;
+        }
+
+        this.clearVisitorPhoto();
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  private clearVisitorPhoto(): void {
+    // Invalidate any request that is still pending.
+    this.photoRequestId++;
+
+    if (this.visitorPhotoUrl) {
+      URL.revokeObjectURL(this.visitorPhotoUrl);
+      this.visitorPhotoUrl = null;
+    }
   }
 
   loadBlacklistStatus(): void {
@@ -657,16 +721,12 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         console.error('Blacklist status request failed:', error);
 
         this.isBlacklistStatusLoading = false;
-        this.blacklistStatusError =
-          'Unable to determine blacklist status.';
+        this.blacklistStatusError = 'Unable to determine blacklist status.';
       },
     });
   }
 
-  /**
-   * Starts or stops the live duration timer depending
-   * on the current visit status.
-   */
+  
   private updateDurationTimer(): void {
     this.stopDurationTimer();
 
@@ -686,9 +746,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  /**
-   * Stops the live duration timer.
-   */
+  
   private stopDurationTimer(): void {
     if (this.durationTimer) {
       clearInterval(this.durationTimer);
@@ -728,11 +786,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     return this.formatVisitDate(this.visitDetails.expectedArrivalAt);
   }
 
-  formatDuration(
-    totalSeconds: number | null,
-    status: string,
-    checkedInAt: string | null
-  ): string {
+  formatDuration(totalSeconds: number | null, status: string, checkedInAt: string | null): string {
     if (status === 'REGISTERED') {
       return 'Not started';
     }
@@ -748,10 +802,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
       const startTime = new Date(checkedInAt).getTime();
 
-      const elapsedSeconds = Math.max(
-        0,
-        Math.floor((this.currentTime - startTime) / 1000)
-      );
+      const elapsedSeconds = Math.max(0, Math.floor((this.currentTime - startTime) / 1000));
 
       return this.formatSeconds(elapsedSeconds);
     }
