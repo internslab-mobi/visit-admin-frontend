@@ -456,40 +456,37 @@ form {
 
 /* =========================================================
    13. RESPONSIVE LAYOUT
-   Hide the visual panel and show the mobile brand.
    ========================================================= */
 
 @media (max-width: 760px) {
-
-  /* Switch to a single-column layout */
   .login-page {
     grid-template-columns: 1fr;
     min-height: 100vh;
     min-height: 100dvh;
   }
 
-  /* Hide the desktop visual panel */
   .visual-panel {
     display: none;
   }
 
-  /* Keep the login panel full width */
   .login-panel {
-    justify-content: flex-start;
-    padding: 34px 20px 28px;
+    justify-content: center;
+    padding: 28px 20px;
   }
 
-  /* Show brand at the top of the mobile page */
   .mobile-brand {
     display: flex;
     align-items: center;
     gap: 12px;
     width: 100%;
     max-width: 420px;
-    margin: 0 auto 48px;
+    margin: 0 auto 30px;
   }
 
-  /* Mobile brand title */
+  .mobile-brand .brand-mark {
+    flex-shrink: 0;
+  }
+
   .mobile-brand h1 {
     margin: 0;
     color: #172033;
@@ -498,7 +495,6 @@ form {
     line-height: 1.35;
   }
 
-  /* Mobile brand subtitle */
   .mobile-brand p {
     margin: 3px 0 0;
     color: #626b80;
@@ -506,41 +502,106 @@ form {
     line-height: 1.4;
   }
 
-  /* Keep form content centered and readable */
   .login-content {
     width: 100%;
     max-width: 420px;
     margin: 0 auto;
   }
 
-  /* Slightly reduce heading size on mobile */
-  .welcome h2 {
-    font-size: 29px;
+  .welcome {
+    margin-bottom: 26px;
   }
 
-}
+  .welcome h2 {
+    font-size: 29px;
+    letter-spacing: -0.7px;
+  }
 
+  .subtitle {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .form-field {
+    margin-bottom: 19px;
+  }
+
+  .form-field input {
+    min-height: 48px;
+  }
+
+  .login-button {
+    min-height: 49px;
+  }
+
+  .security-note {
+    margin-top: 22px;
+  }
+}
 
 /* =========================================================
    14. SMALL MOBILE SCREENS
    ========================================================= */
 
 @media (max-width: 380px) {
-
-  /* Reduce horizontal spacing on narrow devices */
   .login-panel {
-    padding-right: 16px;
-    padding-left: 16px;
+    padding: 22px 16px;
   }
 
-  /* Tighter mobile brand spacing */
   .mobile-brand {
-    margin-bottom: 38px;
+    margin-bottom: 25px;
   }
 
-  /* Slightly smaller heading */
+  .welcome {
+    margin-bottom: 22px;
+  }
+
   .welcome h2 {
-    font-size: 27px;
+    font-size: 26px;
   }
 
+  .form-field {
+    margin-bottom: 17px;
+  }
+
+  .security-note {
+    margin-top: 18px;
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   15. SHORT MOBILE SCREENS
+   ========================================================= */
+
+@media (max-width: 760px) and (max-height: 700px) {
+  .login-panel {
+    justify-content: flex-start;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .mobile-brand {
+    margin-bottom: 20px;
+  }
+
+  .welcome {
+    margin-bottom: 20px;
+  }
+
+  .welcome h2 {
+    font-size: 26px;
+  }
+
+  .subtitle {
+    margin-top: 8px;
+  }
+
+  .form-field {
+    margin-bottom: 15px;
+  }
+
+  .security-note {
+    margin-top: 16px;
+  }
 }

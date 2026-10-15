@@ -14,11 +14,10 @@ interface VisitRecord {
 
   name: string;
   email: string;
+  visitReference: string;
   mobile: string;
 
   visitorType: string;
-
-  company: string;
 
   status: string;
 
@@ -50,7 +49,7 @@ export class VisitListComponent implements OnInit {
   pageSize = 10;
 
   sortDirection: 'ASC' | 'DESC' = 'DESC';
-  sortBy: 'id' | 'name' | 'company' | 'visitDate' = 'id';
+  sortBy: 'id' | 'name' | 'visitDate' = 'id';
 
 
   ngOnInit(): void {
@@ -62,7 +61,7 @@ export class VisitListComponent implements OnInit {
 
   private loadVisits(): void {
 
-    this.visitService.getDashboardVisits(
+  this.visitService.getDashboardVisits(
   this.sortDirection,
   this.sortBy
 )
@@ -72,8 +71,12 @@ export class VisitListComponent implements OnInit {
 
           console.log('VISIT API RESPONSE:', visits);
 
-          this.visitRecords =
-            visits.map(visit => this.mapToVisitRecord(visit));
+          this.visitRecords = visits
+  .filter(visit =>
+    visit.status === 'REGISTERED' ||
+    visit.status === 'CHECKED_IN'
+  )
+  .map(visit => this.mapToVisitRecord(visit));
 
           console.log('VISIT RECORDS:', this.visitRecords);
 
@@ -105,12 +108,11 @@ export class VisitListComponent implements OnInit {
       name: visit.visitorName,
 
       email: visit.visitorEmail,
+      visitReference: visit.visitReference,
 
       mobile: visit.visitorMobile,
 
       visitorType: visit.visitorType,
-
-      company: visit.companyName,
 
       status: visit.status,
 
@@ -122,49 +124,69 @@ export class VisitListComponent implements OnInit {
 
 
   get filteredVisits(): VisitRecord[] {
+  const search = this.searchText.trim().toLowerCase();
 
-    return this.visitRecords.filter(visit => {
+  const filtered = this.visitRecords.filter(visit => {
+    const matchesSearch =
+      !search ||
+      (visit.name ?? '').toLowerCase().includes(search) ||
+      (visit.email ?? '').toLowerCase().includes(search) ||
+      (visit.visitReference ?? '').toLowerCase().includes(search) ||
+      (visit.mobile ?? '').includes(search) ||
+      (visit.id ?? '').toLowerCase().includes(search);
 
-      const search =
-        this.searchText
-          .toLowerCase()
-          .trim();
+    const matchesVisitorType =
+      !this.selectedVisitorType ||
+      visit.visitorType === this.selectedVisitorType;
 
+    const matchesStatus =
+      !this.selectedStatus ||
+      visit.status === this.selectedStatus;
 
-      const matchesSearch =
-        !search ||
-        visit.name.toLowerCase().includes(search) ||
-        visit.email.toLowerCase().includes(search) ||
-        visit.mobile.includes(search) ||
-        visit.id.toLowerCase().includes(search);
+    const matchesDate =
+      !this.selectedDate ||
+      visit.visitDate === this.selectedDate;
 
+    return (
+      matchesSearch &&
+      matchesVisitorType &&
+      matchesStatus &&
+      matchesDate
+    );
+  });
 
-      const matchesVisitorType =
-        !this.selectedVisitorType ||
-        visit.visitorType === this.selectedVisitorType;
+  const direction = this.sortDirection === 'ASC' ? 1 : -1;
 
+  return filtered.sort((a, b) => {
+    let comparison = 0;
 
-      const matchesStatus =
-        !this.selectedStatus ||
-        visit.status === this.selectedStatus;
+    switch (this.sortBy) {
+      case 'id':
+        comparison = (a.id ?? '').localeCompare(
+          b.id ?? '',
+          undefined,
+          { numeric: true, sensitivity: 'base' }
+        );
+        break;
 
+      case 'name':
+        comparison = (a.name ?? '').localeCompare(
+          b.name ?? '',
+          undefined,
+          { sensitivity: 'base' }
+        );
+        break;
 
-      const matchesDate =
-        !this.selectedDate ||
-        visit.visitDate === this.selectedDate;
+      case 'visitDate':
+        comparison = (a.visitDate ?? '').localeCompare(
+          b.visitDate ?? ''
+        );
+        break;
+    }
 
-
-      return (
-        matchesSearch &&
-        matchesVisitorType &&
-        matchesStatus &&
-        matchesDate
-      );
-
-    });
-
-  }
-
+    return comparison * direction;
+  });
+}
 
   get paginatedVisits(): VisitRecord[] {
 
@@ -272,40 +294,26 @@ export class VisitListComponent implements OnInit {
 
 
   getStatusLabel(status: string): string {
+  switch (status) {
+    case 'REGISTERED':
+      return 'Registered';
 
-    switch (status) {
+    case 'CHECKED_IN':
+      return 'Checked In';
 
-      case 'CHECKED_IN':
-        return 'Checked In';
-
-      case 'CHECKED_OUT':
-        return 'Checked Out';
-
-      case 'NO_SHOW':
-        return 'No Show';
-
-      case 'CANCELLED':
-        return 'Cancelled';
-
-      case 'REGISTERED':
-        return 'Registered';
-
-      default:
-        return status;
-
-    }
-
+    default:
+      return status;
   }
+}
 
 
   onFilterChange(): void {
-
   this.currentPage = 1;
-
-  this.loadVisits();
-
 }
 
+  onSortChange(): void {
+  this.currentPage = 1;
+}
 
   clearFilters(): void {
 

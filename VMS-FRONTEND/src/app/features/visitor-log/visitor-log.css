@@ -173,12 +173,7 @@
 .filters-row {
   display: grid;
 
-  grid-template-columns:
-    1fr
-    1fr
-    1fr
-    1fr
-    auto;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) auto;
 
   gap: 14px;
 
@@ -250,11 +245,10 @@
 
 .filter-actions {
   display: flex;
-
   align-items: flex-end;
   justify-content: flex-end;
-
   height: 40px;
+  white-space: nowrap;
 }
 
 

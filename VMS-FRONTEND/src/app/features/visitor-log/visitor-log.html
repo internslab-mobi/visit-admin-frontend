@@ -1,8 +1,6 @@
 <div class="visitor-log-page">
 
-  <!-- =====================================================
-       PAGE HEADER
-       ===================================================== -->
+  <!-- Page Header -->
 
   <div class="page-header">
 
@@ -17,10 +15,7 @@
 
   </div>
 
-
-  <!-- =====================================================
-       SEARCH & FILTERS
-       ===================================================== -->
+<!-- Search & Filters -->
 
   <div class="filter-card">
 
@@ -143,6 +138,36 @@
 
       </div>
 
+            <!-- Status -->
+
+      <div class="filter-field">
+
+        <label for="status">
+          Status
+        </label>
+
+        <select
+          id="status"
+          [(ngModel)]="selectedStatus"
+          (ngModelChange)="onFilterChange()"
+        >
+
+          <option value="">
+            All Statuses
+          </option>
+
+          @for (status of historicalStatuses; track status.value) {
+
+            <option [value]="status.value">
+              {{ status.label }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
 
       <!-- Reset -->
 
@@ -161,11 +186,6 @@
     </div>
 
   </div>
-
-
-  <!-- =====================================================
-       RESULTS
-       ===================================================== -->
 
   <div class="results-card">
 
@@ -233,10 +253,7 @@
 
     }
 
-
-    <!-- =================================================
-         TABLE
-         ================================================= -->
+    <!-- Table -->
 
     @if (
       hasSearched &&
@@ -262,10 +279,6 @@
 
               <th>
                 Type
-              </th>
-
-              <th>
-                Company
               </th>
 
               <th>
@@ -339,14 +352,6 @@
                   </span>
 
                 </td>
-
-
-                <!-- Company -->
-
-                <td>
-                  {{ log.companyName || '-' }}
-                </td>
-
 
                 <!-- Host -->
 
@@ -426,10 +431,7 @@
 
       </div>
 
-
-      <!-- =================================================
-           PAGINATION
-           ================================================= -->
+<!-- Pagination -->
 
       @if (totalPages > 1) {
 

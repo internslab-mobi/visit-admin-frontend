@@ -43,11 +43,18 @@ export class VisitorLogComponent implements OnInit {
     'VENDOR'
   ];
 
+  historicalStatuses = [
+  { value: 'CHECKED_OUT', label: 'Checked Out' },
+  { value: 'CANCELLED', label: 'Cancelled' },
+  { value: 'NO_SHOW', label: 'No Show' }
+];
+
   search = '';
   fromDate = '';
   toDate = '';
   selectedHostId = '';
   selectedVisitorType = '';
+  selectedStatus = '';
 
   currentPage = 0;
   pageSize = 10;
@@ -60,12 +67,9 @@ export class VisitorLogComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadHosts();
+    this.changeDetectorRef.detectChanges();
   }
 
-  /*
-   * Load employees once so they can be used
-   * in the Host filter.
-   */
   private loadHosts(): void {
 
     this.employeeService.getEmployees().subscribe({
@@ -88,14 +92,7 @@ export class VisitorLogComponent implements OnInit {
     });
   }
 
-  /*
-   * Called whenever the search text changes.
-   *
-   * No Enter key.
-   * No Search button.
-   *
-   * Every change immediately reloads the visitor log.
-   */
+
   onSearchChange(): void {
 
     this.currentPage = 0;
@@ -109,10 +106,6 @@ export class VisitorLogComponent implements OnInit {
     this.loadVisitorLog();
   }
 
-  /*
-   * Called whenever From Date, To Date,
-   * Host or Visitor Type changes.
-   */
   onFilterChange(): void {
 
     this.currentPage = 0;
@@ -126,10 +119,6 @@ export class VisitorLogComponent implements OnInit {
     this.loadVisitorLog();
   }
 
-  /*
-   * Determines whether the user has entered
-   * at least one search/filter value.
-   */
   private hasAnyFilter(): boolean {
 
     return (
@@ -137,14 +126,11 @@ export class VisitorLogComponent implements OnInit {
       this.fromDate !== '' ||
       this.toDate !== '' ||
       this.selectedHostId !== '' ||
-      this.selectedVisitorType !== ''
+      this.selectedVisitorType !== '' ||
+      this.selectedStatus !== ''
     );
   }
 
-  /*
-   * Calls the backend with the current
-   * search and filter values.
-   */
   private loadVisitorLog(): void {
 
     this.loading = true;
@@ -153,7 +139,7 @@ export class VisitorLogComponent implements OnInit {
       this.search.trim(),
       this.fromDate,
       this.toDate,
-      '',
+      this.selectedStatus,
       this.selectedVisitorType,
       this.selectedHostId,
       this.currentPage,
@@ -191,9 +177,6 @@ export class VisitorLogComponent implements OnInit {
     });
   }
 
-  /*
-   * Clears the search, filters and results.
-   */
   resetFilters(): void {
 
     this.search = '';
@@ -201,6 +184,7 @@ export class VisitorLogComponent implements OnInit {
     this.toDate = '';
     this.selectedHostId = '';
     this.selectedVisitorType = '';
+    this.selectedStatus = '';
 
     this.clearResults();
   }
@@ -219,12 +203,6 @@ export class VisitorLogComponent implements OnInit {
     this.changeDetectorRef.detectChanges();
   }
 
-  /*
-   * Pagination.
-   *
-   * Pagination only works after a search/filter
-   * has produced results.
-   */
   goToPage(page: number): void {
 
     if (

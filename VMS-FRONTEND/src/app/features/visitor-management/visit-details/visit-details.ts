@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ChangeDetectorRef,
-  ViewChild,
-  ElementRef,
-  inject,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy,  ChangeDetectorRef, ViewChild, ElementRef, inject} from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -361,10 +353,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Clears a captured photo that has not yet been
-   * transferred into selectedPhoto.
-   */
   private clearCapturedPhoto(): void {
     if (this.capturedPhotoPreviewUrl) {
       URL.revokeObjectURL(this.capturedPhotoPreviewUrl);
@@ -464,7 +452,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
         this.checkInSuccess = 'Visitor checked in successfully.';
 
-        this.updateDurationTimer();
+        //this.updateDurationTimer();
         if (this.visitDetails) {
           this.loadVisitorPhoto(this.visitDetails.visitId);
         }
@@ -561,7 +549,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         this.showCancelConfirmation = false;
         this.isCancellingVisit = false;
 
-        this.stopDurationTimer();
+        //this.stopDurationTimer();
 
         this.cdr.detectChanges();
       },
@@ -644,7 +632,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         }
 
         this.loadBlacklistStatus();
-        this.updateDurationTimer();
+        //this.updateDurationTimer();
 
         this.cdr.detectChanges();
       },
@@ -654,7 +642,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         this.isBlacklistStatusLoading = false;
 
         this.clearVisitorPhoto();
-        this.stopDurationTimer();
+        //this.stopDurationTimer();
 
         this.cdr.detectChanges();
       },
@@ -738,10 +726,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Starts or stops the live duration timer depending
-   * on the current visit status.
-   */
+  
   private updateDurationTimer(): void {
     this.stopDurationTimer();
 
@@ -761,9 +746,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  /**
-   * Stops the live duration timer.
-   */
+  
   private stopDurationTimer(): void {
     if (this.durationTimer) {
       clearInterval(this.durationTimer);
