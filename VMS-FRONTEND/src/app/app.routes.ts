@@ -4,9 +4,11 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login';
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password';
+import { UserRegistrationComponent } from './features/user-management/user-registration/user-registration';
 
 // Route protection
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 // Visitor management
 import { VisitorRegistrationComponent } from './features/visitor-management/visitor-registration/visitor-registration';
@@ -63,6 +65,7 @@ export const routes: Routes = [
     component: ResetPasswordComponent,
   },
 
+
   // Protected admin area.
   {
     path: 'admin',
@@ -74,6 +77,12 @@ export const routes: Routes = [
       {
         path: 'pre-registration',
         component: VisitorRegistrationComponent,
+      },
+
+      {
+        path: 'user-registration',
+        component: UserRegistrationComponent,
+        canActivate: [adminGuard],
       },
 
       // Visit list and individual visit details.

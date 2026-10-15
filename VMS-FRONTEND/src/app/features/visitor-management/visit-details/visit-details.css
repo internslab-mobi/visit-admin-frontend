@@ -1590,3 +1590,217 @@ animation-iteration-count: 1 !important;
 transition-duration: 0.01ms !important;
 }
 }
+
+/* =========================================
+   NDA DOCUMENT SECTION
+   ========================================= */
+
+.nda-card {
+  overflow: hidden;
+}
+
+/* NDA status and upload layout */
+
+.nda-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px;
+  border: 1px solid #e4e8f0;
+  border-radius: 10px;
+  background: #fbfcff;
+}
+
+.nda-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.nda-status-icon {
+  display: flex;
+  flex: 0 0 34px;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #e8f7ee;
+  color: #218653;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.nda-status strong {
+  display: block;
+  margin: 2px 0 5px;
+  color: #172033;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.nda-status .muted-description {
+  margin: 0;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Missing NDA state */
+
+.nda-missing {
+  border-color: #f0dfbd;
+  background: #fffcf6;
+}
+
+.nda-missing .nda-status-icon {
+  background: #fff0d6;
+  color: #a56613;
+}
+
+/* Upload form */
+
+.nda-upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 100%;
+  max-width: 300px;
+  min-width: 0;
+}
+
+.nda-upload-form label {
+  display: block;
+  margin-top: 5px;
+  color: #273247;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.nda-upload-form input[type="file"],
+.nda-upload-form input[type="date"] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 43px;
+  padding: 9px 10px;
+  border: 1px solid #dce1eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #273247;
+  font-family: inherit;
+  font-size: 13px;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.nda-upload-form input[type="file"] {
+  padding: 7px;
+}
+
+.nda-upload-form input[type="file"]::file-selector-button {
+  margin-right: 9px;
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 5px;
+  background: #eef3ff;
+  color: #2457d6;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nda-upload-form input[type="file"]:focus,
+.nda-upload-form input[type="date"]:focus {
+  border-color: #2457d6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(36, 87, 214, 0.11);
+}
+
+.nda-upload-form input:disabled {
+  background: #f5f7fc;
+  cursor: not-allowed;
+}
+
+/* Upload button */
+
+.nda-upload-form .button {
+  align-self: flex-start;
+  min-height: 42px;
+  margin-top: 8px;
+}
+
+.nda-upload-form .button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Upload feedback */
+
+.nda-upload-form p[role="status"],
+.nda-upload-form p[role="alert"] {
+  margin: 4px 0 0;
+  padding: 10px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.nda-upload-form p[role="status"] {
+  border: 1px solid #ccebd8;
+  background: #effaf3;
+  color: #217346;
+}
+
+.nda-upload-form p[role="alert"] {
+  border: 1px solid #f1cdd1;
+  background: #fff1f2;
+  color: #a72e3b;
+}
+
+/* =========================================
+   NDA RESPONSIVE LAYOUT
+   ========================================= */
+
+@media (max-width: 768px) {
+  .nda-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .nda-upload-form {
+    max-width: none;
+  }
+
+  .nda-upload-form .button {
+    align-self: stretch;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .nda-row {
+    gap: 16px;
+    padding: 14px;
+  }
+
+  .nda-status {
+    gap: 10px;
+  }
+
+  .nda-status-icon {
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .nda-upload-form input[type="file"],
+  .nda-upload-form input[type="date"] {
+    min-height: 44px;
+    font-size: 12px;
+  }
+}
