@@ -1,33 +1,14 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectorRef,
-  inject
-} from '@angular/core';
-
-import {
-  BlacklistService
-} from '../../../core/services/blacklist/blacklist.service';
-import {
-  FormsModule
-} from '@angular/forms';
-
-import {
-  ActivatedRoute,
-  Router
-} from '@angular/router';
-
-import {
-  VisitorService,
-  VisitorEditResponse,
-  VisitorEditVisitor,
-  VisitorVisit,
-  VisitorDocument
-} from '../../../core/services/visitor/visitor.service';
-
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { BlacklistService } from '../../../core/services/blacklist/blacklist.service';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { VisitorService} from '../../../core/services/visitor/visitor.service';
+import { VisitorEditResponse, VisitorEditVisitor, VisitorVisit, VisitorDocument } from '../../../core/models/visitor/visitor.model';
 import { VisitDurationComponent } from '../../../shared/components/visit-duration/visit-duration';
-
+import {DocumentService} from '../../../core/services/document/document.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { BlacklistComponent } from '../../../shared/components/blacklist/blacklist';
+import { ViewChild } from '@angular/core';
 @Component({
   selector: 'app-visitor-edit',
 
@@ -35,7 +16,8 @@ import { AuthService } from '../../../core/services/auth/auth.service';
 
   imports: [
     FormsModule,
-    VisitDurationComponent
+    VisitDurationComponent,
+    BlacklistComponent
   ],
 
   templateUrl: './visitor-edit.html',
@@ -61,6 +43,9 @@ export class VisitorEditComponent implements OnInit {
 
     private readonly blacklistService = inject(BlacklistService);
 private readonly authService = inject(AuthService);
+
+private readonly documentService =
+  inject(DocumentService);
 
 
 
@@ -107,7 +92,8 @@ isAdmin = false;
 
 
   
-
+@ViewChild(BlacklistComponent)
+blacklistComponent!: BlacklistComponent;
 
   ngOnInit(): void {
 
@@ -181,7 +167,7 @@ isAdmin = false;
 
 
           this.photoUrl =
-            this.visitorService
+            this.documentService
               .getVisitorPhotoUrl(
                 this.visitorId
               );
@@ -214,45 +200,19 @@ isAdmin = false;
   }
 
 
+
 private loadDocuments(): void {
-
-  this.visitorService
-    .getVisitorDocuments(this.visitorId)
-    .subscribe({
-
-      next: (documents) => {
-
-        console.log(
-          'DOCUMENT API RESPONSE:',
-          documents
-        );
-
-        this.documents = documents ?? [];
-
-        console.log(
-          'DOCUMENTS ASSIGNED:',
-          this.documents
-        );
-
-        this.changeDetectorRef.markForCheck();
-
-      },
-
-      error: (error) => {
-
-        console.error(
-          'Failed to load visitor documents:',
-          error
-        );
-
-        this.documents = [];
-
-        this.changeDetectorRef.markForCheck();
-
-      }
-
-    });
-
+  this.documentService.getVisitorDocuments(this.visitorId).subscribe({
+    next: (documents) => {
+      this.documents = documents ?? [];
+      this.changeDetectorRef.markForCheck();
+    },
+    error: (error) => {
+      console.error('Failed to load visitor documents:', error);
+      this.documents = [];
+      this.changeDetectorRef.markForCheck();
+    }
+  });
 }
 
 
@@ -433,55 +393,64 @@ private loadDocuments(): void {
   }
 
 
-  formatDateTime(
-    value: string | null
-  ): string {
+  // formatDateTime(
+  //   value: string | null
+  // ): string {
 
-    if (!value) {
-      return '-';
-    }
+  //   if (!value) {
+  //     return '-';
+  //   }
 
-    return new Date(value)
-      .toLocaleString(
-        'en-IN',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        }
-      );
+  //   return new Date(value)
+  //     .toLocaleString(
+  //       'en-IN',
+  //       {
+  //         day: '2-digit',
+  //         month: 'short',
+  //         year: 'numeric',
+  //         hour: '2-digit',
+  //         minute: '2-digit'
+  //       }
+  //     );
 
-  }
+  // }
 
 
   formatDate(
-    value: string | null
-  ): string {
-
-    if (!value) {
-      return '-';
-    }
-
-    return new Date(value)
-      .toLocaleDateString(
-        'en-IN',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric'
-        }
-      );
-
+  value: string | null,
+  includeTime = false
+): string {
+  if (!value) {
+    return '-';
   }
+
+  if (includeTime) {
+    return new Date(value).toLocaleString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  const datePart = value.split('T')[0];
+  const [year, month, day] = datePart.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+
+  return date.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
+}
 
 
 
   viewDocument(document: VisitorDocument): void {
 
   const documentUrl =
-    this.visitorService.getDocumentViewUrl(
+    this.documentService.getDocumentViewUrl(
       document.documentId
     );
 
@@ -491,81 +460,31 @@ private loadDocuments(): void {
   );
 
 }
-// formatVisitDuration(
-//   totalSeconds: number | null,
-//   status: string
-// ): string {
-//   if (status === 'REGISTERED') {
-//     return 'Not started';
-//   }
-
-//   if (status === 'CANCELLED' || status === 'NO_SHOW') {
-//     return 'Not applicable';
-//   }
-
-//   if (status === 'CHECKED_IN') {
-//     return 'In progress';
-//   }
-
-//   if (status === 'CHECKED_OUT' && totalSeconds !== null) {
-//     return this.formatSeconds(totalSeconds);
-//   }
-
-//   return '-';
-// }
-
-// private formatSeconds(totalSeconds: number): string {
-//   const hours = Math.floor(totalSeconds / 3600);
-//   const minutes = Math.floor((totalSeconds % 3600) / 60);
-//   const seconds = totalSeconds % 60;
-
-//   const parts: string[] = [];
-
-//   if (hours > 0) {
-//     parts.push(`${hours}h`);
-//   }
-
-//   if (minutes > 0) {
-//     parts.push(`${minutes}m`);
-//   }
-
-//   if (seconds > 0 || parts.length === 0) {
-//     parts.push(`${seconds}s`);
-//   }
-
-//   return parts.join(' ');
-// }
-
-  // addToBlacklist(): void {
-
-  //   /*
-  //    * We'll connect this to your existing
-  //    * blacklist API next.
-  //    */
-
-  //   console.log(
-  //     'Add visitor to blacklist:',
-  //     this.visitorId
-  //   );
-
-  // }
-
-  addToBlacklist(): void {
-
+ 
+addToBlacklist(): void {
   if (!this.visitorId || this.blacklisted) {
     return;
   }
 
-  const reason = window.prompt(
-    'Enter the reason for blacklisting this visitor:'
-  );
+  const reason = window.prompt('Enter the reason for blacklisting this visitor:');
 
   if (reason === null) {
     return;
   }
 
-  if (!reason.trim()) {
-    this.errorMessage = 'Blacklist reason is required.';
+  const trimmedReason = reason.trim();
+
+  if (trimmedReason.length < 3 || trimmedReason.length > 255) {
+    this.errorMessage =
+      'Blacklist reason must be between 3 and 255 characters.';
+    this.successMessage = '';
+    return;
+  }
+
+  const userId = this.authService.currentUser()?.userId;
+
+  if (!userId) {
+    this.errorMessage = 'Unable to identify the logged-in user.';
     this.successMessage = '';
     return;
   }
@@ -574,101 +493,35 @@ private loadDocuments(): void {
   this.successMessage = '';
 
   const request = {
-    reason: reason.trim(),
-    createdBy: 'HR' // will replace this once logging is connected 
+    reason: trimmedReason,
+    createdBy: userId
   };
 
   this.blacklistService
-    .addExistingVisitorToBlacklist(
-      this.visitorId,
-      request
-    )
+    .addExistingVisitorToBlacklist(this.visitorId, request)
     .subscribe({
       next: (response) => {
-
-        console.log(
-          'Visitor added to blacklist:',
-          response
-        );
-
         this.blacklist = response;
         this.blacklisted = true;
-
         this.successMessage =
           'Visitor has been added to the blacklist successfully.';
-
         this.changeDetectorRef.markForCheck();
       },
-
       error: (error) => {
-
-        console.error(
-          'Failed to add visitor to blacklist:',
-          error
-        );
-
+        console.error('Failed to add visitor to blacklist:', error);
         this.errorMessage =
           error?.error?.message ??
           'Failed to add visitor to blacklist.';
-
-        this.successMessage = '';
-
         this.changeDetectorRef.markForCheck();
       }
     });
-
-  // this.blacklistService
-  // .addExistingVisitorToBlacklist(
-  //   this.visitorId,
-  //   request
-  // )
-  // .subscribe({
-  //   next: (response) => {
-  //     this.blacklist = response;
-  //     this.blacklisted = true;
-
-  //     this.successMessage =
-  //       'Visitor has been added to the blacklist successfully.';
-
-  //     this.changeDetectorRef.markForCheck();
-  //   },
-  //   error: (error) => {
-  //     console.error(
-  //       'Failed to add visitor to blacklist:',
-  //       error
-  //     );
-
-  //     this.errorMessage =
-  //       error?.error?.message ??
-  //       'Failed to add visitor to blacklist.';
-
-  //     this.successMessage = '';
-
-  //     this.changeDetectorRef.markForCheck();
-  //   }
-  // });
 }
 
+ 
 
-  // removeFromBlacklist(): void {
-
-  //   /*
-  //    * We'll connect this to your existing
-  //    * blacklist API next.
-  //    */
-
-  //   console.log(
-  //     'Remove visitor from blacklist:',
-  //     this.visitorId
-  //   );
-
-  // }
-
-  removeFromBlacklist(): void {
-
+removeFromBlacklist(): void {
   if (!this.blacklist?.id) {
-    this.errorMessage =
-      'Blacklist record was not found.';
+    this.errorMessage = 'Blacklist record was not found.';
     return;
   }
 
@@ -680,22 +533,21 @@ private loadDocuments(): void {
     return;
   }
 
+  const userId = this.authService.currentUser()?.userId;
+
+  if (!userId) {
+    this.errorMessage = 'Unable to identify the logged-in user.';
+    this.successMessage = '';
+    return;
+  }
+
   this.errorMessage = '';
   this.successMessage = '';
 
   this.blacklistService
-    .removeFromBlacklist(
-      this.blacklist.id,
-      'HR'
-    )
+    .removeFromBlacklist(this.blacklist.id, userId)
     .subscribe({
-      next: (response) => {
-
-        console.log(
-          'Visitor removed from blacklist:',
-          response
-        );
-
+      next: () => {
         this.blacklisted = false;
         this.blacklist = null;
 
@@ -704,9 +556,7 @@ private loadDocuments(): void {
 
         this.changeDetectorRef.markForCheck();
       },
-
       error: (error) => {
-
         console.error(
           'Failed to remove visitor from blacklist:',
           error
@@ -717,10 +567,19 @@ private loadDocuments(): void {
           'Failed to remove visitor from blacklist.';
 
         this.successMessage = '';
-
         this.changeDetectorRef.markForCheck();
       }
     });
 }
 
+onBlacklistChanged(
+  event: {
+    blacklisted: boolean;
+    blacklist: VisitorEditResponse['blacklist'];
+  }
+): void {
+  this.blacklisted = event.blacklisted;
+  this.blacklist = event.blacklist;
+  this.changeDetectorRef.markForCheck();
+}
 }

@@ -9,10 +9,10 @@ import { FormsModule } from '@angular/forms';
 import {Router, RouterLink } from '@angular/router';
 import {
   VisitorService,
-  VisitorResponse
+  
 } from '../../../core/services/visitor/visitor.service';
 import { VisitorType } from '../../../core/models/registration/registration.model';
-
+import { VisitorResponse } from '../../../core/models/visitor/visitor.model';
 interface VisitorRecord {
 
   id: string;

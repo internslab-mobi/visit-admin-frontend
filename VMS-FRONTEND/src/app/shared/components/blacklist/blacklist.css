@@ -1,0 +1,282 @@
+
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Blacklist Card */
+.blacklist-card {
+  width: 100%;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid #e3e8ef;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.blacklist-card.is-blacklisted {
+  border-color: #fecdd3;
+}
+
+/* Card Header */
+.blacklist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 58px;
+  padding: 0 18px;
+  border-bottom: 1px solid #e8edf3;
+  background: linear-gradient(to right, #fff7f8, #ffffff);
+  box-sizing: border-box;
+}
+
+.card-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.card-title-wrapper h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.card-title-wrapper p {
+  margin: 3px 0 0;
+  color: #8a94a6;
+  font-size: 11px;
+}
+
+.card-icon {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  font-size: 17px;
+}
+
+.red-icon {
+  background: #fff0f2;
+  color: #be123c;
+}
+
+/* Card Content */
+.blacklist-content {
+  padding: 17px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  box-sizing: border-box;
+}
+
+/* Blacklist Status */
+.blacklist-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 10px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
+.safe-status {
+  background: #ecfdf3;
+  border: 1px solid #b7ebc9;
+  color: #087443;
+}
+
+.danger-status {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #be123c;
+  align-items: flex-start;
+}
+
+.danger-status > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.danger-status strong {
+  font-weight: 700;
+}
+
+.danger-status div span {
+  font-size: 11px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.status-icon {
+  width: 21px;
+  height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: currentColor;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* Add to Blacklist Button */
+.blacklist-button {
+  align-self: flex-end;
+  min-height: 38px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #2563eb;
+  border-radius: 7px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.14);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.blacklist-button:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 4px 9px rgba(37, 99, 235, 0.18);
+}
+
+.blacklist-button span {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Blacklist Details */
+.blacklist-details {
+  padding: 4px 2px;
+}
+
+.blacklist-detail-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f2f5;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.blacklist-detail-row:last-child {
+  border-bottom: none;
+}
+
+.blacklist-detail-row strong {
+  color: #334155;
+  font-weight: 650;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* Remove from Blacklist Button */
+.remove-blacklist-button {
+  align-self: flex-end;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid #fecdd3;
+  border-radius: 7px;
+  background: #fff1f2;
+  color: #be123c;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.remove-blacklist-button:hover:not(:disabled) {
+  background: #ffe4e6;
+  border-color: #fda4af;
+}
+
+/* Success and Error Messages */
+.blacklist-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 11px 14px;
+  margin-bottom: 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.success-message {
+  background: #ecfdf3;
+  border: 1px solid #b7ebc9;
+  color: #087443;
+}
+
+.error-message {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #be123c;
+}
+
+.blacklist-button:disabled,
+.remove-blacklist-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Keyboard Accessibility */
+.blacklist-button:focus-visible,
+.remove-blacklist-button:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, 0.45);
+  outline-offset: 2px;
+}
+
+/* Responsive Layout */
+@media (max-width: 650px) {
+  .blacklist-header {
+    padding: 0 15px;
+  }
+
+  .blacklist-content {
+    padding: 14px;
+  }
+
+  .card-title-wrapper h2 {
+    font-size: 14px;
+  }
+
+  .card-title-wrapper p {
+    font-size: 10px;
+  }
+
+  .blacklist-detail-row {
+    gap: 8px;
+  }
+
+  .blacklist-button,
+  .remove-blacklist-button {
+    max-width: 100%;
+  }
+}
+
+

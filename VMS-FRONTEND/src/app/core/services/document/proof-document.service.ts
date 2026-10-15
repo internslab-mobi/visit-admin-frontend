@@ -3,12 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { API_CONFIG } from '../../../../environments/environment.dev';
+import { DocumentResponse } from '../../models/document/DocumentResponse';
 
-export interface DocumentResponse {
-  documentId: string;
-  documentPath: string;
-  createdAt: string;
-}
 
 @Injectable({
   providedIn: 'root'
