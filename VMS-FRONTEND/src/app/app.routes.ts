@@ -9,7 +9,7 @@ import { UserRegistrationComponent } from './features/user-management/user-regis
 // Route protection
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
-
+import { QrScannerComponent } from './features/qr-scanner/qr-scanner';
 // Visitor management
 import { VisitorRegistrationComponent } from './features/visitor-management/visitor-registration/visitor-registration';
 import { VisitorEditComponent } from './features/visitor-management/visitor-edit/visitor-edit';
@@ -150,6 +150,11 @@ export const routes: Routes = [
         path: 'visitor-log',
         component: VisitorLogComponent,
       },
+
+       {
+    path: 'qr-scanner',
+    component: QrScannerComponent
+  }
     ],
   },
 

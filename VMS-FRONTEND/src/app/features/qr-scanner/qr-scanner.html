@@ -1,0 +1,20 @@
+<h2>QR Scanner</h2>
+
+<p>Show the visitor's QR code in front of the laptop camera.</p>
+
+<zxing-scanner
+  (scanSuccess)="onCodeScanned($event)">
+</zxing-scanner>
+
+<p *ngIf="isProcessing">Processing QR code...</p>
+
+
+<button
+  type="button"
+  (click)="testQrScan()">
+  Test QR API
+</button>
+
+<p *ngIf="message">{{ message }}</p>
+
+<p *ngIf="errorMessage">{{ errorMessage }}</p>
