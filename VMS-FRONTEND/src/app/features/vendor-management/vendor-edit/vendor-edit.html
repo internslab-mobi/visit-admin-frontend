@@ -919,7 +919,10 @@
   <strong>
     {{ nda.documentId }}
   </strong>
-
+<span>
+  Document Type:
+  {{ nda.documentType?.replace('NDA_', '')?.replace('_', ' ') }}
+</span>
   <span>
     Valid:
     {{ formatDate(nda.effective_validity) }}

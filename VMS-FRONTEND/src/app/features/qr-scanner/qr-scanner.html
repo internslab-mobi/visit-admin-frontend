@@ -1,20 +1,43 @@
-<h2>QR Scanner</h2>
 
-<p>Show the visitor's QR code in front of the laptop camera.</p>
+<div class="qr-scanner-container">
 
-<zxing-scanner
-  (scanSuccess)="onCodeScanned($event)">
-</zxing-scanner>
+  <h2>QR Token Validation</h2>
 
-<p *ngIf="isProcessing">Processing QR code...</p>
+  <form (ngSubmit)="simulateScan()">
 
+    <label for="qrToken">Enter QR Token</label>
 
-<button
-  type="button"
-  (click)="testQrScan()">
-  Test QR API
-</button>
+    <input
+      id="qrToken"
+      type="text"
+      name="token"
+      [(ngModel)]="token"
+      placeholder="Enter QR token"
+      [disabled]="isProcessing"
+      required
+    />
 
-<p *ngIf="message">{{ message }}</p>
+    <button
+      type="submit"
+      [disabled]="isProcessing || !token.trim()"
+    >
+      {{ isProcessing ? 'Processing...' : 'Submit Token' }}
+    </button>
 
-<p *ngIf="errorMessage">{{ errorMessage }}</p>
+  </form>
+
+  <div *ngIf="message" class="success-message">
+    <p>{{ message }}</p>
+    <p *ngIf="scanAction">
+      Action: {{ scanAction }}
+    </p>
+    <p *ngIf="scanTime">
+      Scanned At: {{ scanTime }}
+    </p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+</div>
