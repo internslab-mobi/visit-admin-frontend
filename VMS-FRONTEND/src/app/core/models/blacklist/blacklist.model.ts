@@ -1,5 +1,5 @@
 export type Nationality =
-  | 'DOMESTIC'
+  | 'India'
   | 'INTERNATIONAL';
 
   

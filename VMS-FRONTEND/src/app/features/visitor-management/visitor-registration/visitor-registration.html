@@ -181,9 +181,9 @@
                 Pre Registration
               </option>
 
-              <option value="ARRIVAL_REGISTRATION">
+              <!-- <option value="ARRIVAL_REGISTRATION">
                 Arrival Registration
-              </option>
+              </option> -->
 
             </select>
 
@@ -884,8 +884,8 @@
       </option>
 
 
-            <option value="DOMESTIC">
-              Domestic
+            <option value="India">
+              India
             </option>
 
             <option value="INTERNATIONAL">
@@ -907,12 +907,12 @@
 
 
      
-           <!-- DOMESTIC - AADHAAR + PAN -->
+           <!-- India - AADHAAR + PAN -->
           
       <div
         class="id-grid"
         *ngIf="
-          registrationForm.get('nationality')?.value === 'DOMESTIC'
+          registrationForm.get('nationality')?.value === 'India'
         "
       >
 

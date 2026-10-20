@@ -32,7 +32,7 @@ describe('VisitDetailsComponent', () => {
       email: 'visitor@example.com',
       mobileNumber: '9876543210',
       companyName: 'Example Company',
-      nationality: 'DOMESTIC',
+      nationality: 'India',
       ndaAvailable: false,
       ndaDocumentId: null,
       ndaValidUntil: null,
