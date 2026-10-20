@@ -44,7 +44,11 @@ export class ForgotPasswordComponent implements OnDestroy {
   private countdownInterval: ReturnType<typeof setInterval> | null = null;
 
   get canResendCode(): boolean {
-    return this.resendCountdown === 0 && !this.isLoading && !this.isResending;
+    return (
+      this.resendCountdown === 0 &&
+      !this.isLoading &&
+      !this.isResending
+    );
   }
 
   get maskedEmail(): string {
@@ -81,35 +85,37 @@ export class ForgotPasswordComponent implements OnDestroy {
       .requestPasswordReset({ email: this.email.trim() })
       .pipe(
         finalize(() => {
-          console.log('[ForgotPassword] Request finalized');
           this.isLoading = false;
           this.cdr.detectChanges();
         }),
       )
       .subscribe({
-        next: (response) => {
-          console.log('[ForgotPassword] Success response:', response);
-          this.otp = '';
-          this.otpDigits = Array(6).fill('');
+        next: () => {
+          this.clearOtp();
           this.errorMessage = '';
           this.step = 'otp';
           this.startResendCountdown();
           this.cdr.detectChanges();
+          this.focusOtpBox(0);
         },
 
         error: (error) => {
           console.error('[ForgotPassword] Request failed:', error);
+
           if (error.status === 0) {
-            this.errorMessage = 'Unable to connect to the server. Please try again.';
+            this.errorMessage =
+              'Unable to connect to the server. Please try again.';
           } else if (error.status === 404) {
             this.errorMessage =
               error.error?.message ??
               'No active account found for this email. Please check your email address or contact your administrator.';
           } else if (error.status === 429) {
             this.errorMessage =
-              error.error?.message ?? 'Too many requests. Please try again later.';
+              error.error?.message ??
+              'Too many requests. Please try again later.';
           } else {
-            this.errorMessage = 'We could not process your request. Please try again later.';
+            this.errorMessage =
+              'We could not process your request. Please try again later.';
           }
 
           this.cdr.detectChanges();
@@ -141,10 +147,13 @@ export class ForgotPasswordComponent implements OnDestroy {
     }
   }
 
+  private clearOtp(): void {
+    this.otp = '';
+    this.otpDigits = Array(6).fill('');
+  }
+
   resendCode(): void {
-    if (!this.canResendCode) {
-      return;
-    }
+    if (!this.canResendCode) return;
 
     this.errorMessage = '';
     this.isResending = true;
@@ -161,21 +170,28 @@ export class ForgotPasswordComponent implements OnDestroy {
       )
       .subscribe({
         next: () => {
-          this.otp = '';
-          this.otpDigits = Array(6).fill('');
+          this.clearOtp();
+          this.errorMessage = '';
           this.startResendCountdown();
           this.cdr.detectChanges();
+          this.focusOtpBox(0);
         },
+
         error: (error) => {
           if (error.status === 0) {
-            this.errorMessage = 'Unable to connect to the server. Please try again.';
+            this.errorMessage =
+              'Unable to connect to the server. Please try again.';
           } else if (error.status === 404) {
-            this.errorMessage = error.error?.message ?? 'No active account found for this email.';
+            this.errorMessage =
+              error.error?.message ??
+              'No active account found for this email.';
           } else if (error.status === 429) {
             this.errorMessage =
-              error.error?.message ?? 'Please wait before requesting another code.';
+              error.error?.message ??
+              'Please wait before requesting another code.';
           } else {
-            this.errorMessage = 'Unable to resend the verification code. Please try again later.';
+            this.errorMessage =
+              'Unable to resend the verification code. Please try again later.';
           }
 
           this.cdr.detectChanges();
@@ -230,7 +246,10 @@ export class ForgotPasswordComponent implements OnDestroy {
     const pastedText = event.clipboardData?.getData('text') ?? '';
     const digits = pastedText.replace(/\D/g, '').slice(0, 6);
 
-    this.otpDigits = Array.from({ length: 6 }, (_, index) => digits[index] ?? '');
+    this.otpDigits = Array.from(
+      { length: 6 },
+      (_, index) => digits[index] ?? '',
+    );
 
     this.otp = this.otpDigits.join('');
     this.errorMessage = '';
@@ -243,7 +262,7 @@ export class ForgotPasswordComponent implements OnDestroy {
   }
 
   private focusOtpBox(index: number): void {
-    this.otpBoxes.get(index)?.nativeElement.focus();
+    this.otpBoxes?.get(index)?.nativeElement.focus();
   }
 
   onVerifyOtp(form: NgForm): void {
@@ -251,7 +270,8 @@ export class ForgotPasswordComponent implements OnDestroy {
 
     if (!/^\d{6}$/.test(this.otp)) {
       form.control.markAllAsTouched();
-      this.errorMessage = 'Enter all six digits of the verification code.';
+      this.errorMessage =
+        'Enter all six digits of the verification code.';
       return;
     }
 
@@ -271,8 +291,7 @@ export class ForgotPasswordComponent implements OnDestroy {
       )
       .subscribe({
         next: (response) => {
-          this.otp = '';
-          this.otpDigits = Array(6).fill('');
+          this.clearOtp();
           this.errorMessage = '';
 
           this.router.navigate(['/reset-password'], {
@@ -281,15 +300,28 @@ export class ForgotPasswordComponent implements OnDestroy {
             },
           });
         },
+
         error: (error) => {
           if (error.status === 0) {
-            this.errorMessage = 'Unable to connect to the server. Please try again.';
-          } else if (error.status === 400 || error.status === 401) {
-            this.errorMessage = 'The code is invalid or expired. Please try again.';
+            this.errorMessage =
+              'Unable to connect to the server. Please try again.';
+          } else if (
+            error.status === 400 ||
+            error.status === 401
+          ) {
+            this.clearOtp();
+            this.errorMessage =
+              'The code is invalid or expired. Please try again.';
+
+            this.cdr.detectChanges();
+            this.focusOtpBox(0);
+            return;
           } else if (error.status === 429) {
-            this.errorMessage = 'Too many attempts. Please wait before trying again.';
+            this.errorMessage =
+              'Too many attempts. Please wait before trying again.';
           } else {
-            this.errorMessage = 'We could not verify the code. Please try again later.';
+            this.errorMessage =
+              'We could not verify the code. Please try again later.';
           }
 
           this.cdr.detectChanges();
@@ -298,13 +330,15 @@ export class ForgotPasswordComponent implements OnDestroy {
   }
 
   changeEmail(): void {
-    if (this.isLoading) return;
+    if (this.isLoading || this.isResending) return;
 
-    this.step = 'email';
-    this.otp = '';
-    this.otpDigits = Array(6).fill('');
+    this.stopResendCountdown();
+    this.resendCountdown = 0;
+    this.clearOtp();
     this.errorMessage = '';
+    this.step = 'email';
   }
+
   ngOnDestroy(): void {
     this.stopResendCountdown();
   }

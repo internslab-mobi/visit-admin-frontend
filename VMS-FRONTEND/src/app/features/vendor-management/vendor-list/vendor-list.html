@@ -28,168 +28,27 @@
 
 
  
-       <!-- FILTER CARD -->
-
-  <div class="filter-card">
-
-    <div class="filter-header">
-
-      <div>
-
-        <h3>
-          Vendor Directory
-        </h3>
-
-        <p>
-          Search, filter and sort registered vendors
-        </p>
-
-      </div>
-
-
-      <button
-        type="button"
-        class="clear-button"
-        (click)="clearFilters()"
-      >
-        Clear
-      </button>
-
-    </div>
-
-
-    <div class="filter-grid">
-
-
-
-      <div class="filter-field search-field">
-
-        <label for="vendorSearch">
-          Search Vendors
-        </label>
-
-        <div class="search-input-wrapper">
-
-          <span class="search-icon">
-            ⌕
-          </span>
-
-          <input
-            id="vendorSearch"
-            type="text"
-            placeholder="Name, email, mobile, company or vendor ID"
-            [(ngModel)]="searchText"
-            (ngModelChange)="onFilterChange()"
-          />
-
-        </div>
-
-      </div>
-
-
- 
-
-      <div class="filter-field">
-
-        <label for="fromDate">
-          Validity From
-        </label>
-
-        <input
-          id="fromDate"
-          type="date"
-          [(ngModel)]="fromDate"
-          (ngModelChange)="onFilterChange()"
-        />
-
-      </div>
-
-
-
-      <div class="filter-field">
-
-        <label for="toDate">
-          Validity To
-        </label>
-
-        <input
-          id="toDate"
-          type="date"
-          [(ngModel)]="toDate"
-          (ngModelChange)="onFilterChange()"
-        />
-
-      </div>
-
-
-
-      <div class="filter-field">
-
-        <label for="sortBy">
-          Sort By
-        </label>
-
-        <select
-          id="sortBy"
-          [(ngModel)]="sortBy"
-          (ngModelChange)="onSortChange()"
-        >
-
-          <option value="name">
-            Name
-          </option>
-
-          <option value="company">
-            Company
-          </option>
-
-          <option value="validity">
-            Validity
-          </option>
-
-          <option value="id">
-            Vendor ID
-          </option>
-
-          <option value="visitorId">
-            Visitor ID
-          </option>
-
-        </select>
-
-      </div>
-
-
-  
-
-      <div class="filter-field">
-
-        <label for="sortDirection">
-          Order
-        </label>
-
-        <select
-          id="sortDirection"
-          [(ngModel)]="sortDirection"
-          (ngModelChange)="onSortChange()"
-        >
-
-          <option value="asc">
-            Ascending
-          </option>
-
-          <option value="desc">
-            Descending
-          </option>
-
-        </select>
-
-      </div>
-
-    </div>
-
-  </div>
-
+    
+<app-filter-panel
+  idPrefix="vendor"
+  title="Vendor Directory"
+  description="Search, filter and sort registered vendors"
+  searchLabel="Search Vendors"
+  searchPlaceholder="Name, email, mobile, company or vendor ID"
+  [showVisitorTypeFilter]="false"
+  fromDateLabel="Validity From"
+  toDateLabel="Validity To"
+  [sortOptions]="vendorSortOptions"
+  [orderOptions]="vendorOrderOptions"
+  [(searchText)]="searchText"
+  [(fromDate)]="fromDate"
+  [(toDate)]="toDate"
+  [(sortBy)]="sortBy"
+  [(sortDirection)]="sortDirection"
+  (filterChange)="onFilterChange()"
+  (sortChange)="onSortChange()"
+  (clear)="clearFilters()"
+/>
 
 
        <!-- ERROR MESSAGE -->

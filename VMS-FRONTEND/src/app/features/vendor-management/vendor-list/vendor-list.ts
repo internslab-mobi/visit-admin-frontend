@@ -12,6 +12,10 @@ import {
   VendorService,
   VendorResponse
 } from '../../../core/services/vendor/vendor.service';
+import {
+  FilterPanelComponent,
+  FilterOption
+} from '../../../shared/components/filter-panel/filter-panel';
 
 
 
@@ -48,7 +52,8 @@ interface VendorRecord {
   standalone: true,
 
   imports: [
-    FormsModule
+    FormsModule,
+    FilterPanelComponent
   ],
 
   templateUrl: './vendor-list.html',
@@ -650,4 +655,17 @@ export class VendorListComponent implements OnInit {
   ]);
 
 }
+
+vendorSortOptions: FilterOption[] = [
+  { label: 'Name', value: 'name' },
+  { label: 'Company', value: 'company' },
+  { label: 'Validity', value: 'validity' },
+  { label: 'Vendor ID', value: 'id' },
+  { label: 'Visitor ID', value: 'visitorId' }
+];
+
+vendorOrderOptions: FilterOption[] = [
+  { label: 'Ascending', value: 'asc' },
+  { label: 'Descending', value: 'desc' }
+];
 }

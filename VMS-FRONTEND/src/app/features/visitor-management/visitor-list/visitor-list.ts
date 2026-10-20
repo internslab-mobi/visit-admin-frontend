@@ -9,10 +9,14 @@ import { FormsModule } from '@angular/forms';
 import {Router, RouterLink } from '@angular/router';
 import {
   VisitorService,
-  VisitorResponse
+  
 } from '../../../core/services/visitor/visitor.service';
 import { VisitorType } from '../../../core/models/registration/registration.model';
-
+import {
+  FilterPanelComponent,
+  FilterOption
+} from '../../../shared/components/filter-panel/filter-panel';
+import { VisitorResponse } from '../../../core/models/visitor/visitor.model';
 interface VisitorRecord {
 
   id: string;
@@ -37,12 +41,15 @@ interface VisitorRecord {
 
   imports: [
     FormsModule,
-     RouterLink
+     RouterLink,
+     FilterPanelComponent
   ],
 
   templateUrl: './visitor-list.html',
 
   styleUrl: './visitor-list.css'
+
+  
 })
 export class VisitorListComponent implements OnInit {
 
@@ -600,5 +607,16 @@ editVisitor(visitorId: string): void {
     );
 
   }
+visitorSortOptions: FilterOption[] = [
+  { label: 'Last Visit', value: 'lastVisitDate' },
+  { label: 'Name', value: 'name' },
+  { label: 'Company', value: 'company' },
+  { label: 'Visitor Type', value: 'visitorType' },
+  { label: 'Visitor ID', value: 'id' }
+];
 
+visitorOrderOptions: FilterOption[] = [
+  { label: 'Descending', value: 'desc' },
+  { label: 'Ascending', value: 'asc' }
+];
 }

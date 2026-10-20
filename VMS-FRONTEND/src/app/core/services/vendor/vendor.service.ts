@@ -130,15 +130,15 @@ getVendorEditDetails(
 
 
 
-  uploadProofDocuments(
-    visitorId: string,
-    formData: FormData
-  ): Observable<any> {
+  // uploadProofDocuments(
+  //   visitorId: string,
+  //   formData: FormData
+  // ): Observable<any> {
 
-    return this.http.post(
-      `${API_CONFIG.BASE_URL}/api/documents/api/proof-documents/upload/${visitorId}`,
-      formData
-    );
+  //   return this.http.post(
+  //     `${API_CONFIG.BASE_URL}/api/documents/api/proof-documents/upload/${visitorId}`,
+  //     formData
+  //   );
 
-  }
+  // }
 }

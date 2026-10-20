@@ -18,7 +18,7 @@ import {
 import { Subscription } from 'rxjs';
 
 import { Employee } from '../../../core/models/employee/employee.model';
-
+import { DocumentService } from '../../../core/services/document/document.service';
 import {
   ProofType,
   RegistrationRequest,
@@ -32,12 +32,8 @@ import { EmployeeService } from '../../../core/services/employee/employee.servic
 import { VisitService } from '../../../core/services/visit/visit.service';
 import { ProofDocumentService } from '../../../core/services/document/proof-document.service';
 import { VendorService, VendorResponse } from '../../../core/services/vendor/vendor.service';
-import {
-  VisitorService,
-  VisitorDocument,
-  VisitorEditResponse,
-  VisitorResponse
-} from '../../../core/services/visitor/visitor.service';
+import {VisitorDocument,VisitorEditResponse,VisitorResponse} from '../../../core/models/visitor/visitor.model';
+import { VisitorService } from '../../../core/services/visitor/visitor.service';
 
 
 @Component({
@@ -64,7 +60,7 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   private readonly visitorService = inject(VisitorService);
   private readonly cdr = inject(ChangeDetectorRef);
 
-
+private documentService=inject(DocumentService);
   
   // Backend data
   
@@ -887,7 +883,7 @@ export class VisitorRegistrationComponent implements OnInit, OnDestroy {
   }
 
   getDocumentViewUrl(documentId: string): string {
-    return this.visitorService.getDocumentViewUrl(documentId);
+    return this.documentService.getDocumentViewUrl(documentId);
   }
 
   getDocumentName(documentPath: string): string {

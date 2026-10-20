@@ -78,7 +78,7 @@
        <!-- FILTER CARD -->
  
 
-  <div class="filter-card">
+  <!-- <div class="filter-card">
 
     <div class="filter-header">
 
@@ -107,13 +107,36 @@
 
 
     <div class="filter-grid">
+ -->
 
+ 
+<app-filter-panel
+  idPrefix="visitor"
+  title="Visitor Directory"
+  description="Search, filter and sort registered visitors"
+  searchLabel="Search Visitors"
+  searchPlaceholder="Name, email, mobile, company or visitor ID"
+  [showVisitorTypeFilter]="true"
+  fromDateLabel="From Date"
+  toDateLabel="To Date"
+  [sortOptions]="visitorSortOptions"
+  [orderOptions]="visitorOrderOptions"
+  [(searchText)]="searchText"
+  [(selectedVisitorType)]="selectedVisitorType"
+  [(fromDate)]="fromDate"
+  [(toDate)]="toDate"
+  [(sortBy)]="sortBy"
+  [(sortDirection)]="sortDirection"
+  (filterChange)="onFilterChange()"
+  (sortChange)="onSortChange()"
+  (clear)="clearFilters()"
+/>
 
   
            <!-- SEARCH -->
      
 
-      <div class="filter-field search-field">
+      <!-- <div class="filter-field search-field">
 
         <label for="visitorSearch">
           Search Visitors
@@ -136,13 +159,13 @@
 
         </div>
 
-      </div>
+      </div> -->
 
 
   
            <!-- VISITOR TYPE -->
      
-
+<!-- 
       <div class="filter-field">
 
         <label for="visitorType">
@@ -177,11 +200,11 @@
       </div>
 
 
-  
+   -->
            <!-- FROM DATE -->
      
 
-      <div class="filter-field">
+      <!-- <div class="filter-field">
 
         <label for="fromDate">
           From Date
@@ -196,12 +219,12 @@
         />
 
       </div>
-
+ -->
 
   
            <!-- TO DATE -->
      
-
+<!-- 
       <div class="filter-field">
 
         <label for="toDate">
@@ -217,13 +240,13 @@
         />
 
       </div>
-
+ -->
 
   
            <!-- SORT BY -->
      
 
-      <div class="filter-field">
+      <!-- <div class="filter-field">
 
         <label for="sortBy">
           Sort By
@@ -258,14 +281,14 @@
 
         </select>
 
-      </div>
+      </div> -->
 
 
   
            <!-- SORT ORDER -->
      
 
-      <div class="filter-field">
+      <!-- <div class="filter-field">
 
         <label for="sortDirection">
           Order
@@ -293,7 +316,7 @@
     </div>
 
   </div>
-
+ -->
 
  
        <!-- TABLE CARD -->

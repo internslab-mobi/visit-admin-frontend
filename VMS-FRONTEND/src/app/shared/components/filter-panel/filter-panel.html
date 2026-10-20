@@ -1,0 +1,124 @@
+
+<div class="filter-card">
+
+  <div class="filter-header">
+    <div>
+      <h3>{{ title }}</h3>
+      <p>{{ description }}</p>
+    </div>
+
+    <button
+      type="button"
+      class="clear-button"
+      (click)="clear.emit()"
+    >
+      Clear
+    </button>
+  </div>
+
+  <div class="filter-grid">
+
+    <div class="filter-field search-field">
+      <label [for]="idPrefix + '-search'">
+        {{ searchLabel }}
+      </label>
+
+      <div class="search-input-wrapper">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+
+        <input
+          [id]="idPrefix + '-search'"
+          type="text"
+          [placeholder]="searchPlaceholder"
+          [ngModel]="searchText"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+    </div>
+
+    @if (showVisitorTypeFilter) {
+      <div class="filter-field">
+        <label [for]="idPrefix + '-visitor-type'">
+          Visitor Type
+        </label>
+
+        <select
+          [id]="idPrefix + '-visitor-type'"
+          [ngModel]="selectedVisitorType"
+          (ngModelChange)="onVisitorTypeChange($event)"
+        >
+          <option value="">All Types</option>
+
+          @for (option of visitorTypeOptions; track option.value) {
+            <option [value]="option.value">
+              {{ option.label }}
+            </option>
+          }
+        </select>
+      </div>
+    }
+
+    <div class="filter-field">
+      <label [for]="idPrefix + '-from-date'">
+        {{ fromDateLabel }}
+      </label>
+
+      <input
+        [id]="idPrefix + '-from-date'"
+        type="date"
+        [ngModel]="fromDate"
+        (ngModelChange)="onFromDateChange($event)"
+      />
+    </div>
+
+    <div class="filter-field">
+      <label [for]="idPrefix + '-to-date'">
+        {{ toDateLabel }}
+      </label>
+
+      <input
+        [id]="idPrefix + '-to-date'"
+        type="date"
+        [ngModel]="toDate"
+        (ngModelChange)="onToDateChange($event)"
+      />
+    </div>
+
+    <div class="filter-field">
+      <label [for]="idPrefix + '-sort-by'">
+        Sort By
+      </label>
+
+      <select
+        [id]="idPrefix + '-sort-by'"
+        [ngModel]="sortBy"
+        (ngModelChange)="onSortByChange($event)"
+      >
+        @for (option of sortOptions; track option.value) {
+          <option [value]="option.value">
+            {{ option.label }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <label [for]="idPrefix + '-sort-order'">
+        Order
+      </label>
+
+      <select
+        [id]="idPrefix + '-sort-order'"
+        [ngModel]="sortDirection"
+        (ngModelChange)="onSortDirectionChange($event)"
+      >
+        @for (option of orderOptions; track option.value) {
+          <option [value]="option.value">
+            {{ option.label }}
+          </option>
+        }
+      </select>
+    </div>
+
+  </div>
+</div>

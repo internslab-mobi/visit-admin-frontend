@@ -81,6 +81,13 @@ export interface ResetPasswordRequest {
   confirmNewPassword: string;
 }
 
+export type UserRole = 'ADMIN' | 'FRONT_DESK';
+
+export interface CreateUserRequest {
+  employeeId: string;
+  role: UserRole;
+}
+
 /* =========================================================
    5. AUTHENTICATION SERVICE
    ========================================================= */
@@ -322,6 +329,16 @@ export class AuthService {
           this.clearSession();
         }),
       );
+  }
+
+  createUser(request: CreateUserRequest): Observable<UserResponse> {
+    return this.initializeCsrf().pipe(
+      switchMap(() =>
+        this.http.post<UserResponse>(`${AUTH_URL}/users`, request, {
+          withCredentials: true,
+        }),
+      ),
+    );
   }
 
   /* =======================================================

@@ -793,7 +793,7 @@
                   </td>
 
                   <td>
-                    {{ formatDateTime(visit.expectedArrivalAt) }}
+                    {{ formatDate(visit.expectedArrivalAt, true) }}
                   </td>
 
                   <td>
@@ -919,10 +919,13 @@
   <strong>
     {{ nda.documentId }}
   </strong>
-
+<span>
+  Document Type:
+  {{ nda.documentType?.replace('NDA_', '')?.replace('_', ' ') }}
+</span>
   <span>
     Valid:
-    {{ formatDate(nda.validFrom) }}
+    {{ formatDate(nda.effective_validity) }}
     -
     {{ formatDate(nda.validUntil) }}
   </span>
@@ -932,14 +935,13 @@
     {{ formatDate(nda.createdAt) }}
   </span>
 
-  <span
-    [class.nda-overridden]="nda.overwrittenBy"
-     [class.nda-expired]="getNdaHistoryStatus(nda) === 'EXPIRED'"
-    [class.nda-current]="!nda.overwrittenBy"
-  >
-     {{ getNdaHistoryStatus(nda) }}
-  </span>
-
+<span
+  [class.nda-overridden]="nda.status === 'SUPERSEDED'"
+  [class.nda-expired]="nda.status === 'EXPIRED'"
+  [class.nda-current]="nda.status === 'ACTIVE'"
+>
+  {{ nda.status }}
+</span>
 </div>
 
             <button
