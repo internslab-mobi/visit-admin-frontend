@@ -1,0 +1,121 @@
+<header class="admin-header">
+
+  <!-- Left: Application Branding -->
+  <div class="header-brand">
+
+    <div class="header-brand-logo">
+  <img
+    src="/assets/images/logo.png"
+    alt="VMS logo"
+  />
+</div>
+
+    <div class="header-brand-text">
+      <div class="header-brand-title">
+        VMS
+      </div>
+
+      <div class="header-brand-subtitle">
+        Visitor Management
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Right: Header Actions -->
+  <div class="header-actions">
+
+    <!-- Notifications -->
+    <button
+      class="notification-button"
+      type="button"
+      aria-label="Notifications"
+      title="Notifications"
+      disabled
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+        <path d="M10 21h4"/>
+      </svg>
+    </button>
+
+
+    <!-- Vertical Divider -->
+    <div class="header-divider"></div>
+
+
+    <!-- User Profile -->
+<div class="profile-wrapper">
+
+  <div
+    class="admin-profile"
+    (click)="toggleProfileMenu()"
+  >
+
+    <div class="profile-avatar">
+      <span>
+        {{ currentUser()?.user?.fullName?.charAt(0)?.toUpperCase() || '?' }}
+      </span>
+    </div>
+
+    <div class="profile-info">
+      <span class="profile-name">
+        {{ currentUser()?.user?.fullName || 'Loading profile...' }}
+      </span>
+
+      <span class="profile-role">
+       {{ currentUser()?.user?.role || '' }}
+      </span>
+    </div>
+
+    <svg
+      class="dropdown-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m7 10 5 5 5-5"/>
+    </svg>
+
+  </div>
+
+
+  @if (isProfileMenuOpen()) {
+  <div class="profile-dropdown">
+
+    <div class="logout-message">
+      <span>Clicking logout will sign you out</span>
+      <span>of the Visitor Management System.</span>
+    </div>
+
+    <div class="dropdown-divider"></div>
+
+    <button
+      type="button"
+      class="profile-dropdown-item logout-item"
+      (click)="logout(); $event.stopPropagation()"
+    >
+      Logout
+    </button>
+
+  </div>
+}
+
+</div>
+
+    </div>
+
+
+</header>

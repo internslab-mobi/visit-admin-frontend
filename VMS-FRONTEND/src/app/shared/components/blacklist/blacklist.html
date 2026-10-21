@@ -1,0 +1,97 @@
+<!-- Add button for non-vendor visitors who are not blacklisted -->
+<!-- @if (isAdmin && !vendor && !blacklisted) {
+  <button
+    type="button"
+    class="blacklist-button header-blacklist-button"
+    (click)="addToBlacklist()"
+  >
+    <span>+</span>
+    Add to Blacklist
+  </button>
+} -->
+
+<!-- Show the blacklist card for vendors or visitors already blacklisted -->
+@if (vendor || blacklisted) {
+  <section
+    class="card blacklist-card"
+    [class.is-blacklisted]="blacklisted"
+  >
+    <div class="card-header blacklist-header">
+      <div class="card-title-wrapper">
+        <div class="card-icon red-icon">🛡</div>
+        <div>
+          <h2>Blacklist</h2>
+          <p>Current blacklist status</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="blacklist-content">
+      @if (!blacklisted) {
+        <div class="blacklist-status safe-status">
+          <span class="status-icon">✓</span>
+          <span>This visitor is not currently blacklisted.</span>
+        </div>
+
+        @if (isAdmin) {
+          <button
+            type="button"
+            class="blacklist-button"
+            (click)="addToBlacklist()"
+          >
+            <span>+</span>
+            Add to Blacklist
+          </button>
+        }
+      }
+
+      @if (blacklisted && blacklist) {
+        <div class="blacklist-status danger-status">
+          <span class="status-icon">!</span>
+          <div>
+            <strong>This visitor is currently blacklisted.</strong>
+            <span>
+              Reason: {{ blacklist.reason || 'Not specified' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="blacklist-details">
+          <div class="blacklist-detail-row">
+            <span>Blacklisted On</span>
+            <strong>{{ formatDate(blacklist.createdAt) }}</strong>
+          </div>
+
+          <div class="blacklist-detail-row">
+            <span>Status</span>
+            <strong>{{ blacklist.status }}</strong>
+          </div>
+        </div>
+
+        @if (isAdmin) {
+          <button
+            type="button"
+            class="remove-blacklist-button"
+            (click)="removeFromBlacklist()"
+          >
+            Remove from Blacklist
+          </button>
+        }
+      }
+    </div>
+  </section>
+}
+
+@if (successMessage) {
+  <div class="message-card success-message">
+    <span class="message-icon">✓</span>
+    {{ successMessage }}
+  </div>
+}
+
+@if (errorMessage) {
+  <div class="message-card error-message">
+    <span class="message-icon">!</span>
+    {{ errorMessage }}
+  </div>
+}

@@ -1,0 +1,870 @@
+import { Component, OnInit, OnDestroy,  ChangeDetectorRef, ViewChild, ElementRef, inject} from '@angular/core';
+
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
+import { VisitService } from '../../../core/services/visit/visit.service';
+import { VisitDetailResponse } from '../../../core/models/visit/visit-detail.model';
+
+import { BlacklistService } from '../../../core/services/blacklist/blacklist.service';
+
+@Component({
+  selector: 'app-visit-details',
+  imports: [CommonModule, RouterLink, FormsModule],
+  templateUrl: './visit-details.html',
+  styleUrl: './visit-details.css',
+})
+export class VisitDetailsComponent implements OnInit, OnDestroy {
+  private visitId: string | null = null;
+
+  visitDetails: VisitDetailResponse | null = null;
+
+  private durationTimer: ReturnType<typeof setInterval> | null = null;
+  private currentTime = Date.now();
+
+  visitorPhotoUrl: string | null = null;
+  private photoRequestId = 0;
+
+  selectedPhoto: File | null = null;
+  photoPreviewUrl: string | null = null;
+  photoError: string | null = null;
+
+  capturedPhotoFile: File | null = null;
+  capturedPhotoPreviewUrl: string | null = null;
+
+  isCameraOpen = false;
+  isCapturingPhoto = false;
+
+  private cameraStream: MediaStream | null = null;
+
+  aadharNumber = '';
+  panNumber = '';
+  passportNumber = '';
+
+  isVerifyingIdentity = false;
+  identityVerified = false;
+  identityVerificationError: string | null = null;
+
+  isCheckingIn = false;
+  checkInError: string | null = null;
+  checkInSuccess: string | null = null;
+
+  isCheckingOut = false;
+  checkOutError: string | null = null;
+  checkOutSuccess: string | null = null;
+
+  showCancelConfirmation = false;
+  isCancellingVisit = false;
+  cancelVisitError: string | null = null;
+
+  isBlacklistStatusLoading = true;
+  isBlacklisted = false;
+  blacklistStatusError: string | null = null;
+
+  ndaUploading = false;
+  ndaUploadError = '';
+  ndaUploadSuccess = '';
+
+  @ViewChild('videoElement')
+  cameraVideo?: ElementRef<HTMLVideoElement>;
+
+  @ViewChild('photoInput')
+  photoInput?: ElementRef<HTMLInputElement>;
+
+  private readonly route = inject(ActivatedRoute);
+  private readonly visitService = inject(VisitService);
+  private readonly blacklistService = inject(BlacklistService);
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  get nationality(): string | null {
+    return this.visitDetails?.visitor.nationality ?? null;
+  }
+
+  ngOnInit(): void {
+    this.visitId = this.route.snapshot.paramMap.get('visitId');
+    this.loadVisitDetails();
+  }
+
+  private buildIdentityRequest(): {
+    aadharNumber?: string;
+    panNumber?: string;
+    passportNumber?: string;
+  } {
+    const identityRequest: {
+      aadharNumber?: string;
+      panNumber?: string;
+      passportNumber?: string;
+    } = {};
+
+    if (this.nationality === 'India') {
+      identityRequest.aadharNumber = this.aadharNumber;
+      identityRequest.panNumber = this.panNumber;
+    } else if (this.nationality === 'INTERNATIONAL') {
+      identityRequest.passportNumber = this.passportNumber;
+    }
+
+    return identityRequest;
+  }
+
+  onIdentityFieldChanged(): void {
+    if (this.identityVerified) {
+      this.identityVerified = false;
+    }
+
+    this.identityVerificationError = null;
+  }
+
+  onVerifyIdentity(): void {
+    if (!this.visitId || !this.visitDetails || !this.nationality) {
+      return;
+    }
+
+    this.isVerifyingIdentity = true;
+    this.identityVerificationError = null;
+
+    const identityRequest = this.buildIdentityRequest();
+
+    this.visitService.verifyIdentity(this.visitId, identityRequest).subscribe({
+      next: () => {
+        this.identityVerified = true;
+        this.isVerifyingIdentity = false;
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+        this.identityVerified = false;
+
+        this.identityVerificationError = error?.error?.message || 'Identity verification failed.';
+
+        this.isVerifyingIdentity = false;
+
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  onPhotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.photoError = null;
+
+    if (!file.type.startsWith('image/')) {
+      this.photoError = 'Please select a valid image.';
+      input.value = '';
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      this.photoError = 'Photo size must not exceed 5 MB.';
+      input.value = '';
+      return;
+    }
+
+    this.stopCamera();
+
+    if (this.photoPreviewUrl) {
+      URL.revokeObjectURL(this.photoPreviewUrl);
+    }
+
+    this.selectedPhoto = file;
+    this.photoPreviewUrl = URL.createObjectURL(file);
+
+    input.value = '';
+
+    this.cdr.detectChanges();
+  }
+
+  discardPhoto(): void {
+    if (this.photoPreviewUrl) {
+      URL.revokeObjectURL(this.photoPreviewUrl);
+    }
+
+    this.selectedPhoto = null;
+    this.photoPreviewUrl = null;
+    this.photoError = null;
+
+    if (this.photoInput?.nativeElement) {
+      this.photoInput.nativeElement.value = '';
+    }
+
+    this.cdr.detectChanges();
+  }
+
+  async openCamera(): Promise<void> {
+    this.photoError = null;
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      this.photoError =
+        'Camera access is not supported by this browser. Please upload a photo instead.';
+
+      this.cdr.detectChanges();
+      return;
+    }
+
+    try {
+      this.stopCamera();
+      this.clearCapturedPhoto();
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'user',
+        },
+        audio: false,
+      });
+
+      this.cameraStream = stream;
+      this.isCameraOpen = true;
+
+      this.cdr.detectChanges();
+
+      setTimeout(() => {
+        const video = this.cameraVideo?.nativeElement;
+
+        if (!video) {
+          this.photoError = 'Unable to initialize the camera preview.';
+
+          this.stopCamera();
+
+          this.cdr.detectChanges();
+          return;
+        }
+
+        video.srcObject = stream;
+
+        video.play().catch((error) => {
+          console.error('Unable to start camera preview:', error);
+
+          this.photoError = 'Unable to start the camera preview. Please try again.';
+
+          this.stopCamera();
+
+          this.cdr.detectChanges();
+        });
+      });
+    } catch (error) {
+      console.error('Camera access failed:', error);
+
+      this.stopCamera();
+
+      this.photoError =
+        'Unable to access the camera. Please check camera permissions or upload a photo instead.';
+
+      this.cdr.detectChanges();
+    }
+  }
+
+  capturePhoto(): void {
+    const video = this.cameraVideo?.nativeElement;
+
+    if (!video || !this.cameraStream) {
+      this.photoError = 'Camera is not available. Please try again.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    if (!video.videoWidth || !video.videoHeight) {
+      this.photoError = 'Camera is not ready yet. Please try again.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.isCapturingPhoto = true;
+    this.photoError = null;
+
+    const canvas = document.createElement('canvas');
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext('2d');
+
+    if (!context) {
+      this.photoError = 'Unable to capture photo.';
+      this.isCapturingPhoto = false;
+
+      this.cdr.detectChanges();
+      return;
+    }
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          this.photoError = 'Unable to capture photo.';
+          this.isCapturingPhoto = false;
+
+          this.cdr.detectChanges();
+          return;
+        }
+
+        const file = new File([blob], `visitor-photo-${Date.now()}.jpg`, {
+          type: 'image/jpeg',
+        });
+
+        if (this.capturedPhotoPreviewUrl) {
+          URL.revokeObjectURL(this.capturedPhotoPreviewUrl);
+        }
+
+        this.capturedPhotoFile = file;
+        this.capturedPhotoPreviewUrl = URL.createObjectURL(file);
+
+        this.stopCameraStream();
+
+        this.isCapturingPhoto = false;
+
+        this.cdr.detectChanges();
+      },
+      'image/jpeg',
+      0.9,
+    );
+  }
+
+  private stopCameraStream(): void {
+    if (this.cameraStream) {
+      this.cameraStream.getTracks().forEach((track) => {
+        track.stop();
+      });
+    }
+
+    this.cameraStream = null;
+
+    const video = this.cameraVideo?.nativeElement;
+
+    if (video) {
+      video.pause();
+      video.srcObject = null;
+    }
+  }
+
+  private clearCapturedPhoto(): void {
+    if (this.capturedPhotoPreviewUrl) {
+      URL.revokeObjectURL(this.capturedPhotoPreviewUrl);
+    }
+
+    this.capturedPhotoFile = null;
+    this.capturedPhotoPreviewUrl = null;
+  }
+
+  useCapturedPhoto(): void {
+    if (!this.capturedPhotoFile || !this.capturedPhotoPreviewUrl) {
+      return;
+    }
+
+    if (this.photoPreviewUrl) {
+      URL.revokeObjectURL(this.photoPreviewUrl);
+    }
+
+    this.selectedPhoto = this.capturedPhotoFile;
+    this.photoPreviewUrl = this.capturedPhotoPreviewUrl;
+
+    this.capturedPhotoFile = null;
+    this.capturedPhotoPreviewUrl = null;
+
+    this.isCameraOpen = false;
+    this.photoError = null;
+
+    this.cdr.detectChanges();
+  }
+
+  async retakePhoto(): Promise<void> {
+    if (this.capturedPhotoPreviewUrl) {
+      URL.revokeObjectURL(this.capturedPhotoPreviewUrl);
+    }
+
+    this.capturedPhotoFile = null;
+    this.capturedPhotoPreviewUrl = null;
+
+    await this.openCamera();
+  }
+
+  stopCamera(): void {
+    this.stopCameraStream();
+
+    this.isCameraOpen = false;
+    this.isCapturingPhoto = false;
+  }
+
+  onCheckIn(): void {
+    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'REGISTERED') {
+      return;
+    }
+
+    if (this.isBlacklistStatusLoading) {
+      this.checkInError = 'Check-in is unavailable while blacklist status is being verified.';
+      return;
+    }
+
+    if (this.isBlacklisted) {
+      this.checkInError = 'Check-in is unavailable while this visitor is blacklisted.';
+      return;
+    }
+
+    if (this.blacklistStatusError) {
+      this.checkInError = 'Check-in is unavailable because blacklist status could not be verified.';
+      return;
+    }
+
+    if (!this.identityVerified) {
+      this.checkInError = 'Identity verification is required before check-in.';
+      return;
+    }
+
+    if (!this.selectedPhoto) {
+      this.checkInError = 'Visitor photo is required before check-in.';
+      return;
+    }
+
+    const identityRequest = this.buildIdentityRequest();
+
+    this.isCheckingIn = true;
+    this.checkInError = null;
+    this.checkInSuccess = null;
+
+    this.visitService.checkIn(this.visitId, identityRequest, this.selectedPhoto).subscribe({
+      next: (response) => {
+        if (this.visitDetails) {
+          this.visitDetails = {
+            ...this.visitDetails,
+            status: response.status,
+            checkedInAt: response.checkedInAt,
+            totalDurationSeconds: null,
+          };
+        }
+
+        this.isCheckingIn = false;
+
+        this.checkInSuccess = 'Visitor checked in successfully.';
+
+        this.updateDurationTimer();
+        if (this.visitDetails) {
+          this.loadVisitorPhoto(this.visitDetails.visitId);
+        }
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+        this.checkInError = error?.error?.message || 'Unable to check in visitor.';
+
+        this.isCheckingIn = false;
+
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  onCheckOut(): void {
+    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'CHECKED_IN') {
+      return;
+    }
+
+    this.isCheckingOut = true;
+    this.checkOutError = null;
+    this.checkOutSuccess = null;
+
+    this.visitService.checkOut(this.visitId).subscribe({
+      next: (response) => {
+        console.log('Checkout response:', response);
+        console.log('Total duration:', response.totalDurationSeconds);
+
+        if (this.visitDetails) {
+          this.visitDetails = {
+            ...this.visitDetails,
+            status: response.status,
+            checkedOutAt: response.checkedOutAt,
+            totalDurationSeconds: response.totalDurationSeconds,
+          };
+        }
+
+        this.isCheckingOut = false;
+
+        this.checkOutSuccess = 'Visitor checked out successfully.';
+
+        this.stopDurationTimer();
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+        this.checkOutError = error?.error?.message || 'Unable to check out visitor.';
+
+        this.isCheckingOut = false;
+
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  openCancelConfirmation(): void {
+    if (!this.visitDetails || this.visitDetails.status !== 'REGISTERED') {
+      return;
+    }
+
+    this.cancelVisitError = null;
+    this.showCancelConfirmation = true;
+  }
+
+  closeCancelConfirmation(): void {
+    if (this.isCancellingVisit) {
+      return;
+    }
+
+    this.showCancelConfirmation = false;
+    this.cancelVisitError = null;
+  }
+
+  onCancelVisit(): void {
+    if (!this.visitId || !this.visitDetails || this.visitDetails.status !== 'REGISTERED') {
+      return;
+    }
+
+    this.isCancellingVisit = true;
+    this.cancelVisitError = null;
+
+    this.visitService.cancelVisit(this.visitId).subscribe({
+      next: (response) => {
+        if (this.visitDetails) {
+          this.visitDetails = {
+            ...this.visitDetails,
+            status: response.status,
+          };
+        }
+
+        this.showCancelConfirmation = false;
+        this.isCancellingVisit = false;
+
+        this.stopDurationTimer();
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+        this.cancelVisitError = error?.error?.message || 'Unable to cancel visit.';
+
+        this.isCancellingVisit = false;
+
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  ndaFile: File | null = null;
+  ndaValidUntil = '';
+  today = new Date().toLocaleDateString('en-CA');
+
+  onNdaFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+
+    if (file && file.type !== 'application/pdf') {
+      input.value = '';
+      this.ndaFile = null;
+      return;
+    }
+
+    this.ndaFile = file;
+  }
+
+  uploadNda(): void {
+    const visit = this.visitDetails;
+
+    if (
+      !visit ||
+      visit.visitorType !== 'VENDOR' ||
+      !visit.visitor.visitorId ||
+      !this.ndaFile ||
+      !this.ndaValidUntil ||
+      this.ndaUploading
+    ) {
+      return;
+    }
+
+    this.ndaUploading = true;
+    this.ndaUploadError = '';
+    this.ndaUploadSuccess = '';
+
+    this.visitService
+      .uploadNda(visit.visitor.visitorId, this.ndaFile, this.ndaValidUntil)
+      .subscribe({
+        next: () => {
+          this.ndaUploading = false;
+          this.ndaUploadSuccess = 'NDA uploaded successfully.';
+          this.ndaFile = null;
+
+          // Refresh visit details so the latest NDA status is displayed.
+          this.loadVisitDetails();
+        },
+        error: (error) => {
+          this.ndaUploading = false;
+          this.ndaUploadError = error?.error?.message ?? 'Failed to upload NDA. Please try again.';
+        },
+      });
+  }
+  private loadVisitDetails(): void {
+    if (!this.visitId) {
+      return;
+    }
+
+    this.visitService.getVisitDetails(this.visitId).subscribe({
+      next: (response) => {
+        this.visitDetails = response;
+
+        if (response.status === 'CHECKED_IN' || response.status === 'CHECKED_OUT') {
+          this.loadVisitorPhoto(response.visitId);
+        } else {
+          this.clearVisitorPhoto();
+        }
+
+        this.loadBlacklistStatus();
+        this.updateDurationTimer();
+
+        this.cdr.detectChanges();
+      },
+
+      error: () => {
+        this.visitDetails = null;
+        this.isBlacklistStatusLoading = false;
+
+        this.clearVisitorPhoto();
+        this.stopDurationTimer();
+
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  loadVisitorPhoto(visitId: string): void {
+    const status = this.visitDetails?.status;
+
+    if (status !== 'CHECKED_IN' && status !== 'CHECKED_OUT') {
+      this.clearVisitorPhoto();
+      return;
+    }
+
+    const requestId = ++this.photoRequestId;
+
+    this.visitService.getVisitPhoto(visitId).subscribe({
+      next: (blob) => {
+        // Ignore responses from older requests.
+        if (requestId !== this.photoRequestId) {
+          return;
+        }
+
+        const currentStatus = this.visitDetails?.status;
+
+        if (currentStatus !== 'CHECKED_IN' && currentStatus !== 'CHECKED_OUT') {
+          this.clearVisitorPhoto();
+          return;
+        }
+
+        this.clearVisitorPhoto();
+        this.visitorPhotoUrl = URL.createObjectURL(blob);
+
+        this.cdr.detectChanges();
+      },
+
+      error: () => {
+        if (requestId !== this.photoRequestId) {
+          return;
+        }
+
+        this.clearVisitorPhoto();
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  private clearVisitorPhoto(): void {
+    // Invalidate any request that is still pending.
+    this.photoRequestId++;
+
+    if (this.visitorPhotoUrl) {
+      URL.revokeObjectURL(this.visitorPhotoUrl);
+      this.visitorPhotoUrl = null;
+    }
+  }
+
+  loadBlacklistStatus(): void {
+    const visitorId = this.visitDetails?.visitor.visitorId;
+
+    if (!visitorId) {
+      this.isBlacklistStatusLoading = false;
+      return;
+    }
+
+    this.isBlacklistStatusLoading = true;
+    this.blacklistStatusError = null;
+
+    this.blacklistService.isBlacklisted(visitorId).subscribe({
+      next: (isBlacklisted: boolean) => {
+        this.isBlacklisted = isBlacklisted;
+        this.isBlacklistStatusLoading = false;
+      },
+
+      error: (error) => {
+        console.error('Blacklist status request failed:', error);
+
+        this.isBlacklistStatusLoading = false;
+        this.blacklistStatusError = 'Unable to determine blacklist status.';
+      },
+    });
+  }
+
+  
+  private updateDurationTimer(): void {
+    this.stopDurationTimer();
+
+    if (
+      !this.visitDetails ||
+      this.visitDetails.status !== 'CHECKED_IN' ||
+      !this.visitDetails.checkedInAt
+    ) {
+      return;
+    }
+
+    this.currentTime = Date.now();
+
+    this.durationTimer = setInterval(() => {
+      this.currentTime = Date.now();
+      this.cdr.detectChanges();
+    }, 1000);
+  }
+
+  
+  private stopDurationTimer(): void {
+    if (this.durationTimer) {
+      clearInterval(this.durationTimer);
+      this.durationTimer = null;
+    }
+  }
+
+  formatVisitDate(dateTime: string | null | undefined): string {
+    if (!dateTime) {
+      return '';
+    }
+
+    return new Intl.DateTimeFormat('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }).format(new Date(dateTime));
+  }
+
+  formatVisitTime(dateTime: string | null | undefined): string {
+    if (!dateTime) {
+      return '';
+    }
+
+    return new Intl.DateTimeFormat('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    }).format(new Date(dateTime));
+  }
+
+  getVisitDayLabel(): string {
+    if (!this.visitDetails) {
+      return '';
+    }
+
+    return this.formatVisitDate(this.visitDetails.expectedArrivalAt);
+  }
+
+  formatDuration(totalSeconds: number | null, status: string, checkedInAt: string | null): string {
+    if (status === 'REGISTERED') {
+      return 'Not started';
+    }
+
+    if (status === 'CANCELLED' || status === 'NO_SHOW') {
+      return 'Not applicable';
+    }
+
+    if (status === 'CHECKED_IN') {
+      if (!checkedInAt) {
+        return 'In progress';
+      }
+
+      const startTime = new Date(checkedInAt).getTime();
+
+      const elapsedSeconds = Math.max(0, Math.floor((this.currentTime - startTime) / 1000));
+
+      return this.formatSeconds(elapsedSeconds);
+    }
+
+    if (status === 'CHECKED_OUT' && totalSeconds !== null) {
+      return this.formatSeconds(totalSeconds);
+    }
+
+    return 'Not applicable';
+  }
+
+  private formatSeconds(totalSeconds: number): string {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const parts: string[] = [];
+
+    if (hours > 0) {
+      parts.push(`${hours}h`);
+    }
+
+    if (minutes > 0) {
+      parts.push(`${minutes}m`);
+    }
+
+    if (seconds > 0 || parts.length === 0) {
+      parts.push(`${seconds}s`);
+    }
+
+    return parts.join(' ');
+  }
+
+  getStatusLabel(status: string): string {
+    switch (status) {
+      case 'REGISTERED':
+        return 'Registered';
+
+      case 'CHECKED_IN':
+        return 'Checked In';
+
+      case 'CHECKED_OUT':
+        return 'Checked Out';
+
+      case 'CANCELLED':
+        return 'Cancelled';
+
+      case 'NO_SHOW':
+        return 'No Show';
+
+      default:
+        return status;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.stopCamera();
+    this.stopDurationTimer();
+
+    if (this.visitorPhotoUrl) {
+      URL.revokeObjectURL(this.visitorPhotoUrl);
+    }
+
+    if (this.photoPreviewUrl) {
+      URL.revokeObjectURL(this.photoPreviewUrl);
+    }
+
+    if (this.capturedPhotoPreviewUrl) {
+      URL.revokeObjectURL(this.capturedPhotoPreviewUrl);
+    }
+  }
+}

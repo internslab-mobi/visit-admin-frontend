@@ -1,0 +1,805 @@
+<div class="edit-page">
+
+
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <button
+        type="button"
+        class="back-button"
+        (click)="cancel()"
+      >
+        ←
+        <span>Back to Visitor List</span>
+      </button>
+
+      <div class="title-row">
+
+        <h1>Edit Visitor</h1>
+
+        @if (visitor) {
+          <span class="visitor-id-badge">
+            {{ visitor.id }}
+          </span>
+        }
+
+      </div>
+
+    </div>
+
+
+      @if (blacklistComponent?.showAddButton()) {
+    <button
+      type="button"
+      class="blacklist-button header-blacklist-button"
+      (click)="blacklistComponent.addToBlacklist()"
+    >
+      <span>+</span>
+      Add to Blacklist
+    </button>
+  }
+  </div>
+
+
+
+  @if (loading) {
+
+    <div class="loading-card">
+
+      <div class="loading-spinner"></div>
+
+      <span>
+        Loading visitor details...
+      </span>
+
+    </div>
+
+  }
+
+
+  @if (!loading && errorMessage) {
+
+    <div class="message-card error-message">
+
+      <span class="message-icon">!</span>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+    </div>
+
+  }
+
+
+  @if (!loading && visitor) {
+
+  
+ 
+
+  
+    <!-- <div class="top-grid"> -->
+<div
+  class="top-grid"
+  [class.full-width]="!vendor && !blacklisted"
+>
+
+     
+
+      <section class="card visitor-card">
+
+        <div class="card-header">
+
+          <div class="card-title-wrapper">
+
+            <div class="card-icon blue-icon">
+              👤
+            </div>
+
+            <div>
+              <h2>Visitor Information</h2>
+              <p>
+                Personal and contact information
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="visitor-content">
+
+
+          <!-- ============================================
+               CURRENT PHOTO
+          ============================================= -->
+
+          <div class="photo-section">
+
+            <div class="photo-wrapper">
+
+              <img
+                [src]="photoUrl"
+                alt="Current visitor photo"
+                class="visitor-photo"
+              />
+
+            </div>
+
+            <span class="photo-label">
+              Current Photo
+            </span>
+
+          </div>
+
+
+
+          <div class="visitor-fields">
+
+
+            <!-- ROW 1 -->
+
+            <div class="field-row">
+
+              <div class="field-group">
+
+                <label>
+                  Visitor ID
+                </label>
+
+                <input
+                  type="text"
+                  [value]="visitor.id"
+                  readonly
+                  class="readonly-input"
+                />
+
+              </div>
+
+
+              <div class="field-group">
+
+                <label>
+                  Visitor Type
+                </label>
+
+                <input
+                  type="text"
+                  [value]="getVisitorTypeLabel(visitor.visitorType)"
+                  readonly
+                  class="readonly-input"
+                />
+
+              </div>
+
+            </div>
+
+
+            <!-- ROW 2 -->
+
+            <div class="field-row">
+
+              <div class="field-group">
+
+                <label>
+                  First Name
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="firstName"
+                  autocomplete="given-name"
+                />
+
+              </div>
+
+
+              <div class="field-group">
+
+                <label>
+                  Nationality
+                </label>
+
+                <input
+                  type="text"
+                  [value]="visitor.nationality || '-'"
+                  readonly
+                  class="readonly-input"
+                />
+
+              </div>
+
+            </div>
+
+
+            <!-- ROW 3 -->
+
+            <div class="field-row">
+
+              <div class="field-group">
+
+                <label>
+                  Last Name
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="lastName"
+                  autocomplete="family-name"
+                />
+
+              </div>
+
+
+              <div class="field-group">
+
+                <!-- intentionally empty for alignment -->
+
+              </div>
+
+            </div>
+
+
+            <!-- ROW 4 -->
+
+            <div class="field-row">
+
+              <div class="field-group">
+
+                <label>
+                  Email
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="email"
+                  [(ngModel)]="email"
+                  autocomplete="email"
+                />
+
+              </div>
+
+
+              <div class="field-group">
+
+                <label>
+                  Mobile
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="tel"
+                  [(ngModel)]="mobileNumber"
+                  autocomplete="tel"
+                />
+
+              </div>
+
+            </div>
+
+
+            <!-- ROW 5 -->
+
+            <div class="field-row">
+
+              <div class="field-group full-width">
+
+                <label>
+                  Company
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="companyName"
+                  autocomplete="organization"
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <div class="right-column">
+
+
+
+        @if (vendor) {
+
+          <section class="card vendor-card">
+
+            <div class="card-header vendor-header">
+
+              <div class="card-title-wrapper">
+
+                <div class="card-icon green-icon">
+                  🏢
+                </div>
+
+                <div>
+                  <h2>Vendor Information</h2>
+                  <p>
+                    Vendor information
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="vendor-content">
+
+              <div class="field-group">
+
+                <label>
+                  Vendor ID
+                </label>
+
+                <input
+                  type="text"
+                  [value]="vendor.vendorId"
+                  readonly
+                  class="readonly-input"
+                />
+
+              </div>
+
+            </div>
+
+          </section>
+
+        }
+
+
+<app-blacklist
+          [visitorId]="visitorId"
+          [vendor]="vendor"
+          [blacklisted]="blacklisted"
+          [blacklist]="blacklist"
+          [isAdmin]="isAdmin"
+          (blacklistChanged)="onBlacklistChanged($event)"
+        ></app-blacklist>
+      </div>
+
+    </div>
+
+
+ 
+
+    @if (successMessage) {
+
+      <div class="message-card success-message">
+
+        <span class="message-icon">
+          ✓
+        </span>
+
+        {{ successMessage }}
+
+      </div>
+
+    }
+
+
+    @if (errorMessage) {
+
+      <div class="message-card error-message">
+
+        <span class="message-icon">
+          !
+        </span>
+
+        {{ errorMessage }}
+
+      </div>
+
+    }
+
+
+ 
+<section class="card documents-card">
+
+  <div class="card-header">
+
+    <div class="card-title-wrapper">
+
+      <div class="card-icon blue-icon">
+        📄
+      </div>
+
+      <div>
+        <h2>Documents</h2>
+
+        <p>
+          Proof documents associated with this visitor
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="table-wrapper">
+
+    @if (documents.length > 0) {
+
+      <table>
+
+        <thead>
+          <tr>
+
+            <th>
+              Document
+            </th>
+
+            <th>
+              Uploaded On
+            </th>
+
+          </tr>
+        </thead>
+
+
+        <tbody>
+
+          @for (
+            document of documents;
+            track document.documentId
+          ) {
+
+            <tr>
+
+              <td>
+
+                <button
+                  type="button"
+                  class="document-button"
+                  (click)="viewDocument(document)"
+                >
+
+                  <span class="document-icon">
+                    📄
+                  </span>
+
+                  View Document
+
+                </button>
+
+              </td>
+
+
+              <td>
+
+                {{ formatDate(document.createdAt) }}
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    }
+
+
+    @if (documents.length === 0) {
+
+      <div class="empty-section">
+
+        <span class="empty-icon">
+          📄
+        </span>
+
+        <span>
+          No proof documents available.
+        </span>
+
+      </div>
+
+    }
+
+  </div>
+
+</section>
+
+
+    <section class="card visits-card">
+
+      <div class="card-header">
+
+        <div class="card-title-wrapper">
+
+          <div class="card-icon blue-icon">
+            📅
+          </div>
+
+          <div>
+
+            <h2>Visit History</h2>
+
+            <p>
+              Previous and current visits for this visitor
+            </p>
+
+          </div>
+
+        </div>
+
+        <span class="count-badge">
+          {{ visits.length }}
+        </span>
+
+      </div>
+
+
+      <div class="table-wrapper visits-table-wrapper">
+
+        @if (visits.length > 0) {
+
+          <table class="visits-table">
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Visit ID
+                </th>
+
+                <th>
+                  Registration Type
+                </th>
+
+                <th>
+                  Purpose
+                </th>
+
+                <th>
+                  Host
+                </th>
+
+                <th>
+                  Department
+                </th>
+
+                <th>
+                  Expected Arrival
+                </th>
+
+                <th>
+                  Expected Departure
+                </th>
+
+                <th>
+                  Check-in
+                </th>
+
+                <th>
+                  Check-out
+                </th>
+
+                
+<th>
+  Total Duration
+</th>
+
+
+                <th>
+                  Status
+                </th>
+
+                <th>
+                  Remarks
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                visit of visits;
+                track visit.visitId
+              ) {
+
+                <tr>
+
+                  <td>
+
+                    <span class="visit-id">
+                      {{ visit.visitId }}
+                    </span>
+
+                  </td>
+
+
+                  <td>
+
+                    {{ getRegistrationLabel(
+                      visit.registrationType
+                    ) }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ visit.purpose || '-' }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ visit.hostName || '-' }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ visit.departmentName || '-' }}
+
+                  </td>
+
+
+                  <td>
+
+                   {{ formatDate(visit.expectedArrivalAt, true) }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ formatDate(visit.expectedDepartureAt, true) }}
+
+                  </td>
+
+
+                  <td>
+
+                      {{ formatDate(visit.checkedInAt, true) }}
+
+                  </td>
+
+
+                  <td>
+
+                     {{ formatDate(visit.checkedOutAt, true) }}
+
+                  </td>
+
+
+<!-- <td>
+    {{ formatVisitDuration(visit.totalDurationSeconds, visit.status) }}
+</td> -->
+
+<td>
+  <app-visit-duration
+       [totalSeconds]="visit.totalDurationSeconds"
+    [status]="visit.status"
+    [checkedInAt]="visit.checkedInAt">
+  </app-visit-duration>
+</td>
+
+                  <td>
+
+                    <span
+                      class="status-badge"
+                      [class]="
+                        'status-' +
+                        getStatusClass(
+                          visit.status
+                        )
+                      "
+                    >
+
+                      {{ visit.status }}
+
+                    </span>
+
+                  </td>
+
+
+                  <td>
+
+                    {{ visit.remarks || '-' }}
+
+                      <!-- {{ formatDateTime(
+                      visit.expectedDepartureAt
+                    ) }} -->
+
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        }
+
+
+        @if (visits.length === 0) {
+
+          <div class="empty-section">
+
+            <span class="empty-icon">
+              📅
+            </span>
+
+            <span>
+              No visit history available.
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+    </section>
+
+
+
+ 
+
+    <div class="page-actions">
+
+      <button
+        type="button"
+        class="cancel-button"
+        (click)="cancel()"
+        [disabled]="saving"
+      >
+        Cancel
+      </button>
+
+
+      <button
+       type="button"
+        class="save-button"
+        (click)="saveChanges()"
+        [disabled]="saving"
+      >
+
+        @if (saving) {
+
+          <span class="button-spinner"></span>
+
+          Saving...
+
+        } @else {
+
+          Save Changes
+
+        }
+
+      </button>
+
+    </div>
+
+  }
+
+</div>
