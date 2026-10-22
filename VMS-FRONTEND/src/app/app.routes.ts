@@ -5,7 +5,7 @@ import { LoginComponent } from './features/auth/login/login';
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password';
 import { UserRegistrationComponent } from './features/user-management/user-registration/user-registration';
-
+import { ChangePasswordComponent } from './features/auth/change-password/change-password';
 // Route protection
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
@@ -64,7 +64,10 @@ export const routes: Routes = [
     path: 'reset-password',
     component: ResetPasswordComponent,
   },
-
+{
+  path: 'change-password',
+  component: ChangePasswordComponent,
+},
 
   // Protected admin area.
   {

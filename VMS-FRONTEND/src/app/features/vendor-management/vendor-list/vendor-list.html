@@ -36,13 +36,12 @@
   searchLabel="Search Vendors"
   searchPlaceholder="Name, email, mobile, company or vendor ID"
   [showVisitorTypeFilter]="false"
-  fromDateLabel="Validity From"
-  toDateLabel="Validity To"
+  [showDateFilters]="false"
+
   [sortOptions]="vendorSortOptions"
   [orderOptions]="vendorOrderOptions"
   [(searchText)]="searchText"
-  [(fromDate)]="fromDate"
-  [(toDate)]="toDate"
+
   [(sortBy)]="sortBy"
   [(sortDirection)]="sortDirection"
   (filterChange)="onFilterChange()"

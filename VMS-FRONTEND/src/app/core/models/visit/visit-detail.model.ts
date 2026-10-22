@@ -31,7 +31,7 @@ export interface VisitorDetails {
   mobileNumber: string;
   companyName: string;
 
-  nationality: 'DOMESTIC' | 'INTERNATIONAL' | null;
+  nationality: 'India' | 'INTERNATIONAL' | null;
 
   existingVendor: boolean;
   ndaAvailable: boolean;

@@ -13,7 +13,7 @@ export type ProofType =
   | 'PAN';
 
 export type Nationality =
-  | 'DOMESTIC'
+  | 'India'
   | 'INTERNATIONAL';
 
 
