@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 import { VisitService, VisitDashboardResponse } from '../../../core/services/visit/visit.service';
 
@@ -16,11 +17,11 @@ interface VisitRecord {
   visitDate: string;
 }
 
-type VisitSummaryFilter = 'TODAY' | 'UPCOMING' | 'ON_PREMISES';
+type VisitSummaryFilter = 'ALL' | 'TODAY' | 'UPCOMING' | 'ON_PREMISES';
 
 @Component({
   selector: 'app-visit-list',
-  imports: [FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './visit-list.html',
   styleUrl: './visit-list.css',
 })
@@ -31,6 +32,26 @@ export class VisitListComponent implements OnInit {
 
   selectedSummaryFilter: VisitSummaryFilter = 'TODAY';
   visitRecords: VisitRecord[] = [];
+
+  currentYear = new Date().getFullYear();
+selectedYear = this.currentYear;
+selectedMonth = new Date().getMonth(); // 0 = January, 11 = December
+
+months = [
+  { label: 'All Months', value: -1 },
+  { label: 'January', value: 0 },
+  { label: 'February', value: 1 },
+  { label: 'March', value: 2 },
+  { label: 'April', value: 3 },
+  { label: 'May', value: 4 },
+  { label: 'June', value: 5 },
+  { label: 'July', value: 6 },
+  { label: 'August', value: 7 },
+  { label: 'September', value: 8 },
+  { label: 'October', value: 9 },
+  { label: 'November', value: 10 },
+  { label: 'December', value: 11 }
+];
 
   searchText = '';
   selectedVisitorType = '';
@@ -56,12 +77,9 @@ export class VisitListComponent implements OnInit {
       .subscribe({
         next: (visits) => {
           console.log('VISIT API RESPONSE:', visits);
-          this.visitRecords = visits
-  .filter(visit =>
-    visit.status === 'REGISTERED' ||
-    visit.status === 'CHECKED_IN'
-  )
-  .map(visit => this.mapToVisitRecord(visit));
+          this.visitRecords = visits.map(
+  visit => this.mapToVisitRecord(visit)
+);
 
           console.log('VISIT RECORDS:', this.visitRecords);
 
@@ -115,6 +133,7 @@ export class VisitListComponent implements OnInit {
     const visitDate = this.getVisitDateOnly(visit.visitDate);
 
     const matchesSummary =
+      this.selectedSummaryFilter === 'ALL' ||
       (
         this.selectedSummaryFilter === 'TODAY' &&
         visitDate === today
@@ -128,6 +147,29 @@ export class VisitListComponent implements OnInit {
         this.selectedSummaryFilter === 'ON_PREMISES' &&
         visit.status === 'CHECKED_IN'
       );
+
+      const matchesYearMonth = (() => {
+      if (!visitDate) {
+        return false;
+      }
+
+      const parts = visitDate.split('-');
+
+      if (parts.length < 3) {
+        return false;
+      }
+
+      const year = Number(parts[0]);
+      const month = Number(parts[1]) - 1;
+
+      return (
+        year === Number(this.selectedYear) &&
+        (
+          Number(this.selectedMonth) === -1 ||
+          month === Number(this.selectedMonth)
+        )
+      );
+    })();
 
         const matchesSearch =
           !search ||
@@ -151,6 +193,7 @@ export class VisitListComponent implements OnInit {
 
         return (
           matchesSummary &&
+          matchesYearMonth &&
           matchesSearch &&
           matchesVisitorType &&
           matchesStatus &&
@@ -197,10 +240,6 @@ private getLocalToday(): string {
   const day = String(now.getDate()).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
-}
-
-get minVisitDate(): string {
-  return this.getLocalToday();
 }
 
 private getVisitDateOnly(date: string): string {
@@ -298,6 +337,43 @@ private getVisitDateOnly(date: string): string {
     ).length;
   }
 
+  get availableYears(): number[] {
+  const years = new Set<number>([this.currentYear]);
+
+  this.visitRecords.forEach(visit => {
+    const dateOnly = this.getVisitDateOnly(visit.visitDate);
+
+    if (!dateOnly) return;
+
+    const year = Number(dateOnly.substring(0, 4));
+
+    if (Number.isInteger(year) && year > 0) {
+      years.add(year);
+    }
+  });
+
+  return Array.from(years).sort((a, b) => b - a);
+}
+
+get totalVisitsForPeriod(): number {
+  return this.visitRecords.filter(visit => {
+    const dateOnly = this.getVisitDateOnly(visit.visitDate);
+
+    if (!dateOnly) return false;
+
+    const date = new Date(dateOnly + 'T12:00:00');
+
+    if (Number.isNaN(date.getTime())) return false;
+
+    const matchesYear = date.getFullYear() === Number(this.selectedYear);
+    const matchesMonth =
+      this.selectedMonth === -1 ||
+      date.getMonth() === Number(this.selectedMonth);
+
+    return matchesYear && matchesMonth;
+  }).length;
+}
+
   getStatusLabel(status: string): string {
   switch (status) {
     case 'REGISTERED':
@@ -305,6 +381,15 @@ private getVisitDateOnly(date: string): string {
 
     case 'CHECKED_IN':
       return 'Checked In';
+
+    case 'CHECKED_OUT':
+      return 'Checked Out';
+
+    case 'CANCELLED':
+      return 'Cancelled';
+
+    case 'NO_SHOW':
+      return 'No Show';
 
     default:
       return status;
@@ -332,4 +417,15 @@ private getVisitDateOnly(date: string): string {
   this.selectedSummaryFilter = filter;
   this.currentPage = 1;
 }
+
+changeYear(direction: number): void {
+  this.selectedYear += direction;
+  this.onPeriodChange();
+}
+
+onPeriodChange(): void {
+  this.selectedSummaryFilter = 'ALL';
+  this.currentPage = 1;
+}
+
 }

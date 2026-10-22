@@ -17,55 +17,116 @@
     </button>
 
   </div>
-
-
-  <!-- Summary Cards -->
   <!-- Summary Cards -->
 <div class="summary-cards">
 
+  <!-- Total Visits Card -->
+     <div
+  class="summary-card total-visits-card"
+  role="button"
+  tabindex="0"
+  [class.active]="selectedSummaryFilter === 'ALL'"
+  [attr.aria-pressed]="selectedSummaryFilter === 'ALL'"
+  (click)="onSummaryCardClick('ALL')"
+  (keydown.enter)="onSummaryCardClick('ALL')"
+  (keydown.space)="$event.preventDefault(); onSummaryCardClick('ALL')"
+>
+  <div class="total-visits-header">
+  <span class="card-label">Total Visits</span>
+
   <div
-    class="summary-card"
-    role="button"
-    tabindex="0"
-    [class.active]="selectedSummaryFilter === 'UPCOMING'"
-    [attr.aria-pressed]="selectedSummaryFilter === 'UPCOMING'"
-    (click)="onSummaryCardClick('UPCOMING')"
-    (keydown.enter)="onSummaryCardClick('UPCOMING')"
-    (keydown.space)="$event.preventDefault(); onSummaryCardClick('UPCOMING')"
+    class="visit-period-filters"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
   >
+    <div class="year-stepper">
+      <button
+        type="button"
+        class="year-arrow"
+        aria-label="Previous year"
+        (click)="$event.stopPropagation(); changeYear(-1)"
+      >
+        ▲
+      </button>
+
+      <span class="selected-year">{{ selectedYear }}</span>
+
+      <button
+        type="button"
+        class="year-arrow"
+        aria-label="Next year"
+        (click)="$event.stopPropagation(); changeYear(1)"
+      >
+        ▼
+      </button>
+    </div>
+
+    <select
+      aria-label="Select month"
+      [(ngModel)]="selectedMonth"
+      (ngModelChange)="onPeriodChange()"
+    >
+      <option
+        *ngFor="let month of months"
+        [ngValue]="month.value"
+      >
+        {{ month.label }}
+      </option>
+    </select>
+  </div>
+</div>
+
+<span class="card-value">{{ totalVisitsForPeriod }}</span>
+
+<span class="card-period">
+  {{ selectedMonth === -1
+    ? 'All months in ' + selectedYear
+    : months[selectedMonth + 1].label + ' ' + selectedYear }}
+</span>
+</div>
+
+
+  <!-- Upcoming Registrations -->
+  <div class="summary-card"
+       role="button"
+       tabindex="0"
+       [class.active]="selectedSummaryFilter === 'UPCOMING'"
+       [attr.aria-pressed]="selectedSummaryFilter === 'UPCOMING'"
+       (click)="onSummaryCardClick('UPCOMING')"
+       (keydown.enter)="onSummaryCardClick('UPCOMING')"
+       (keydown.space)="$event.preventDefault(); onSummaryCardClick('UPCOMING')">
+
     <span class="card-label">Upcoming Registrations</span>
     <span class="card-value">{{ upcomingRegistrations }}</span>
   </div>
 
-  <div
-    class="summary-card"
-    role="button"
-    tabindex="0"
-    [class.active]="selectedSummaryFilter === 'TODAY'"
-    [attr.aria-pressed]="selectedSummaryFilter === 'TODAY'"
-    (click)="onSummaryCardClick('TODAY')"
-    (keydown.enter)="onSummaryCardClick('TODAY')"
-    (keydown.space)="$event.preventDefault(); onSummaryCardClick('TODAY')"
-  >
+  <!-- Today's Visits -->
+  <div class="summary-card"
+       role="button"
+       tabindex="0"
+       [class.active]="selectedSummaryFilter === 'TODAY'"
+       [attr.aria-pressed]="selectedSummaryFilter === 'TODAY'"
+       (click)="onSummaryCardClick('TODAY')"
+       (keydown.enter)="onSummaryCardClick('TODAY')"
+       (keydown.space)="$event.preventDefault(); onSummaryCardClick('TODAY')">
+
     <span class="card-label">Today's Visits</span>
     <span class="card-value">{{ todayVisits }}</span>
   </div>
 
-  <div
-    class="summary-card"
-    role="button"
-    tabindex="0"
-    [class.active]="selectedSummaryFilter === 'ON_PREMISES'"
-    [attr.aria-pressed]="selectedSummaryFilter === 'ON_PREMISES'"
-    (click)="onSummaryCardClick('ON_PREMISES')"
-    (keydown.enter)="onSummaryCardClick('ON_PREMISES')"
-    (keydown.space)="$event.preventDefault(); onSummaryCardClick('ON_PREMISES')"
-  >
+  <!-- Currently On-Premises -->
+  <div class="summary-card"
+       role="button"
+       tabindex="0"
+       [class.active]="selectedSummaryFilter === 'ON_PREMISES'"
+       [attr.aria-pressed]="selectedSummaryFilter === 'ON_PREMISES'"
+       (click)="onSummaryCardClick('ON_PREMISES')"
+       (keydown.enter)="onSummaryCardClick('ON_PREMISES')"
+       (keydown.space)="$event.preventDefault(); onSummaryCardClick('ON_PREMISES')">
+
     <span class="card-label">Currently On-Premises</span>
     <span class="card-value">{{ checkedInVisits }}</span>
   </div>
-
-</div>
 
 </div>
 
@@ -169,16 +230,28 @@
     >
 
       <option value="">
-        All Statuses
-      </option>
+  All Statuses
+</option>
 
-      <option value="REGISTERED">
-        Registered
-      </option>
+<option value="REGISTERED">
+  Registered
+</option>
 
-      <option value="CHECKED_IN">
-        Checked In
-      </option>
+<option value="CHECKED_IN">
+  Checked In
+</option>
+
+<option value="CHECKED_OUT">
+  Checked Out
+</option>
+
+<option value="CANCELLED">
+  Cancelled
+</option>
+
+<option value="NO_SHOW">
+  No Show
+</option>
 
     </select>
 
@@ -195,7 +268,6 @@
     <input
       id="visitDate"
       type="date"
-      [min]="minVisitDate"
       [(ngModel)]="selectedDate"
       (ngModelChange)="onFilterChange()"
     />
@@ -309,12 +381,16 @@
             <td>
 
               <span
-                class="status"
-                [class.status-registered]="visit.status === 'REGISTERED'"
-                [class.status-checked-in]="visit.status === 'CHECKED_IN'"
-              >
-                {{ getStatusLabel(visit.status) }}
-              </span>
+  class="status"
+  [class.status-registered]="visit.status === 'REGISTERED'"
+  [class.status-checked-in]="visit.status === 'CHECKED_IN'"
+  [class.status-checked-out]="visit.status === 'CHECKED_OUT'"
+  [class.status-cancelled]="visit.status === 'CANCELLED'"
+  [class.status-no-show]="visit.status === 'NO_SHOW'"
+>
+  {{ getStatusLabel(visit.status) }}
+</span>
+               
 
             </td>
 
