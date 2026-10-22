@@ -65,7 +65,7 @@ export class ChangePasswordComponent {
           this.newPassword = '';
           this.confirmNewPassword = '';
 
-          // Do not treat the first-login session as a normal session.
+        
           this.authService.clearSession();
           this.cdr.markForCheck();
         },
