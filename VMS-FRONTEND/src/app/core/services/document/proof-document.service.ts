@@ -29,7 +29,7 @@ export class ProofDocumentService {
     });
 
     return this.http.post<DocumentResponse[]>(
-      `${this.apiUrl}/api/proof-documents/upload/${visitorId}`,
+      `${this.apiUrl}/proof-documents/upload/${visitorId}`,
       formData
     );
   }

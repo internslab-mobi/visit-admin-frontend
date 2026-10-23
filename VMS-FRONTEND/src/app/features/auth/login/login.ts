@@ -111,10 +111,10 @@ export class LoginComponent {
         next: (response) => {
 
           // Handle accounts that must change their password.
-          if (response.mustChangePassword) {
-            this.errorMessage =
-              'Password change is required, but the password-change flow is not configured yet.';
-
+          // Handle accounts that must change their password.
+if (response.mustChangePassword) {
+  void this.router.navigate(['/change-password']);
+ 
             this.cdr.markForCheck();
             return;
           }

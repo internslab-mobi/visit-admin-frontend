@@ -32,6 +32,8 @@ export class FilterPanelComponent {
 
   @Input() showVisitorTypeFilter = false;
 
+  @Input() showDateFilters = true;
+
   @Input() visitorTypeOptions: FilterOption[] = [
     { label: 'Visitor', value: 'VISITOR' },
     { label: 'Guest', value: 'GUEST' },

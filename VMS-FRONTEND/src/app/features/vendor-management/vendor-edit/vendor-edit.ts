@@ -574,4 +574,29 @@ uploadDocuments(event: Event): void {
   this.pendingDocuments.splice(index, 1);
   this.changeDetectorRef.markForCheck();
 }
+
+
+get ndaDocumentLabel(): string {
+  if (!this.ndaValidUntil || !this.newNdaValidUntil) {
+    return 'Supporting Document';
+  }
+
+  const currentDate = new Date(this.ndaValidUntil);
+  const newDate = new Date(this.newNdaValidUntil);
+
+  let months =
+    (newDate.getFullYear() - currentDate.getFullYear()) * 12 +
+    (newDate.getMonth() - currentDate.getMonth());
+
+  // Adjust if the new date falls before the current day of the month.
+  if (newDate.getDate() < currentDate.getDate()) {
+    months--;
+  }
+
+  if (months >= 12 && months <= 60) {
+    return 'Renewal Document';
+  }
+
+  return 'Supporting Document';
+}
 }

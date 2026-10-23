@@ -87,6 +87,15 @@ export interface CreateUserRequest {
   employeeId: string;
   role: UserRole;
 }
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export interface ChangePasswordResponse {
+  message: string;
+}
 
 /* =========================================================
    5. AUTHENTICATION SERVICE
@@ -340,6 +349,21 @@ export class AuthService {
       ),
     );
   }
+changePassword(
+  request: ChangePasswordRequest,
+): Observable<ChangePasswordResponse> {
+  return this.initializeCsrf().pipe(
+    switchMap(() =>
+      this.http.post<ChangePasswordResponse>(
+        `${AUTH_URL}/change-password`,
+        request,
+        { withCredentials: true },
+      ),
+    ),
+  );
+}
+
+  
 
   /* =======================================================
      15. ROLE VALIDATION
@@ -348,4 +372,8 @@ export class AuthService {
   private hasAllowedRole(response: LoginResponse): boolean {
     return response.role === 'ADMIN' || response.role === 'FRONT_DESK';
   }
+
+
+
+  
 }

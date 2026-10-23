@@ -57,7 +57,7 @@
         </select>
       </div>
     }
-
+@if (showDateFilters) {
     <div class="filter-field">
       <label [for]="idPrefix + '-from-date'">
         {{ fromDateLabel }}
@@ -83,7 +83,7 @@
         (ngModelChange)="onToDateChange($event)"
       />
     </div>
-
+  }
     <div class="filter-field">
       <label [for]="idPrefix + '-sort-by'">
         Sort By
