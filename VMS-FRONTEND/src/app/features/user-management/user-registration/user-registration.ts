@@ -40,12 +40,12 @@ export class UserRegistrationComponent implements OnInit {
 
   readonly roles: { value: UserRole; label: string }[] = [
     { value: 'ADMIN', label: 'Admin' },
-    { value: 'FRONT_DESK', label: 'Front Desk' },
+    { value: 'HR', label: 'Front Desk' },
   ];
 
   readonly registrationForm = this.fb.nonNullable.group({
     employeeId: ['', Validators.required],
-    role: ['FRONT_DESK' as UserRole, Validators.required],
+    role: ['HR' as UserRole, Validators.required],
   });
 
   get filteredEmployees(): Employee[] {
@@ -144,7 +144,7 @@ export class UserRegistrationComponent implements OnInit {
 
         this.registrationForm.reset({
           employeeId: '',
-          role: 'FRONT_DESK',
+          role: 'HR',
         });
 
         this.clearEmployeeSelection();

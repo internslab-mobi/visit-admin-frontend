@@ -122,7 +122,7 @@ if (response.mustChangePassword) {
           // Only these roles may access this application.
           if (
             response.role !== 'ADMIN' &&
-            response.role !== 'FRONT_DESK'
+            response.role !== 'HR'
           ) {
             this.errorMessage =
               'Your account does not have permission to access this application.';

@@ -8,7 +8,7 @@ import {
   RegistrationRequest,
   RegistrationResponse,
 } from '../../models/registration/registration.model';
-
+import { VisitTimeTrackingResponse } from '../../models/visitor-log/visitor-log.model';
 import { VisitDetailResponse } from '../../models/visit/visit-detail.model';
 import { VisitorLogPage } from '../../models/visitor-log/visitor-log.model';
 
@@ -161,5 +161,13 @@ getVisitPhoto(visitId: string): Observable<Blob> {
 
     return this.http.get<VisitorLogPage>(`${API_CONFIG.BASE_URL}/api/visitor-log`, { params });
   }
+
+  getVisitTimeTracking(
+  visitId: string,
+): Observable<VisitTimeTrackingResponse> {
+  return this.http.get<VisitTimeTrackingResponse>(
+    `${API_CONFIG.BASE_URL}/api/visitor-log/${encodeURIComponent(visitId)}/time-tracking`,
+  );
+}
 
 }

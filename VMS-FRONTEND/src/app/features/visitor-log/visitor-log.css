@@ -708,3 +708,258 @@ tbody tr:hover {
     padding: 35px 16px;
   }
 }
+
+
+/* Clickable visitor-log rows */
+.tracking-row {
+  cursor: pointer;
+}
+
+.tracking-row:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.tracking-row:hover {
+  background: var(--primary-soft);
+}
+
+/* Modal backdrop */
+.tracking-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(20, 30, 25, 0.48);
+  box-sizing: border-box;
+}
+
+/* Modal container */
+.tracking-modal {
+  width: 100%;
+  max-width: 1000px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+}
+
+/* Modal heading */
+.tracking-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tracking-modal-header h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.tracking-modal-header p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tracking-close-button {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tracking-close-button:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+/* Visit information */
+.tracking-visit-info {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  padding: 18px 24px;
+  background: #f8faf9;
+  border-bottom: 1px solid var(--border);
+}
+
+.tracking-visit-info div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tracking-visit-info span,
+.tracking-total span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.tracking-visit-info strong {
+  overflow-wrap: anywhere;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Total recorded duration */
+.tracking-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 20px 24px;
+  padding: 17px 20px;
+  background: var(--primary-soft);
+  border: 1px solid #d7eadf;
+  border-radius: 8px;
+}
+
+.tracking-total strong {
+  color: var(--primary-dark);
+  font-size: 20px;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* Session history table */
+.tracking-table-wrapper {
+  width: auto;
+  margin: 0 24px 20px;
+  overflow-x: auto;
+}
+
+.tracking-table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+}
+
+.tracking-table thead {
+  background: #f8faf9;
+}
+
+.tracking-table th {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  color: #59615d;
+  font-size: 11px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tracking-table td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #edf0ee;
+  color: var(--text);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.tracking-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tracking-open-status {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: 20px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Loading, empty and error messages */
+.tracking-message {
+  padding: 32px 24px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.tracking-message h3 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.tracking-message p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.tracking-error {
+  color: #a13a3a;
+}
+
+.tracking-error .btn-secondary {
+  margin-top: 16px;
+}
+
+/* Modal footer */
+.tracking-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* Responsive layout */
+@media (max-width: 600px) {
+  .tracking-modal-backdrop {
+    padding: 10px;
+  }
+
+  .tracking-modal {
+    max-height: 94vh;
+  }
+
+  .tracking-modal-header {
+    padding: 18px;
+  }
+
+  .tracking-visit-info {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .tracking-total {
+    align-items: flex-start;
+    flex-direction: column;
+    margin: 16px 18px;
+  }
+
+  .tracking-total strong {
+    text-align: left;
+  }
+
+  .tracking-table-wrapper {
+    margin: 0 18px 18px;
+  }
+
+  .tracking-modal-footer {
+    padding: 14px 18px;
+  }
+}

@@ -96,7 +96,7 @@ describe('authInterceptor', () => {
     );
 
     httpTestingController.expectNone(
-      'http://localhost:8092/api/csrf',
+      'http://localhost:8093/api/auth/csrf',
     );
   });
 

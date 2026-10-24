@@ -35,3 +35,17 @@ export interface VisitorLogPage {
   first: boolean;
   last: boolean;
 }
+
+export interface VisitTimeTrackingSession {
+  trackingId: number;
+  badgeId: string;
+  inTime: string;
+  outTime: string | null;
+  durationSeconds: number;
+}
+
+export interface VisitTimeTrackingResponse {
+  visitId: string;
+  sessions: VisitTimeTrackingSession[];
+  totalDurationSeconds: number;
+}

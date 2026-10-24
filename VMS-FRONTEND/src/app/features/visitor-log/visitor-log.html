@@ -314,7 +314,13 @@
               track log.visitId
             ) {
 
-              <tr>
+              <tr
+  class="tracking-row"
+  tabindex="0"
+  (click)="openTimeTracking(log)"
+  (keydown.enter)="openTimeTracking(log)"
+  (keydown.space)="openTimeTracking(log); $event.preventDefault()"
+>
 
                 <!-- Visitor -->
 
@@ -482,5 +488,147 @@
     }
 
   </div>
+  
+@if (trackingVisit) {
+  <div
+    class="tracking-modal-backdrop"
+    (click)="closeTimeTracking()"
+  >
+    <section
+      class="tracking-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tracking-modal-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="tracking-modal-header">
+        <div>
+          <h2 id="tracking-modal-title">Visit Time Tracking</h2>
+          <p>
+            {{ trackingVisit.visitorName }}
+            <span>· {{ trackingVisit.visitReference }}</span>
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="tracking-close-button"
+          aria-label="Close tracking history"
+          (click)="closeTimeTracking()"
+        >
+          &times;
+        </button>
+      </div>
+
+      <div class="tracking-visit-info">
+        <div>
+          <span>Visit ID</span>
+          <strong>{{ trackingVisit.visitId }}</strong>
+        </div>
+        <div>
+          <span>Visitor Type</span>
+          <strong>{{ trackingVisit.visitorType }}</strong>
+        </div>
+        <div>
+          <span>Status</span>
+          <strong>{{ formatStatus(trackingVisit.status) }}</strong>
+        </div>
+      </div>
+
+      @if (trackingLoading) {
+        <div class="tracking-message">
+          <p>Loading QR tracking history...</p>
+        </div>
+      }
+
+      @if (!trackingLoading && trackingError) {
+        <div class="tracking-message tracking-error">
+          <p>{{ trackingError }}</p>
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="openTimeTracking(trackingVisit)"
+          >
+            Try Again
+          </button>
+        </div>
+      }
+
+      @if (!trackingLoading && trackingData) {
+        <div class="tracking-total">
+          <span>Total Recorded Time</span>
+          <strong>
+  <app-visit-duration
+    [sessions]="trackingData?.sessions ?? null"
+  />
+</strong>
+        </div>
+
+        @if (trackingData.sessions.length > 0) {
+          <div class="tracking-table-wrapper">
+            <table class="tracking-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Badge ID</th>
+                  <th>IN Time</th>
+                  <th>OUT Time</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for (
+                  session of trackingData.sessions;
+                  track session.trackingId;
+                  let i = $index
+                ) {
+                  <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ session.badgeId }}</td>
+                    <td>{{ formatDateTime(session.inTime) }}</td>
+                    <td>
+                      @if (session.outTime) {
+                        {{ formatDateTime(session.outTime) }}
+                      } @else {
+                        <span class="tracking-open-status">
+                          Still inside
+                        </span>
+                      }
+                    </td>
+                    <td>
+  <app-visit-duration
+    [totalSeconds]="session.durationSeconds"
+    [status]="session.outTime ? 'CHECKED_OUT' : 'CHECKED_IN'"
+    [checkedInAt]="session.inTime"
+  />
+</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="tracking-message">
+            <h3>No QR Tracking Records</h3>
+            <p>
+              No IN/OUT scan sessions have been recorded for this visit.
+            </p>
+          </div>
+        }
+      }
+
+      <div class="tracking-modal-footer">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="closeTimeTracking()"
+        >
+          Close
+        </button>
+      </div>
+    </section>
+  </div>
+}
 
 </div>

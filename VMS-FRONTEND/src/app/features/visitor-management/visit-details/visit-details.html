@@ -287,14 +287,12 @@
             <div class="information-item duration-detail">
               <span class="field-label">Total duration</span>
               <strong>
-                {{
-                  formatDuration(
-                    visitDetails.totalDurationSeconds,
-                    visitDetails.status,
-                    visitDetails.checkedInAt
-                  )
-                }}
-              </strong>
+  <app-visit-duration
+    [totalSeconds]="visit.totalDurationSeconds"
+    [status]="visit.status"
+    [checkedInAt]="visit.checkedInAt"
+  />
+</strong>
             </div>
 
             @if (visit.remarks) {
@@ -330,7 +328,7 @@
             </div>
           } @else {
             <div class="identity-form">
-              @if (nationality === 'India') {
+              @if (nationality === 'DOMESTIC') {
                 <div class="form-field">
                   <label for="aadharNumber">Aadhaar number</label>
                   <input

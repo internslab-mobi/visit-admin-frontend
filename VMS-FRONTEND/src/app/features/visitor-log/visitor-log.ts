@@ -1,36 +1,38 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  inject
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject} from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { VisitService } from '../../core/services/visit/visit.service';
 import { EmployeeService } from '../../core/services/employee/employee.service';
-
-import { VisitorLogResponse } from '../../core/models/visitor-log/visitor-log.model';
 import { Employee } from '../../core/models/employee/employee.model';
 
+import { VisitorLogResponse, VisitTimeTrackingResponse } from '../../core/models/visitor-log/visitor-log.model';
+import { VisitDurationComponent } from '../../shared/components/visit-duration/visit-duration';
 @Component({
   selector: 'app-visitor-log',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    VisitDurationComponent
   ],
   templateUrl: './visitor-log.html',
   styleUrl: './visitor-log.css'
 })
-export class VisitorLogComponent implements OnInit {
+export class VisitorLogComponent implements OnInit, OnDestroy {
 
   private readonly visitService = inject(VisitService);
   private readonly employeeService = inject(EmployeeService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   visitorLogs: VisitorLogResponse[] = [];
+
+  trackingVisit: VisitorLogResponse | null = null;
+  trackingData: VisitTimeTrackingResponse | null = null;
+
+  trackingLoading = false;
+  trackingError = '';
 
   hosts: {
     id: string;
@@ -91,7 +93,6 @@ export class VisitorLogComponent implements OnInit {
       }
     });
   }
-
 
   onSearchChange(): void {
 
@@ -176,6 +177,57 @@ export class VisitorLogComponent implements OnInit {
       }
     });
   }
+
+  openTimeTracking(log: VisitorLogResponse): void {
+  this.trackingVisit = log;
+  this.trackingData = null;
+  this.trackingError = '';
+  this.trackingLoading = true;
+
+  this.visitService.getVisitTimeTracking(log.visitId).subscribe({
+    next: (response) => {
+      this.trackingData = response;
+      this.trackingLoading = false;
+      this.changeDetectorRef.detectChanges();
+    },
+    error: (error) => {
+      console.error('Failed to load visit time tracking:', error);
+
+      this.trackingError =
+        'Unable to load tracking history. Please try again.';
+
+      this.trackingLoading = false;
+      this.changeDetectorRef.detectChanges();
+    }
+  });
+}
+
+closeTimeTracking(): void {
+  this.trackingVisit = null;
+  this.trackingData = null;
+  this.trackingLoading = false;
+  this.trackingError = '';
+}
+
+// formatDuration(totalSeconds: number | null | undefined): string {
+//   if (totalSeconds == null || totalSeconds < 0) {
+//     return '-';
+//   }
+
+//   const hours = Math.floor(totalSeconds / 3600);
+//   const minutes = Math.floor((totalSeconds % 3600) / 60);
+//   const seconds = totalSeconds % 60;
+
+//   if (hours > 0) {
+//     return `${hours}h ${minutes}m ${seconds}s`;
+//   }
+
+//   if (minutes > 0) {
+//     return `${minutes}m ${seconds}s`;
+//   }
+
+//   return `${seconds}s`;
+// }
 
   resetFilters(): void {
 
@@ -268,5 +320,10 @@ export class VisitorLogComponent implements OnInit {
   get minAllowedDate(): string {
     return '';
   }
+
+  ngOnDestroy(): void {
+  // No timer cleanup is needed here once the shared
+  // VisitDurationComponent manages the duration timer.
+}
 
 }

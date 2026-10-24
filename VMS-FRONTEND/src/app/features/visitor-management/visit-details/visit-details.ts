@@ -8,10 +8,11 @@ import { VisitService } from '../../../core/services/visit/visit.service';
 import { VisitDetailResponse } from '../../../core/models/visit/visit-detail.model';
 
 import { BlacklistService } from '../../../core/services/blacklist/blacklist.service';
+import { VisitDurationComponent } from '../../../shared/components/visit-duration/visit-duration';
 
 @Component({
   selector: 'app-visit-details',
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, VisitDurationComponent],
   templateUrl: './visit-details.html',
   styleUrl: './visit-details.css',
 })
@@ -19,9 +20,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
   private visitId: string | null = null;
 
   visitDetails: VisitDetailResponse | null = null;
-
-  private durationTimer: ReturnType<typeof setInterval> | null = null;
-  private currentTime = Date.now();
 
   visitorPhotoUrl: string | null = null;
   private photoRequestId = 0;
@@ -97,7 +95,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
       passportNumber?: string;
     } = {};
 
-    if (this.nationality === 'India') {
+    if (this.nationality === 'DOMESTIC') {
       identityRequest.aadharNumber = this.aadharNumber;
       identityRequest.panNumber = this.panNumber;
     } else if (this.nationality === 'INTERNATIONAL') {
@@ -445,7 +443,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
         this.checkInSuccess = 'Visitor checked in successfully.';
 
-        this.updateDurationTimer();
         if (this.visitDetails) {
           this.loadVisitorPhoto(this.visitDetails.visitId);
         }
@@ -488,8 +485,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         this.isCheckingOut = false;
 
         this.checkOutSuccess = 'Visitor checked out successfully.';
-
-        this.stopDurationTimer();
 
         this.cdr.detectChanges();
       },
@@ -541,8 +536,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
         this.showCancelConfirmation = false;
         this.isCancellingVisit = false;
-
-        this.stopDurationTimer();
 
         this.cdr.detectChanges();
       },
@@ -625,7 +618,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         }
 
         this.loadBlacklistStatus();
-        this.updateDurationTimer();
 
         this.cdr.detectChanges();
       },
@@ -635,7 +627,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         this.isBlacklistStatusLoading = false;
 
         this.clearVisitorPhoto();
-        this.stopDurationTimer();
 
         this.cdr.detectChanges();
       },
@@ -719,34 +710,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  
-  private updateDurationTimer(): void {
-    this.stopDurationTimer();
-
-    if (
-      !this.visitDetails ||
-      this.visitDetails.status !== 'CHECKED_IN' ||
-      !this.visitDetails.checkedInAt
-    ) {
-      return;
-    }
-
-    this.currentTime = Date.now();
-
-    this.durationTimer = setInterval(() => {
-      this.currentTime = Date.now();
-      this.cdr.detectChanges();
-    }, 1000);
-  }
-
-  
-  private stopDurationTimer(): void {
-    if (this.durationTimer) {
-      clearInterval(this.durationTimer);
-      this.durationTimer = null;
-    }
-  }
-
   formatVisitDate(dateTime: string | null | undefined): string {
     if (!dateTime) {
       return '';
@@ -779,56 +742,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
     return this.formatVisitDate(this.visitDetails.expectedArrivalAt);
   }
 
-  formatDuration(totalSeconds: number | null, status: string, checkedInAt: string | null): string {
-    if (status === 'REGISTERED') {
-      return 'Not started';
-    }
-
-    if (status === 'CANCELLED' || status === 'NO_SHOW') {
-      return 'Not applicable';
-    }
-
-    if (status === 'CHECKED_IN') {
-      if (!checkedInAt) {
-        return 'In progress';
-      }
-
-      const startTime = new Date(checkedInAt).getTime();
-
-      const elapsedSeconds = Math.max(0, Math.floor((this.currentTime - startTime) / 1000));
-
-      return this.formatSeconds(elapsedSeconds);
-    }
-
-    if (status === 'CHECKED_OUT' && totalSeconds !== null) {
-      return this.formatSeconds(totalSeconds);
-    }
-
-    return 'Not applicable';
-  }
-
-  private formatSeconds(totalSeconds: number): string {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    const parts: string[] = [];
-
-    if (hours > 0) {
-      parts.push(`${hours}h`);
-    }
-
-    if (minutes > 0) {
-      parts.push(`${minutes}m`);
-    }
-
-    if (seconds > 0 || parts.length === 0) {
-      parts.push(`${seconds}s`);
-    }
-
-    return parts.join(' ');
-  }
-
   getStatusLabel(status: string): string {
     switch (status) {
       case 'REGISTERED':
@@ -853,7 +766,6 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopCamera();
-    this.stopDurationTimer();
 
     if (this.visitorPhotoUrl) {
       URL.revokeObjectURL(this.visitorPhotoUrl);
