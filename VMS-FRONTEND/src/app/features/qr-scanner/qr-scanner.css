@@ -1,29 +1,21 @@
-.scanner-page {
+
+.qr-scanner-container {
   max-width: 700px;
   margin: 30px auto;
   padding: 24px;
 }
 
-.subtitle {
-  color: #666;
+.qr-scanner-container h2 {
   margin-bottom: 24px;
 }
 
-.simulator-card,
-.result-card {
-  padding: 20px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-}
-
-.simulator-card label {
+.qr-scanner-container label {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
 }
 
-.simulator-card input {
+.qr-scanner-container input {
   width: 100%;
   box-sizing: border-box;
   padding: 12px;
@@ -32,7 +24,7 @@
   border-radius: 6px;
 }
 
-.simulator-card button {
+.qr-scanner-container button {
   padding: 11px 20px;
   border: none;
   border-radius: 6px;
@@ -41,30 +33,23 @@
   cursor: pointer;
 }
 
-.simulator-card button:disabled {
+.qr-scanner-container button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.success {
+.success-message {
+  margin-top: 20px;
+  padding: 16px;
   border-left: 5px solid #24834a;
+  background: #f0faf3;
+  border-radius: 6px;
 }
 
-.error {
+.error-message {
+  margin-top: 20px;
+  padding: 16px;
   border-left: 5px solid #c0392b;
-}
-
-.camera-section {
-  margin-top: 24px;
-}
-
-.camera-section summary {
-  cursor: pointer;
-  font-weight: 600;
-}
-
-zxing-scanner {
-  display: block;
-  max-width: 100%;
-  margin-top: 16px;
+  background: #fff2f0;
+  border-radius: 6px;
 }

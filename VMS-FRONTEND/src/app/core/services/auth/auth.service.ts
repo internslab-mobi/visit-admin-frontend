@@ -81,7 +81,7 @@ export interface ResetPasswordRequest {
   confirmNewPassword: string;
 }
 
-export type UserRole = 'ADMIN' | 'FRONT_DESK';
+export type UserRole = 'ADMIN' | 'HR';
 
 export interface CreateUserRequest {
   employeeId: string;
@@ -370,7 +370,7 @@ changePassword(
      ======================================================= */
 
   private hasAllowedRole(response: LoginResponse): boolean {
-    return response.role === 'ADMIN' || response.role === 'FRONT_DESK';
+    return response.role === 'ADMIN' || response.role === 'HR';
   }
 
 

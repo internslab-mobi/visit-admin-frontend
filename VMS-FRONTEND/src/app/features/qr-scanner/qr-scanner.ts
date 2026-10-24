@@ -70,28 +70,28 @@ export class QrScannerComponent {
       },
 
       error: (error: HttpErrorResponse) => {
-        console.error('QR scan error:', error);
+  console.error('QR scan error:', error);
 
-        const body = error.error;
+  const body = error.error;
 
-        if (typeof body === 'string' && body.trim()) {
-          this.errorMessage = body;
-        } else if (body && typeof body === 'object') {
-          this.errorMessage =
-            body.message ??
-            body.detail ??
-            body.error ??
-            `QR scan failed. Status: ${error.status}`;
-        } else if (error.status === 0) {
-          this.errorMessage =
-            'Unable to connect to the server.';
-        } else {
-          this.errorMessage =
-            error.message || 'QR scan failed. Please try again.';
-        }
+  if (typeof body === 'string' && body.trim()) {
+    this.errorMessage = body;
+  } else if (body && typeof body === 'object') {
+    this.errorMessage =
+      body.message ??
+      body.detail ??
+      body.error ??
+      'QR scan failed. Please try again.';
+  } else {
+    this.errorMessage =
+      error.status === 0
+        ? 'Unable to connect to the QR service.'
+        : error.message || 'QR scan failed. Please try again.';
+  }
 
-        this.isProcessing = false;
-      }
+  this.isProcessing = false;
+  this.cdr.detectChanges();
+}
     });
   }
 }
