@@ -3,7 +3,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { API_CONFIG } from '../../../environments/environment.dev';
 export interface QrScanResponse {
   message: string;
   action: string;
@@ -14,7 +14,8 @@ export interface QrScanResponse {
 })
 export class QrScannerService {
 
-  private readonly apiUrl = 'http://localhost:8092/api/qr-scan';
+  
+  private readonly apiUrl =  `${API_CONFIG.BASE_URL}/api/process-scan`;
 
   constructor(private http: HttpClient) {}
 

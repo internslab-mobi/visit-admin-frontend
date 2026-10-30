@@ -1,0 +1,24 @@
+:root {
+  /* Font */
+  --ui-font-family: "Inter", "Segoe UI", Arial, sans-serif;
+
+  /* Text colors */
+  --ui-text-primary: #172033;
+  --ui-text-heading: #172033;
+  --ui-text-secondary: #53627a;
+  --ui-text-muted: #748198;
+
+  /* Background colors */
+  --ui-bg-page: #ffffff;
+  --ui-bg-card: #ffffff;
+  --ui-bg-input: #f7f9fc;
+  --ui-bg-table-header: #f6f8fc;
+  --ui-bg-row-hover: #f1f6ff;
+
+  /* Borders */
+  --ui-border: #e2e8f0;
+  --ui-border-light: #edf1f7;
+
+  /* Primary color */
+  --ui-primary: #2459df;
+}
