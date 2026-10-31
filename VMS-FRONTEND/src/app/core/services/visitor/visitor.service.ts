@@ -39,4 +39,16 @@ export class VisitorService {
       request
     );
   }
+
+  findVisitorByContact(
+  email: string,
+  mobileNumber: string
+): Observable<VisitorResponse> {
+  return this.http.get<VisitorResponse>(
+    `${this.apiUrl}/lookup`,
+    {
+      params: { email, mobileNumber }
+    }
+  );
+}
 }

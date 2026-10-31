@@ -5,7 +5,7 @@ export type VisitorType =
 
 export type RegistrationType =
   | 'PRE_REGISTRATION'
-  | 'DOMESTIC_REGISTRATION';
+  | 'INDIA_REGISTRATION';
 
 export type ProofType =
   | 'AADHAAR'
@@ -13,7 +13,7 @@ export type ProofType =
   | 'PAN';
 
 export type Nationality =
-  | 'DOMESTIC'
+  | 'INDIA'
   | 'INTERNATIONAL';
 
 

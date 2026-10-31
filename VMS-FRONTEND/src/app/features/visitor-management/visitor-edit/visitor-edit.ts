@@ -348,8 +348,8 @@ private loadDocuments(): void {
       case 'PRE_REGISTRATION':
         return 'Pre-Registration';
 
-      case 'ARRIVAL_REGISTRATION':
-        return 'Arrival Registration';
+      // case 'ARRIVAL_REGISTRATION':
+      //   return 'Arrival Registration';
 
       default:
         return type ?? '-';

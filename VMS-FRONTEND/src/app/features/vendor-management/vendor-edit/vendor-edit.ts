@@ -56,6 +56,7 @@ export class VendorEditComponent implements OnInit {
   saving = false;
 
   //activeModal: string | null = null;
+  documents: DocumentResponse[] = [];
 
   pendingDocuments: File[] = [];
 
@@ -89,6 +90,7 @@ ndaExtendError = '';
     }
 
     this.loadVendor();
+    
   }
 
   private loadVendor(): void {
@@ -104,6 +106,7 @@ ndaExtendError = '';
 
           this.loading = false;
 
+          this.loadDocuments(); 
           this.loadNdaDetails();
 
           this.changeDetectorRef.markForCheck();
@@ -434,6 +437,27 @@ extendNdaValidity(): void {
         this.changeDetectorRef.markForCheck();
       }
     });
+}
+
+private loadDocuments(): void {
+  const visitorId = this.vendorData?.visitor?.id;
+
+  if (!visitorId) {
+    this.documents = [];
+    return;
+  }
+
+  this.documentService.getVisitorDocuments(visitorId).subscribe({
+    next: (documents) => {
+      this.documents = documents ?? [];
+      this.changeDetectorRef.markForCheck();
+    },
+    error: (error) => {
+      console.error('Failed to load vendor documents:', error);
+      this.documents = [];
+      this.changeDetectorRef.markForCheck();
+    }
+  });
 }
 
 //   getNdaHistoryStatus(nda: DocumentResponse): string {

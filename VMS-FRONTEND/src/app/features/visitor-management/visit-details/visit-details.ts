@@ -95,7 +95,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
       passportNumber?: string;
     } = {};
 
-    if (this.nationality === 'DOMESTIC') {
+    if (this.nationality === 'INDIA') {
       identityRequest.aadharNumber = this.aadharNumber;
       identityRequest.panNumber = this.panNumber;
     } else if (this.nationality === 'INTERNATIONAL') {
