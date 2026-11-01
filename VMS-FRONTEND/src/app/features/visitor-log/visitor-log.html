@@ -1,0 +1,634 @@
+<div class="visitor-log-page">
+
+  <!-- Page Header -->
+
+  <div class="page-header">
+
+    <div>
+      <h1>Visitor Log</h1>
+
+      <p>
+        Search and review visitor activity for security
+        and compliance audits.
+      </p>
+    </div>
+  </div>
+
+<!-- Search & Filters -->
+
+  <div class="filter-card">
+
+    <!-- Search -->
+
+    <div class="search-field">
+
+      <label for="search">
+        Search Visitor Log
+      </label>
+
+      <input
+        id="search"
+        type="text"
+        [(ngModel)]="search"
+        (ngModelChange)="onSearchChange()"
+        placeholder="Search visitor name, ID, email, mobile or host name"
+        autocomplete="off"
+      />
+
+    </div>
+
+
+    <div class="filters-row">
+
+      <!-- From Date -->
+
+      <div class="filter-field">
+
+        <label for="fromDate">
+          From Date
+        </label>
+
+        <input
+          id="fromDate"
+          type="date"
+          [max]="maxAllowedDate"
+          [(ngModel)]="fromDate"
+          (ngModelChange)="onFilterChange()"
+        />
+
+      </div>
+
+
+      <!-- To Date -->
+
+      <div class="filter-field">
+
+        <label for="toDate">
+          To Date
+        </label>
+
+        <input
+          id="toDate"
+          type="date"
+          [max]="maxAllowedDate"
+          [(ngModel)]="toDate"
+          (ngModelChange)="onFilterChange()"
+        />
+
+      </div>
+
+
+      <!-- Host -->
+
+      <div class="filter-field">
+
+        <label for="host">
+          Host
+        </label>
+
+        <select
+          id="host"
+          [(ngModel)]="selectedHostId"
+          (ngModelChange)="onFilterChange()"
+        >
+
+          <option value="">
+            All Hosts
+          </option>
+
+          @for (host of hosts; track host.id) {
+
+            <option [value]="host.id">
+              {{ host.name }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <!-- Visitor Type -->
+
+      <div class="filter-field">
+
+        <label for="visitorType">
+          Visitor Type
+        </label>
+
+        <select
+          id="visitorType"
+          [(ngModel)]="selectedVisitorType"
+          (ngModelChange)="onFilterChange()"
+        >
+
+          <option value="">
+            All Types
+          </option>
+
+          @for (type of visitorTypes; track type) {
+
+            <option [value]="type">
+              {{ type }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+            <!-- Status -->
+
+      <div class="filter-field">
+
+        <label for="status">
+          Status
+        </label>
+
+        <select
+          id="status"
+          [(ngModel)]="selectedStatus"
+          (ngModelChange)="onFilterChange()"
+        >
+
+          <option value="">
+            All Statuses
+          </option>
+
+          @for (status of historicalStatuses; track status.value) {
+
+            <option [value]="status.value">
+              {{ status.label }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <!-- Reset -->
+
+      <div class="filter-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="resetFilters()"
+        >
+          Reset
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="results-card">
+
+
+    <!-- Initial State -->
+
+    @if (!hasSearched) {
+
+      <div class="empty-state">
+
+        <h3>
+          Search Visitor Logs
+        </h3>
+
+        <p>
+          Start typing a visitor or host name,
+          visitor ID, email or mobile number,
+          or select a filter to load visitor activity.
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- Loading -->
+
+    @if (hasSearched && loading) {
+
+      <div class="empty-state">
+
+        <h3>
+          Loading Visitor Logs
+        </h3>
+
+        <p>
+          Fetching visitor activity...
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- No Results -->
+
+    @if (
+      hasSearched &&
+      !loading &&
+      visitorLogs.length === 0
+    ) {
+
+      <div class="empty-state">
+
+        <h3>
+          No Visitor Records Found
+        </h3>
+
+        <p>
+          No visitor activity matches the current
+          search and filters.
+        </p>
+
+      </div>
+
+    }
+
+    <!-- Table -->
+
+    @if (
+      hasSearched &&
+      !loading &&
+      visitorLogs.length > 0
+    ) {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Visitor
+              </th>
+
+              <th>
+                Reference
+              </th>
+
+              <th>
+                Type
+              </th>
+
+              <th>
+                Host
+              </th>
+
+              <th>
+                Visit Date
+              </th>
+
+              <th>
+                Arrival
+              </th>
+
+              <th>
+                Departure
+              </th>
+
+              <th>
+                Status
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              log of visitorLogs;
+              track log.visitId
+            ) {
+
+              <tr
+  class="tracking-row"
+  tabindex="0"
+  (click)="openTimeTracking(log)"
+  (keydown.enter)="openTimeTracking(log)"
+  (keydown.space)="openTimeTracking(log); $event.preventDefault()"
+>
+
+                <!-- Visitor -->
+
+                <td>
+
+                  <div class="visitor-cell">
+
+                    <strong>
+                      {{ log.visitorName }}
+                    </strong>
+
+                    <span>
+                      {{ log.visitorId }}
+                    </span>
+
+                  </div>
+
+                </td>
+
+
+                <!-- Reference -->
+
+                <td>
+                  {{ log.visitReference }}
+                </td>
+
+
+                <!-- Type -->
+
+                <td>
+
+                  <span class="type-badge">
+
+                    {{ log.visitorType }}
+
+                  </span>
+
+                </td>
+
+                <!-- Host -->
+
+                <td>
+                  {{ log.hostName }}
+                </td>
+
+
+                <!-- Visit Date -->
+
+                <td>
+                  {{ log.visitDate }}
+                </td>
+
+
+                <!-- Arrival -->
+
+                <td>
+                  {{
+                    formatDateTime(
+                      log.checkedInAt ||
+                      log.expectedArrivalAt
+                    )
+                  }}
+                </td>
+
+
+                <!-- Departure -->
+
+                <td>
+                  {{
+                    formatDateTime(
+                      log.checkedOutAt ||
+                      log.expectedDepartureAt
+                    )
+                  }}
+                </td>
+
+
+                <!-- Status -->
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="{
+                      'status-registered':
+                        log.status === 'REGISTERED',
+
+                      'status-checked-in':
+                        log.status === 'CHECKED_IN',
+
+                      'status-checked-out':
+                        log.status === 'CHECKED_OUT',
+
+                      'status-cancelled':
+                        log.status === 'CANCELLED',
+
+                      'status-no-show':
+                        log.status === 'NO_SHOW'
+                    }"
+                  >
+
+                    {{ formatStatus(log.status) }}
+
+                  </span>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+<!-- Pagination -->
+
+      @if (totalPages > 1) {
+
+        <div class="pagination">
+
+          <button
+            type="button"
+            [disabled]="currentPage === 0 || loading"
+            (click)="goToPage(currentPage - 1)"
+          >
+            Previous
+          </button>
+
+
+          @for (
+            page of getPageNumbers();
+            track page
+          ) {
+
+            <button
+              type="button"
+              [class.active]="page === currentPage"
+              [disabled]="loading"
+              (click)="goToPage(page)"
+            >
+              {{ page + 1 }}
+            </button>
+
+          }
+
+
+          <button
+            type="button"
+            [disabled]="
+              currentPage >= totalPages - 1 ||
+              loading
+            "
+            (click)="goToPage(currentPage + 1)"
+          >
+            Next
+          </button>
+
+        </div>
+
+      }
+
+    }
+
+  </div>
+  
+@if (trackingVisit) {
+  <div
+    class="tracking-modal-backdrop"
+    (click)="closeTimeTracking()"
+  >
+    <section
+      class="tracking-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tracking-modal-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="tracking-modal-header">
+        <div>
+          <h2 id="tracking-modal-title">Visit Time Tracking</h2>
+          <p>
+            {{ trackingVisit.visitorName }}
+            <span>· {{ trackingVisit.visitReference }}</span>
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="tracking-close-button"
+          aria-label="Close tracking history"
+          (click)="closeTimeTracking()"
+        >
+          &times;
+        </button>
+      </div>
+
+      <div class="tracking-visit-info">
+        <div>
+          <span>Visit ID</span>
+          <strong>{{ trackingVisit.visitId }}</strong>
+        </div>
+        <div>
+          <span>Visitor Type</span>
+          <strong>{{ trackingVisit.visitorType }}</strong>
+        </div>
+        <div>
+          <span>Status</span>
+          <strong>{{ formatStatus(trackingVisit.status) }}</strong>
+        </div>
+      </div>
+
+      @if (trackingLoading) {
+        <div class="tracking-message">
+          <p>Loading QR tracking history...</p>
+        </div>
+      }
+
+      @if (!trackingLoading && trackingError) {
+        <div class="tracking-message tracking-error">
+          <p>{{ trackingError }}</p>
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="openTimeTracking(trackingVisit)"
+          >
+            Try Again
+          </button>
+        </div>
+      }
+
+      @if (!trackingLoading && trackingData) {
+        <div class="tracking-total">
+          <span>Total Recorded Time</span>
+          <strong>
+  <app-visit-duration
+    [sessions]="trackingData?.sessions ?? null"
+  />
+</strong>
+        </div>
+
+        @if (trackingData.sessions.length > 0) {
+          <div class="tracking-table-wrapper">
+            <table class="tracking-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Badge ID</th>
+                  <th>IN Time</th>
+                  <th>OUT Time</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for (
+                  session of trackingData.sessions;
+                  track session.trackingId;
+                  let i = $index
+                ) {
+                  <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ session.badgeId }}</td>
+                    <td>{{ formatDateTime(session.inTime) }}</td>
+                    <td>
+                      @if (session.outTime) {
+                        {{ formatDateTime(session.outTime) }}
+                      } @else {
+                        <span class="tracking-open-status">
+                          Still inside
+                        </span>
+                      }
+                    </td>
+                    <td>
+  <app-visit-duration
+    [totalSeconds]="session.durationSeconds"
+    [status]="session.outTime ? 'CHECKED_OUT' : 'CHECKED_IN'"
+    [checkedInAt]="session.inTime"
+  />
+</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="tracking-message">
+            <h3>No QR Tracking Records</h3>
+            <p>
+              No IN/OUT scan sessions have been recorded for this visit.
+            </p>
+          </div>
+        }
+      }
+
+      <div class="tracking-modal-footer">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="closeTimeTracking()"
+        >
+          Close
+        </button>
+      </div>
+    </section>
+  </div>
+}
+
+</div>

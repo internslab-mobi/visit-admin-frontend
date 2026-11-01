@@ -1,0 +1,646 @@
+/* =========================================================
+   1. PAGE LAYOUT
+   ========================================================= */
+
+:host {
+  display: block;
+  color: #172033;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.registration-page {
+  min-height: 100vh;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px;
+  color: #172033;
+  background: #F8F9FC;
+  box-sizing: border-box;
+}
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #172033;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.page-description {
+  margin: 9px 0 0;
+  color: #526078;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   2. REGISTRATION CARD
+   ========================================================= */
+
+.registration-card {
+  width: 100%;
+  max-width: 720px;
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #E4E8F0;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(23, 32, 51, 0.025);
+  box-sizing: border-box;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #E4E8F0;
+}
+
+.card-icon {
+  display: flex;
+  flex: 0 0 48px;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  color: #2457D6;
+  background: #EEF3FF;
+  border-radius: 10px;
+}
+
+.card-icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+.card-header h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.card-header p {
+  margin: 6px 0 0;
+  color: #526078;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   3. FORM FIELDS
+   ========================================================= */
+
+.form-field {
+  min-width: 0;
+  margin-bottom: 24px;
+}
+
+.form-field > label {
+  display: block;
+  margin-bottom: 9px;
+  color: #526078;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.required {
+  color: #C53D4B;
+}
+
+.field-help {
+  margin: 8px 0 0;
+  color: #526078;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.field-error {
+  margin: 7px 0 0;
+  color: #C53D4B;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   4. SEARCHABLE EMPLOYEE PICKER
+   ========================================================= */
+
+.employee-picker {
+  position: relative;
+  width: 100%;
+}
+
+.employee-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.employee-search-icon {
+  position: absolute;
+  left: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7D879B;
+  pointer-events: none;
+}
+
+.employee-search-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.employee-search-input {
+  display: block;
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 42px 11px 42px;
+  color: #172033;
+  background: #ffffff;
+  border: 1px solid #CDD4E1;
+  border-radius: 7px;
+  outline: none;
+  font: inherit;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.employee-search-input::placeholder {
+  color: #7D879B;
+}
+
+.employee-search-input:focus {
+  border-color: #2457D6;
+  box-shadow: 0 0 0 3px rgba(36, 87, 214, 0.12);
+}
+
+.employee-search-input[aria-invalid='true'] {
+  border-color: #C53D4B;
+}
+
+.employee-search-input:disabled {
+  background: #F5F7FC;
+  cursor: not-allowed;
+}
+
+.employee-clear-button {
+  position: absolute;
+  right: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: #526078;
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.employee-clear-button:hover {
+  color: #172033;
+  background: #F5F7FC;
+}
+
+.employee-clear-button:focus-visible {
+  outline: 2px solid #2457D6;
+  outline-offset: 2px;
+}
+
+.employee-results {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #E4E8F0;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(23, 32, 51, 0.12);
+}
+
+.employee-result {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 12px 14px;
+  text-align: left;
+  color: #172033;
+  background: #ffffff;
+  border: none;
+  border-bottom: 1px solid #E4E8F0;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.employee-result:last-child {
+  border-bottom: none;
+}
+
+.employee-result:hover,
+.employee-result:focus-visible {
+  background: #F5F7FC;
+  outline: none;
+}
+
+.employee-result:focus-visible {
+  box-shadow: inset 0 0 0 2px #2457D6;
+}
+
+.employee-result-name {
+  font-size: 13px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.employee-result-details {
+  color: #526078;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.employee-empty-state {
+  padding: 16px 14px;
+  color: #526078;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   5. ROLE SELECTION CARDS
+   ========================================================= */
+
+.role-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.role-option {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  min-height: 100px;
+  padding: 16px;
+  margin: 0;
+  background: #ffffff;
+  border: 1px solid #CDD4E1;
+  border-radius: 9px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.role-option:hover {
+  border-color: #93b4f8;
+  background: #f8fbff;
+}
+
+.role-option:has(input:checked) {
+  background: #EEF3FF;
+  border-color: #2457D6;
+  box-shadow: 0 0 0 1px #2457D6;
+}
+
+.role-option:has(input:focus-visible) {
+  outline: 3px solid rgba(36, 87, 214, 0.20);
+  outline-offset: 3px;
+}
+
+.role-option input[type='radio'] {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin: 2px 0 0;
+  accent-color: #2457D6;
+  cursor: pointer;
+}
+
+.role-option-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.role-option-title {
+  color: #172033;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.role-option-description {
+  color: #526078;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   6. ALERTS
+   ========================================================= */
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  margin-bottom: 22px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.alert-icon {
+  display: inline-flex;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 50%;
+}
+
+.alert-error {
+  color: #A72E3B;
+  background: #FFF1F2;
+  border-color: #F1CDD1;
+}
+
+.alert-error .alert-icon {
+  color: #ffffff;
+  background: #C53D4B;
+}
+
+.alert-success {
+  color: #18794E;
+  background: #EAF7F0;
+  border-color: #C5E7D4;
+}
+
+.alert-success .alert-icon {
+  color: #ffffff;
+  background: #18794E;
+}
+
+/* =========================================================
+   7. ONBOARDING INFORMATION
+   ========================================================= */
+
+.info-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 14px;
+  margin-bottom: 28px;
+  background: #F5F7FC;
+  border: 1px solid #E4E8F0;
+  border-radius: 8px;
+}
+
+.info-icon {
+  display: inline-flex;
+  flex: 0 0 19px;
+  align-items: center;
+  justify-content: center;
+  width: 19px;
+  height: 19px;
+  color: #ffffff;
+  background: #526078;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.info-note p {
+  margin: 0;
+  color: #526078;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   8. FORM ACTIONS
+   ========================================================= */
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #E4E8F0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.btn:focus-visible {
+  outline: 3px solid rgba(36, 87, 214, 0.25);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-primary {
+  color: #ffffff;
+  background: #2457D6;
+  border-color: #2457D6;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1D46B0;
+  border-color: #1D46B0;
+}
+
+.btn-secondary {
+  color: #526078;
+  background: #ffffff;
+  border-color: #CDD4E1;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #F5F7FC;
+  border-color: #7D879B;
+}
+
+/* =========================================================
+   9. RESPONSIVE LAYOUT
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .registration-page {
+    padding: 24px 18px;
+  }
+
+  .registration-card {
+    padding: 22px 18px;
+  }
+
+  .page-header {
+    margin-bottom: 22px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .role-options {
+    gap: 10px;
+  }
+
+  .role-option {
+    padding: 13px;
+  }
+}
+
+@media (max-width: 520px) {
+  .registration-page {
+    padding: 20px 14px;
+  }
+
+  .registration-card {
+    padding: 20px 16px;
+    border-radius: 10px;
+  }
+
+  .card-header {
+    align-items: flex-start;
+    gap: 12px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+
+  .card-icon {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .card-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .card-header h2 {
+    font-size: 17px;
+  }
+
+  .role-options {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .role-option {
+    min-height: 0;
+    padding: 14px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .info-note {
+    padding: 12px;
+    margin-bottom: 22px;
+  }
+}
+
+@media (max-width: 360px) {
+  .registration-page {
+    padding: 16px 10px;
+  }
+
+  .registration-card {
+    padding: 18px 12px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .employee-search-input {
+    padding-left: 38px;
+    font-size: 13px;
+  }
+
+  .role-option {
+    gap: 10px;
+  }
+}
+
+/* =========================================================
+   10. REDUCED MOTION ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .employee-search-input,
+  .role-option,
+  .btn {
+    transition: none;
+  }
+}

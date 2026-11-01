@@ -1,0 +1,43 @@
+
+<div class="qr-scanner-container">
+
+  <h2>QR Token Validation</h2>
+
+  <form (ngSubmit)="simulateScan()">
+
+    <label for="qrToken">Enter QR Token</label>
+
+    <input
+      id="qrToken"
+      type="text"
+      name="token"
+      [(ngModel)]="token"
+      placeholder="Enter QR token"
+      [disabled]="isProcessing"
+      required
+    />
+
+    <button
+      type="submit"
+      [disabled]="isProcessing || !token.trim()"
+    >
+      {{ isProcessing ? 'Processing...' : 'Submit Token' }}
+    </button>
+
+  </form>
+
+  <div *ngIf="message" class="success-message">
+    <p>{{ message }}</p>
+    <p *ngIf="scanAction">
+      Action: {{ scanAction }}
+    </p>
+    <p *ngIf="scanTime">
+      Scanned At: {{ scanTime }}
+    </p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+</div>

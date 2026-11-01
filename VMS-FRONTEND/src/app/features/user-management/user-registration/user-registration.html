@@ -1,0 +1,274 @@
+<div class="registration-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1>User Registration</h1>
+      <p class="page-description">
+        Create an account and assign access to an existing employee.
+      </p>
+    </div>
+  </header>
+
+  <!-- Registration Card -->
+  <section class="registration-card">
+    <div class="card-header">
+      <div class="card-icon" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="9" cy="8" r="4"></circle>
+          <path d="M3 21v-2a6 6 0 0 1 12 0v2"></path>
+          <path d="M19 8v6"></path>
+          <path d="M16 11h6"></path>
+        </svg>
+      </div>
+
+      <div>
+        <h2>Create an account</h2>
+        <p>Select an active employee and assign their access role.</p>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    @if (errorMessage) {
+      <div class="alert alert-error" role="alert">
+        <span class="alert-icon" aria-hidden="true">!</span>
+        <span>{{ errorMessage }}</span>
+      </div>
+    }
+
+    <!-- Success Message -->
+    @if (successMessage) {
+      <div class="alert alert-success" role="status">
+        <span class="alert-icon" aria-hidden="true">✓</span>
+        <span>{{ successMessage }}</span>
+      </div>
+    }
+
+    <form [formGroup]="registrationForm" (ngSubmit)="submit()">
+      <!-- Employee Selection -->
+      <div class="form-field">
+        <label for="employeeSearchInput">
+          Employee <span class="required">*</span>
+        </label>
+
+        <div class="employee-picker">
+          <div class="employee-search-wrapper">
+            <span class="employee-search-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m16 16 4 4"></path>
+              </svg>
+            </span>
+
+            <input
+              #employeeSearchInput
+              id="employeeSearchInput"
+              type="text"
+              class="employee-search-input"
+              placeholder="Search by name, employee ID, or email"
+              autocomplete="off"
+              [value]="employeeSearch"
+              [disabled]="isLoadingEmployees || employees.length === 0"
+              [attr.aria-invalid]="
+                registrationForm.controls.employeeId.touched &&
+                registrationForm.controls.employeeId.invalid
+              "
+              aria-describedby="employee-help employee-error"
+              aria-controls="employee-results"
+              [attr.aria-expanded]="showEmployeeResults"
+              (input)="onEmployeeSearch(employeeSearchInput.value)"
+              (focus)="
+                showEmployeeResults =
+                  !registrationForm.controls.employeeId.value &&
+                  employeeSearch.length > 0
+              "
+              (keydown.escape)="showEmployeeResults = false"
+            />
+
+            @if (employeeSearch) {
+              <button
+                type="button"
+                class="employee-clear-button"
+                aria-label="Clear employee selection"
+                (click)="clearEmployeeSelection()"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                >
+                  <path d="m18 6-12 12"></path>
+                  <path d="m6 6 12 12"></path>
+                </svg>
+              </button>
+            }
+          </div>
+
+          <!-- Search Results -->
+          @if (showEmployeeResults && employeeSearch.trim()) {
+            <div
+              id="employee-results"
+              class="employee-results"
+              role="listbox"
+              aria-label="Matching employees"
+            >
+              @for (employee of filteredEmployees; track employee.id) {
+                <button
+                  type="button"
+                  class="employee-result"
+                  role="option"
+                  [attr.aria-selected]="
+                    registrationForm.controls.employeeId.value ===
+                    employee.id
+                  "
+                  (click)="selectEmployee(employee)"
+                >
+                  <span class="employee-result-name">
+                    {{ employee.firstName }} {{ employee.lastName }}
+                  </span>
+
+                  <span class="employee-result-details">
+                    {{ employee.id }} · {{ employee.email }}
+                  </span>
+
+                  @if (employee.departmentName) {
+                    <span class="employee-result-details">
+                      {{ employee.departmentName }}
+                    </span>
+                  }
+                </button>
+              } @empty {
+                <div class="employee-empty-state" role="status">
+                  No matching active employees found.
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <p id="employee-help" class="field-help">
+          Search by employee name, ID, or email. Select a result to continue.
+        </p>
+
+        @if (
+          registrationForm.controls.employeeId.touched &&
+          registrationForm.controls.employeeId.hasError('required')
+        ) {
+          <p id="employee-error" class="field-error">
+            Please select an employee.
+          </p>
+        }
+
+        @if (isLoadingEmployees) {
+          <p class="field-help" role="status">
+            Loading employees...
+          </p>
+        }
+
+        @if (!isLoadingEmployees && employees.length === 0 && !errorMessage) {
+          <p class="field-help">
+            No active employees are available for registration.
+          </p>
+        }
+      </div>
+
+      <!-- Role Selection -->
+      <div class="form-field">
+        <label>
+          Access role <span class="required">*</span>
+        </label>
+
+        <div class="role-options">
+          @for (role of roles; track role.value) {
+            <label class="role-option">
+              <input
+                type="radio"
+                formControlName="role"
+                [value]="role.value"
+              />
+
+              <span class="role-option-content">
+                <span class="role-option-title">
+                  {{ role.label }}
+                </span>
+
+                <span class="role-option-description">
+                  @if (role.value === 'ADMIN') {
+                    Access to administrative features.
+                  } @else {
+                    Front-desk visitor registration and check-in access.
+                  }
+                </span>
+              </span>
+            </label>
+          }
+        </div>
+
+        <p class="field-help">
+          The assigned role determines the user's application permissions.
+        </p>
+
+        @if (
+          registrationForm.controls.role.touched &&
+          registrationForm.controls.role.hasError('required')
+        ) {
+          <p class="field-error">Please select a role.</p>
+        }
+      </div>
+
+      <!-- Onboarding Information -->
+      <div class="info-note">
+        <span class="info-icon" aria-hidden="true">i</span>
+        <p>
+          The system generates a temporary password and sends onboarding
+          information to the employee's registered email address.
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancel()"
+          [disabled]="isSubmitting"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="
+            isSubmitting ||
+            isLoadingEmployees ||
+            employees.length === 0
+          "
+        >
+          @if (isSubmitting) {
+            Creating account...
+          } @else {
+            Create account
+          }
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

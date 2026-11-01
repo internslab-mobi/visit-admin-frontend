@@ -1,0 +1,410 @@
+/* ============================================
+   VMS — Soft Blue-Gray Sidebar
+============================================ */
+
+:host {
+  display: block;
+
+  flex: 0 0 250px;
+
+  width: 250px;
+  height: 100%;
+
+  min-height: 0;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+}
+
+
+/* ============================================
+   Sidebar
+============================================ */
+
+.sidebar {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+
+  min-height: 0;
+
+  box-sizing: border-box;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  padding: 18px 16px 18px;
+
+  background: #eaf0f7;
+
+  color: #1e293b;
+
+  border-right: 1px solid #d8e1ed;
+
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+
+  scrollbar-width: thin;
+  scrollbar-color: #c0ccdc transparent;
+}
+
+
+/* ============================================
+   Navigation Container
+============================================ */
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  flex: 1;
+
+  min-height: 0;
+}
+
+
+/* ============================================
+   Navigation Section Label
+============================================ */
+
+.nav-section-label {
+  padding: 13px 12px 10px;
+
+  color: #718198;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.4px;
+
+  line-height: 1.4;
+}
+
+
+/* ============================================
+   Navigation Items
+============================================ */
+
+.nav-item {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  width: 100%;
+  min-height: 47px;
+
+  padding: 10px 13px;
+
+  box-sizing: border-box;
+
+  border: 1px solid transparent;
+  border-radius: 11px;
+
+  color: #475569;
+
+  background: transparent;
+
+  text-decoration: none;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 550;
+
+  line-height: 1.4;
+
+  cursor: pointer;
+
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+
+/* ============================================
+   Navigation Label
+============================================ */
+
+.nav-label {
+  flex: 1;
+
+  min-width: 0;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================
+   Navigation Icons
+============================================ */
+
+.nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 23px;
+
+  width: 23px;
+  height: 23px;
+
+  color: #71839c;
+
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.nav-icon svg {
+  display: block;
+
+  width: 21px;
+  height: 21px;
+}
+
+
+/* ============================================
+   Hover State
+============================================ */
+
+.nav-item:not(.nav-disabled):hover {
+  color: #1d4ed8;
+
+  background: #dce8f7;
+
+  border-color: #d0def0;
+
+  transform: translateX(2px);
+}
+
+.nav-item:not(.nav-disabled):hover .nav-icon {
+  color: #2563eb;
+}
+
+
+/* ============================================
+   Active Route
+============================================ */
+
+.nav-item.active {
+  color: #1d4ed8;
+
+  background: #dce8fa;
+
+  border-color: #c8daf5;
+
+  box-shadow:
+    inset 3px 0 0 #3b82f6,
+    0 2px 6px rgba(37, 99, 235, 0.04);
+}
+
+.nav-item.active .nav-icon {
+  color: #2563eb;
+}
+
+.nav-item.active .nav-label {
+  font-weight: 700;
+}
+
+.nav-item.active .nav-indicator {
+  width: 6px;
+  height: 6px;
+
+  flex: 0 0 6px;
+
+  border-radius: 50%;
+
+  background: #3b82f6;
+
+  box-shadow:
+    0 0 6px rgba(59, 130, 246, 0.25);
+}
+
+
+/* ============================================
+   Navigation Divider
+============================================ */
+
+.nav-divider {
+  height: 1px;
+
+  flex-shrink: 0;
+
+  margin: 15px 10px 7px;
+
+  background: #d5dfeb;
+}
+
+
+/* ============================================
+   Disabled Navigation
+============================================ */
+
+.nav-disabled {
+  color: #94a3b8;
+
+  cursor: not-allowed;
+
+  opacity: 0.65;
+}
+
+.nav-disabled .nav-icon {
+  color: #94a3b8;
+}
+
+.coming-soon {
+  padding: 3px 7px;
+
+  color: #64748b;
+
+  background: #e2e8f0;
+
+  border: 1px solid #d5dfeb;
+
+  border-radius: 5px;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.2px;
+}
+
+
+/* ============================================
+   Sidebar Footer / Workspace Card
+============================================ */
+
+.sidebar-footer {
+  display: none;
+}
+
+
+/* ============================================
+   Keyboard Accessibility
+============================================ */
+
+.nav-item:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 3px;
+}
+
+
+/* ============================================
+   Sidebar Scrollbar
+============================================ */
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #c0ccdc;
+
+  border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+/* ============================================
+   Responsive Sidebar
+============================================ */
+
+@media (max-width: 1024px) {
+
+  :host {
+    flex-basis: 230px;
+    width: 230px;
+  }
+
+  .sidebar {
+    padding: 18px 13px 16px;
+  }
+
+  .nav-item {
+    gap: 11px;
+
+    padding-left: 11px;
+    padding-right: 11px;
+
+    font-size: 12px;
+  }
+}
+
+
+/* ============================================
+   Compact Mobile Sidebar
+============================================ */
+
+@media (max-width: 650px) {
+
+  :host {
+    flex-basis: 68px;
+    width: 68px;
+  }
+
+  .sidebar {
+    padding: 20px 8px 12px;
+  }
+
+  .nav-section-label,
+  .nav-label,
+  .nav-indicator,
+  .coming-soon,
+  .nav-divider {
+    display: none;
+  }
+
+  .nav-item {
+    justify-content: center;
+
+    gap: 0;
+
+    min-height: 46px;
+
+    padding: 8px 0;
+  }
+
+  .nav-icon {
+    flex-basis: 24px;
+  }
+
+  .nav-item.active {
+    box-shadow:
+      inset 3px 0 0 #3b82f6;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+}
+
+
+/* ============================================
+   Reduced Motion
+============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .nav-item,
+  .nav-icon {
+    transition: none;
+  }
+}

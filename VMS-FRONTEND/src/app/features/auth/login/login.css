@@ -1,0 +1,607 @@
+
+/* =========================================================
+   1. GLOBAL STYLES
+   Establish consistent sizing and page defaults.
+   ========================================================= */
+
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   2. PAGE LAYOUT
+   Two balanced columns on desktop.
+   ========================================================= */
+
+.login-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  background: #ffffff;
+  color: #172033;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+
+/* =========================================================
+   3. LEFT VISUAL PANEL
+   Soft lavender instead of bright blue or grey.
+   ========================================================= */
+
+.visual-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 44px clamp(28px, 5vw, 72px);
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 15% 15%,
+      rgba(255, 255, 255, 0.9),
+      transparent 42%
+    ),
+    linear-gradient(145deg, #f0effb 0%, #e5e3f7 100%);
+}
+
+
+/* Desktop brand layout */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+/* Shared brand mark */
+.brand-mark {
+  display: flex;
+  flex: 0 0 42px;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #2457d6;
+  color: #ffffff;
+  font-size: 21px;
+  font-weight: 750;
+  box-shadow: 0 5px 14px rgba(36, 87, 214, 0.18);
+}
+
+
+/* Brand title */
+.brand h1 {
+  margin: 0;
+  color: #172033;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+
+/* Brand subtitle */
+.brand p {
+  margin: 3px 0 0;
+  color: #626b80;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   4. LEFT PANEL INTRODUCTION
+   Keep the content simple and easy to scan.
+   ========================================================= */
+
+.visual-content {
+  width: 100%;
+  max-width: 470px;
+  margin: 64px 0;
+}
+
+
+/* Small introduction label */
+.visual-label {
+  margin: 0 0 20px;
+  color: #2457d6;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 1.8px;
+}
+
+
+/* Main visual heading */
+.visual-content h2 {
+  margin: 0;
+  color: #202744;
+  font-size: clamp(34px, 4vw, 52px);
+  font-weight: 750;
+  letter-spacing: -1.8px;
+  line-height: 1.12;
+}
+
+
+/* Supporting introduction */
+.visual-description {
+  max-width: 360px;
+  margin: 22px 0 0;
+  color: #626b80;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+
+/* Left panel footer */
+.visual-footer {
+  color: #737b90;
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   5. RIGHT LOGIN PANEL
+   Center the form without stretching it.
+   ========================================================= */
+
+.login-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 48px 24px;
+  background: #ffffff;
+}
+
+
+/* Main content width */
+.login-content {
+  width: 100%;
+  max-width: 420px;
+}
+
+
+/* =========================================================
+   6. MOBILE BRAND
+   Hidden on desktop and displayed on smaller screens.
+   ========================================================= */
+
+.mobile-brand {
+  display: none;
+}
+
+
+/* =========================================================
+   7. WELCOME HEADING
+   ========================================================= */
+
+.welcome {
+  margin-bottom: 32px;
+}
+
+
+/* Small heading label */
+.eyebrow {
+  margin: 0 0 12px;
+  color: #2457d6;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 1.7px;
+}
+
+
+/* Main login heading */
+.welcome h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 32px;
+  font-weight: 750;
+  letter-spacing: -0.9px;
+  line-height: 1.2;
+}
+
+
+/* Login heading subtitle */
+.subtitle {
+  margin: 12px 0 0;
+  color: #747d90;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   8. FORM FIELDS
+   Consistent labels, inputs and focus states.
+   ========================================================= */
+
+form {
+  width: 100%;
+}
+
+
+/* Each field group */
+.form-field {
+  margin-bottom: 22px;
+}
+
+
+/* Input labels */
+.form-field label {
+  display: block;
+  margin-bottom: 9px;
+  color: #273247;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+
+/* Text inputs */
+.form-field input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #dce1eb;
+  border-radius: 8px;
+  outline: none;
+  background: #ffffff;
+  color: #172033;
+  font: inherit;
+  font-size: 14px;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+
+/* Input placeholder */
+.form-field input::placeholder {
+  color: #a0a8b7;
+}
+
+
+/* Focus state */
+.form-field input:focus {
+  border-color: #2457d6;
+  box-shadow: 0 0 0 3px rgba(36, 87, 214, 0.11);
+}
+
+
+/* Disabled input state */
+.form-field input:disabled {
+  cursor: not-allowed;
+  background: #f7f8fb;
+  color: #737b90;
+}
+
+
+/* Invalid input state */
+.form-field input[aria-invalid="true"] {
+  border-color: #c94343;
+}
+
+
+/* Field-level validation message */
+.field-error {
+  margin: 7px 0 0;
+  color: #b42318;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   9. FORGOT PASSWORD LINK
+   ========================================================= */
+
+.forgot-password {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 11px;
+}
+
+
+/* Link appearance */
+.forgot-password a {
+  color: #2457d6;
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+
+/* Link hover and keyboard focus */
+.forgot-password a:hover,
+.forgot-password a:focus-visible {
+  color: #1944b2;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
+/* =========================================================
+   10. LOGIN ERROR MESSAGE
+   Compact, readable and aligned with the form.
+   ========================================================= */
+
+.error-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid #f2caca;
+  border-radius: 8px;
+  background: #fff5f5;
+  color: #a32626;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+
+/* Error icon */
+.error-icon {
+  display: inline-flex;
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+
+/* =========================================================
+   11. SIGN IN BUTTON
+   Keep the requested bright blue accent.
+   ========================================================= */
+
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 49px;
+  margin-top: 2px;
+  padding: 0 16px;
+  border: 1px solid #2457d6;
+  border-radius: 8px;
+  background: #2457d6;
+  color: #ffffff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+
+/* Button hover state */
+.login-button:hover:not(:disabled) {
+  border-color: #1944b2;
+  background: #1944b2;
+}
+
+
+/* Keyboard focus */
+.login-button:focus-visible {
+  outline: 3px solid rgba(36, 87, 214, 0.3);
+  outline-offset: 3px;
+}
+
+
+/* Disabled button */
+.login-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+
+/* Loading indicator */
+.loading-indicator {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: login-spin 700ms linear infinite;
+}
+
+
+/* Loading animation */
+@keyframes login-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   12. SECURITY NOTE
+   ========================================================= */
+
+.security-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 26px 0 0;
+  color: #828a9b;
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+
+/* =========================================================
+   13. RESPONSIVE LAYOUT
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .login-page {
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .visual-panel {
+    display: none;
+  }
+
+  .login-panel {
+    justify-content: center;
+    padding: 28px 20px;
+  }
+
+  .mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto 30px;
+  }
+
+  .mobile-brand .brand-mark {
+    flex-shrink: 0;
+  }
+
+  .mobile-brand h1 {
+    margin: 0;
+    color: #172033;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .mobile-brand p {
+    margin: 3px 0 0;
+    color: #626b80;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .login-content {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .welcome {
+    margin-bottom: 26px;
+  }
+
+  .welcome h2 {
+    font-size: 29px;
+    letter-spacing: -0.7px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .form-field {
+    margin-bottom: 19px;
+  }
+
+  .form-field input {
+    min-height: 48px;
+  }
+
+  .login-button {
+    min-height: 49px;
+  }
+
+  .security-note {
+    margin-top: 22px;
+  }
+}
+
+/* =========================================================
+   14. SMALL MOBILE SCREENS
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .login-panel {
+    padding: 22px 16px;
+  }
+
+  .mobile-brand {
+    margin-bottom: 25px;
+  }
+
+  .welcome {
+    margin-bottom: 22px;
+  }
+
+  .welcome h2 {
+    font-size: 26px;
+  }
+
+  .form-field {
+    margin-bottom: 17px;
+  }
+
+  .security-note {
+    margin-top: 18px;
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   15. SHORT MOBILE SCREENS
+   ========================================================= */
+
+@media (max-width: 760px) and (max-height: 700px) {
+  .login-panel {
+    justify-content: flex-start;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .mobile-brand {
+    margin-bottom: 20px;
+  }
+
+  .welcome {
+    margin-bottom: 20px;
+  }
+
+  .welcome h2 {
+    font-size: 26px;
+  }
+
+  .subtitle {
+    margin-top: 8px;
+  }
+
+  .form-field {
+    margin-bottom: 15px;
+  }
+
+  .security-note {
+    margin-top: 16px;
+  }
+}

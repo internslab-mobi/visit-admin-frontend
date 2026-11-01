@@ -1,0 +1,32 @@
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+
+  overflow: hidden;
+  background: #f5f7fb;
+}
+
+/* Area between header and footer */
+.admin-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+
+  overflow: hidden;
+}
+
+/* Main page scrolls independently */
+.admin-content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+
+  padding: 30px 32px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
