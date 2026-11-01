@@ -899,8 +899,10 @@ font-family: monospace;
 .pagination-controls {
   display: flex;
   align-items: center;
-
-  gap: 10px;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-left: auto;
+  width: fit-content;
 }
 
 .pagination-button {

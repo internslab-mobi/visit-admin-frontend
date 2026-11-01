@@ -949,10 +949,11 @@ tbody tr:last-child td {
 
 .pagination-controls {
   display: flex;
-
   align-items: center;
-
+  justify-content: flex-end;
   gap: 12px;
+  margin-left: auto;
+  width: fit-content;
 }
 
 .pagination-button {

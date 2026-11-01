@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -24,9 +23,8 @@ export class QrScannerComponent {
   isProcessing = false;
 
   private cdr=inject(ChangeDetectorRef);
-  constructor(
-    private qrScannerService: QrScannerService
-  ) {}
+ 
+  private qrScannerService = inject(QrScannerService);
 
   simulateScan(): void {
     const qrToken = this.token.trim();
@@ -76,6 +74,8 @@ export class QrScannerComponent {
 
         if (typeof body === 'string' && body.trim()) {
           this.errorMessage = body;
+
+          
         } else if (body && typeof body === 'object') {
           this.errorMessage =
             body.message ??
@@ -91,6 +91,8 @@ export class QrScannerComponent {
         }
 
         this.isProcessing = false;
+         this.cdr.detectChanges();
+
       }
     });
   }

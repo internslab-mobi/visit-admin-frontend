@@ -1,26 +1,8 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectorRef,
-  inject
-} from '@angular/core';
-
+import {Component,OnInit,ChangeDetectorRef,inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
-import {
-  VendorService,
-  VendorResponse
-} from '../../../core/services/vendor/vendor.service';
-import {
-  FilterPanelComponent,
-  FilterOption
-} from '../../../shared/components/filter-panel/filter-panel';
-
-
-
-  //  VENDOR RECORD
-
+import {VendorService,VendorResponse} from '../../../core/services/vendor/vendor.service';
+import {FilterPanelComponent,FilterOption} from '../../../shared/components/filter-panel/filter-panel';
 
 interface VendorRecord {
 
@@ -40,11 +22,6 @@ interface VendorRecord {
 
 }
 
-
-
-  //  COMPONENT
-
-
 @Component({
 
   selector: 'app-vendor-list',
@@ -63,63 +40,32 @@ interface VendorRecord {
 })
 export class VendorListComponent implements OnInit {
 
+  private readonly vendorService =inject(VendorService);
 
-  
-    //  SERVICES
-  
+  private readonly changeDetectorRef =inject(ChangeDetectorRef);
 
-  private readonly vendorService =
-    inject(VendorService);
-
-  private readonly changeDetectorRef =
-    inject(ChangeDetectorRef);
-
-  private readonly router =
-    inject(Router);
-
-
-  
-    //  STATE
-  
+  private readonly router =inject(Router);
 
   vendorRecords: VendorRecord[] = [];
 
   loading = true;
 
   errorMessage = '';
-
-
-  
-    //  FILTERS
-  
-
+//  FILTERS
   searchText = '';
 
   fromDate = '';
 
   toDate = '';
-
-
-  
-    //  SORTING
-  
-
+//  SORTING
   sortBy = 'name';
 
   sortDirection: 'asc' | 'desc' = 'asc';
-
-
-  
-    //  PAGINATION
-  
-
+//  PAGINATION
   currentPage = 1;
 
   pageSize = 10;
-
-
-  
-    //  INITIALIZATION
+//  INITIALIZATION
   
 
   ngOnInit(): void {
@@ -128,8 +74,6 @@ export class VendorListComponent implements OnInit {
 
   }
 
-
-  
     //  LOAD VENDORS
   
 
@@ -139,8 +83,7 @@ export class VendorListComponent implements OnInit {
 
     this.errorMessage = '';
 
-    this.vendorService
-      .getVendors()
+    this.vendorService.getVendors()
       .subscribe({
 
         next: (vendors) => {
@@ -150,10 +93,7 @@ export class VendorListComponent implements OnInit {
             vendors
           );
 
-          this.vendorRecords =
-            vendors.map(vendor =>
-              this.mapToVendorRecord(vendor)
-            );
+          this.vendorRecords =vendors.map(vendor =>this.mapToVendorRecord(vendor));
 
           console.log(
             'VENDOR RECORDS:',
@@ -165,7 +105,6 @@ export class VendorListComponent implements OnInit {
           this.changeDetectorRef.markForCheck();
 
         },
-
 
         error: (error) => {
 
@@ -188,9 +127,6 @@ export class VendorListComponent implements OnInit {
       });
 
   }
-
-
-  
     //  MAP API RESPONSE
   
 
@@ -204,8 +140,7 @@ export class VendorListComponent implements OnInit {
 
       visitorId: vendor.visitorId,
 
-      name:
-        `${vendor.firstName} ${vendor.lastName}`,
+      name:`${vendor.firstName} ${vendor.lastName}`,
 
       email: vendor.email,
 
@@ -221,8 +156,6 @@ export class VendorListComponent implements OnInit {
 
   }
 
-
-  
     //  FILTER + SORT
   
 
@@ -234,12 +167,8 @@ export class VendorListComponent implements OnInit {
         .trim();
 
 
-    let vendors =
-      this.vendorRecords.filter(vendor => {
-
-
-        
-          //  SEARCH
+    let vendors =this.vendorRecords.filter(vendor => {
+      //  SEARCH
         
 
         const matchesSearch =
@@ -341,63 +270,40 @@ export class VendorListComponent implements OnInit {
 
         case 'name':
 
-          comparison =
-            a.name.localeCompare(
-              b.name
-            );
+          comparison =a.name.localeCompare(b.name);
 
           break;
 
 
         case 'company':
 
-          comparison =
-            a.company.localeCompare(
-              b.company
-            );
+          comparison =a.company.localeCompare(b.company);
 
           break;
 
 
-        case 'validity':
+        // case 'validity':
 
-          comparison =
-            (
-              a.validity || ''
-            ).localeCompare(
-              b.validity || ''
-            );
+        //   comparison =(a.validity || '').localeCompare(b.validity || '');
 
-          break;
+        //   break;
 
 
-        case 'id':
-
-          comparison =
-            a.id.localeCompare(
-              b.id
-            );
+        case 'id':comparison =a.id.localeCompare(b.id);
 
           break;
 
 
         case 'visitorId':
 
-          comparison =
-            a.visitorId.localeCompare(
-              b.visitorId
-            );
+          comparison =a.visitorId.localeCompare(b.visitorId);
 
           break;
 
       }
 
 
-      return this.sortDirection === 'asc'
-
-        ? comparison
-
-        : -comparison;
+      return this.sortDirection === 'asc'? comparison: -comparison;
 
     });
 
@@ -406,8 +312,6 @@ export class VendorListComponent implements OnInit {
 
   }
 
-
-  
     //  PAGINATION
   
 
@@ -443,9 +347,7 @@ export class VendorListComponent implements OnInit {
 
   get startRecord(): number {
 
-    if (
-      this.filteredVendors.length === 0
-    ) {
+    if (this.filteredVendors.length === 0) {
 
       return 0;
 
@@ -475,8 +377,6 @@ export class VendorListComponent implements OnInit {
 
   }
 
-
-  
     //  FILTER CHANGE
   
 
@@ -486,8 +386,6 @@ export class VendorListComponent implements OnInit {
 
   }
 
-
-  
     //  SORT CHANGE
   
 
@@ -497,8 +395,6 @@ export class VendorListComponent implements OnInit {
 
   }
 
-
-  
     //  PREVIOUS PAGE
   
 
@@ -512,8 +408,6 @@ export class VendorListComponent implements OnInit {
 
   }
 
-
-  
     //  NEXT PAGE
   
 
@@ -530,8 +424,6 @@ export class VendorListComponent implements OnInit {
 
   }
 
-
-  
     //  CLEAR FILTERS
   
 
@@ -551,10 +443,6 @@ export class VendorListComponent implements OnInit {
 
   }
 
-
- 
-
-  
     //  TOTAL
   
 
@@ -563,10 +451,7 @@ export class VendorListComponent implements OnInit {
     return this.vendorRecords.length;
 
   }
-
-
-  
-    //  VALIDITY STATUS
+//  VALIDITY STATUS
   
 
   getValidityStatus(

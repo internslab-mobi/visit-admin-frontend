@@ -40,15 +40,15 @@ export class VisitorService {
     );
   }
 
-  findVisitorByContact(
-  email: string,
-  mobileNumber: string
-): Observable<VisitorResponse> {
-  return this.http.get<VisitorResponse>(
-    `${this.apiUrl}/lookup`,
-    {
-      params: { email, mobileNumber }
-    }
-  );
-}
+//   findVisitorByContact(
+//   email: string,
+//   mobileNumber: string
+// ): Observable<VisitorResponse> {
+//   return this.http.get<VisitorResponse>(
+//     `${this.apiUrl}/lookup`,
+//     {
+//       params: { email, mobileNumber }
+//     }
+//   );
+// }
 }

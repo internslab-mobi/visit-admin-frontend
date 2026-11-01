@@ -6,7 +6,6 @@ import {VendorService,VendorEditResponse} from '../../../core/services/vendor/ve
 import {NdaDocumentService} from '../../../core/services/document/nda-document.service';
 import {ProofDocumentService} from '../../../core/services/document/proof-document.service';
 import { DocumentResponse } from '../../../core/models/document/DocumentResponse';
-//import { API_CONFIG } from '../../../../environments/environment.dev';
 import { DocumentService } from '../../../core/services/document/document.service';
 
 @Component({
@@ -36,8 +35,7 @@ export class VendorEditComponent implements OnInit {
 
   private readonly proofDocumentService = inject(ProofDocumentService);
 
- // readonly apiBaseUrl =API_CONFIG.BASE_URL;
-
+ 
 
   vendorId = '';
 
@@ -55,7 +53,6 @@ export class VendorEditComponent implements OnInit {
 
   saving = false;
 
-  //activeModal: string | null = null;
   documents: DocumentResponse[] = [];
 
   pendingDocuments: File[] = [];
@@ -63,13 +60,6 @@ export class VendorEditComponent implements OnInit {
   showVisitHistory = false;
 
   showAllNdas = false;
-
- // showBlacklistModal = false;
-
- // blacklistReason = '';
-
- // blacklistLoading = false;
-
 
   showExtendNdaModal = false;
 
@@ -140,14 +130,10 @@ ndaExtendError = '';
 
     this.ndaLoading = true;
 
-    this.ndaDocumentService
-      .getLatestNda(visitorId)
+    this.ndaDocumentService.getLatestNda(visitorId)
       .subscribe({
 
         next: (response) => {
-// console.log('LATEST NDA RESPONSE:', response);
-//   console.log('VALID FROM:', response.effective_validity);
-//   console.log('CREATED AT:', response.createdAt);
           this.latestNda = response;
 
           this.ndaLoading = false;
@@ -156,11 +142,6 @@ ndaExtendError = '';
         },
 
         error: (error) => {
-
-          // console.error(
-          //   'Failed to load latest NDA:',
-          //   error
-          // );
 
           this.latestNda = null;
 
@@ -171,8 +152,7 @@ ndaExtendError = '';
 
       });
 
-    this.ndaDocumentService
-      .getNdaHistory(visitorId)
+    this.ndaDocumentService.getNdaHistory(visitorId)
       .subscribe({
 
         next: (response) => {
@@ -254,9 +234,7 @@ onSupportingNdaSelected(
 
   const input =event.target as HTMLInputElement;
 
-  if (
-    !input.files ||input.files.length === 0
-  ) {
+  if (!input.files ||input.files.length === 0) {
     return;
   }
 
@@ -312,8 +290,7 @@ extendNdaValidity(): void {
   this.extendingNda = true;
   this.ndaExtendError = '';
 
-  this.ndaDocumentService
-    .extendNdaValidity(
+  this.ndaDocumentService.extendNdaValidity(
       this.vendorData.visitor.id,
       this.supportingNdaDocument,
       this.newNdaValidUntil
@@ -343,19 +320,6 @@ extendNdaValidity(): void {
     });
 }
 
-  // openBlacklistModal(): void {
-
-  //   this.blacklistReason = '';
-
-  //   this.showBlacklistModal = true;
-  // }
-
-  // closeBlacklistModal(): void {
-
-  //   this.showBlacklistModal = false;
-
-  //   this.blacklistReason = '';
-  // }
 
   get isBlacklisted(): boolean {
     return this.vendorData?.blacklisted ?? false;
@@ -370,21 +334,12 @@ extendNdaValidity(): void {
   get ndaStatus(): string {
   return this.latestNda?.status ?? 'NO NDA';
 }
-  // get ndaStatusClass(): string {
-
-  //   return this.ndaStatus
-  //     .toLowerCase()
-  //     .replaceAll(' ', '-');
-  // }
 
   get ndaValidUntil(): string | null {
+    console.log('NDA Valid Until:', this.latestNda?.validUntil);
     return this.latestNda?.validUntil ?? null;
   }
 
-  // get ndaSignedDate(): string | null {
-
-  //   return this.latestNda?.createdAt ?? null;
-  // }
 
   get ndaValidFrom(): string | null {
   return this.latestNda?.effective_validity ?? null;
@@ -398,14 +353,8 @@ extendNdaValidity(): void {
     this.viewDocument(documentId);
   }
 
-  // changePhoto(): void {
-
-  //   console.log(
-  //     'Change photo clicked'
-  //   );
-  // }
-
- saveChanges(): void {if (!this.vendorData || this.saving) {
+  saveChanges(): void {
+    if (!this.vendorData || this.saving) {
     return;
   }
 
@@ -416,8 +365,7 @@ extendNdaValidity(): void {
   this.saving = true;
   this.errorMessage = '';
 
-  this.proofDocumentService
-    .uploadProofDocuments(
+  this.proofDocumentService.uploadProofDocuments(
       this.vendorData.visitor.id,
       this.pendingDocuments
     )
@@ -460,31 +408,6 @@ private loadDocuments(): void {
   });
 }
 
-//   getNdaHistoryStatus(nda: DocumentResponse): string {
-
-//   // Another NDA replaced this document
-//   if (nda.overwrittenBy) {
-//     return 'OVERRIDDEN';
-//   }
-
-//   // No replacement and validity has ended
-//   if (!nda.validUntil) {
-//     return 'EXPIRED';
-//   }
-
-//   const today = new Date();
-//   today.setHours(0, 0, 0, 0);
-
-//   const expiryDate = new Date(nda.validUntil);
-//   expiryDate.setHours(0, 0, 0, 0);
-
-//   // Valid-until date has reached/passed
-//   if (expiryDate <= today) {
-//     return 'EXPIRED';
-//   }
-
-//   return 'CURRENT';
-// }
   cancel(): void {
 
     this.router.navigate([
@@ -532,27 +455,7 @@ const datePart = value.split('T')[0];
     minute: '2-digit'
   });
 }
-  // downloadDocument(
-  //   documentId: string
-  // ): void {
-
-  //   const url =
-  //     `${this.apiBaseUrl}/api/documents/${documentId}/view`;
-
-  //   const link =
-  //     document.createElement('a');
-
-  //   link.href = url;
-
-  //   link.download = '';
-
-  //   document.body.appendChild(link);
-
-  //   link.click();
-
-  //   document.body.removeChild(link);
-  // }
-
+  
   
 uploadDocuments(event: Event): void {
   const input = event.target as HTMLInputElement;
@@ -572,26 +475,6 @@ uploadDocuments(event: Event): void {
   this.changeDetectorRef.markForCheck();
 }
 
-  // formatDateTime(
-  //   value: string | null
-  // ): string {
-
-  //   if (!value) {
-  //     return '-';
-  //   }
-
-  //   return new Date(value)
-  //     .toLocaleString(
-  //       'en-IN',
-  //       {
-  //         day: '2-digit',
-  //         month: 'short',
-  //         year: 'numeric',
-  //         hour: '2-digit',
-  //         minute: '2-digit'
-  //       }
-  //     );
-  // }
 
 
   removePendingDocument(index: number): void {

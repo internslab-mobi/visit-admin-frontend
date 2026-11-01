@@ -76,16 +76,10 @@
   @if (!loading && visitor) {
 
   
- 
-
-  
-    <!-- <div class="top-grid"> -->
 <div
   class="top-grid"
   [class.full-width]="!vendor && !blacklisted"
 >
-
-     
 
       <section class="card visitor-card">
 
@@ -110,11 +104,6 @@
 
 
         <div class="visitor-content">
-
-
-          <!-- ============================================
-               CURRENT PHOTO
-          ============================================= -->
 
           <div class="photo-section">
 
@@ -688,9 +677,6 @@
                   </td>
 
 
-<!-- <td>
-    {{ formatVisitDuration(visit.totalDurationSeconds, visit.status) }}
-</td> -->
 
 <td>
   <app-visit-duration

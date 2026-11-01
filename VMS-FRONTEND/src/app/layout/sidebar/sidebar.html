@@ -197,9 +197,6 @@
       </a>
     }
 
-    <!-- =======================================================
-       AUDIT & COMPLIANCE
-       ======================================================= -->
 
     <div class="nav-divider"></div>
 
@@ -231,8 +228,37 @@
       <span class="nav-label">Visitor Log</span>
       <span class="nav-indicator"></span>
     </a>
+
+    <!-- QR Scanner -->
+<a
+  routerLink="/admin/qr-scanner"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  class="nav-item"
+>
+  <span class="nav-icon">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <path d="M14 14h3v3h-3z" />
+      <path d="M20 14v2M20 20h-3M14 20v-1" />
+    </svg>
+  </span>
+
+  <span class="nav-label">QR Scanner</span>
+  <span class="nav-indicator"></span>
+</a>
   </nav>
 
+  
   <!-- Sidebar Footer -->
   <div class="sidebar-footer">
     <div class="footer-divider"></div>

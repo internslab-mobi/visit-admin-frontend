@@ -1,9 +1,5 @@
 <div class="vendor-page">
 
-
-       <!-- PAGE HEADER -->
- 
-
   <div class="page-header">
 
     <div class="header-content">
@@ -50,9 +46,6 @@
 />
 
 
-       <!-- ERROR MESSAGE -->
- 
-
   @if (errorMessage) {
 
     <div class="message-card error-message">
@@ -68,11 +61,6 @@
     </div>
 
   }
-
-
-
-       <!-- LOADING  -->
-
   @if (loading) {
 
     <div class="loading-card">
@@ -88,18 +76,10 @@
   }
 
 
- 
-       <!-- TABLE CARD -->
- 
-
   @if (!loading && !errorMessage) {
 
     <div class="vendor-table-card">
 
-
-     
-           <!-- TABLE HEADER -->
-    
 
       <div class="table-header">
 
@@ -127,18 +107,8 @@
 
         </div>
 
-
-        <!-- <div class="record-badge">
-
-          {{ filteredVendors.length }}
-
-        </div> -->
-
       </div>
 
-
-     
-           <!-- TABLE -->
        
 
       <div class="table-wrapper">
@@ -154,7 +124,7 @@
     <th>Actions</th>
   </tr>
 </thead>
-               <!-- TABLE BODY -->
+               
           
         <tbody>
   @for (
@@ -163,21 +133,18 @@
   ) {
     <tr>
 
-      <!-- VENDOR ID -->
       <td>
         <span class="id-badge">
           {{ vendor.id }}
         </span>
       </td>
 
-      <!-- VISITOR ID -->
       <td>
         <span class="visitor-id">
           {{ vendor.visitorId }}
         </span>
       </td>
 
-      <!-- VENDOR -->
       <td>
         <div class="vendor-cell">
           <div class="vendor-info">
@@ -191,8 +158,6 @@
           </div>
         </div>
       </td>
-
-      <!-- CONTACT -->
       <td>
         <div class="contact-cell">
           <span class="mobile-number">
@@ -205,7 +170,6 @@
         </div>
       </td>
 
-      <!-- COMPANY -->
       <td>
         <span
           class="company-name"
@@ -215,7 +179,6 @@
         </span>
       </td>
 
-      <!-- ACTIONS -->
       <td>
         <button
           type="button"
@@ -259,19 +222,16 @@
 
       </div>
 
-
-     
-           <!-- PAGINATION -->
      
       @if (filteredVendors.length > 0) {
 
-        <div class="pagination">
+        <!-- <div class="pagination">
 
           <div class="pagination-info">
 
-            Showing
+            Showing -->
 
-            <strong>
+            <!-- <strong>
               {{ startRecord }}
             </strong>
 
@@ -289,7 +249,7 @@
 
             vendors
 
-          </div>
+          </div> -->
 
 
           <div class="pagination-controls">
@@ -300,7 +260,7 @@
               [disabled]="currentPage === 1"
               (click)="previousPage()"
             >
-              ← Previous
+              Previous
             </button>
 
 
@@ -329,10 +289,10 @@
               "
               (click)="nextPage()"
             >
-              Next →
+              Next 
             </button>
 
-          </div>
+          
 
         </div>
 

@@ -5,17 +5,10 @@ import {
   inject
 } from '@angular/core';
 
-import { FormsModule } from '@angular/forms';
+// import { FormsModule } from '@angular/forms';
 import {Router, RouterLink } from '@angular/router';
-import {
-  VisitorService,
-  
-} from '../../../core/services/visitor/visitor.service';
-import { VisitorType } from '../../../core/models/registration/registration.model';
-import {
-  FilterPanelComponent,
-  FilterOption
-} from '../../../shared/components/filter-panel/filter-panel';
+import {VisitorService} from '../../../core/services/visitor/visitor.service';
+import {FilterPanelComponent,FilterOption} from '../../../shared/components/filter-panel/filter-panel';
 import { VisitorResponse } from '../../../core/models/visitor/visitor.model';
 interface VisitorRecord {
 
@@ -40,7 +33,7 @@ interface VisitorRecord {
   selector: 'app-visitor-list',
 
   imports: [
-    FormsModule,
+    //FormsModule,
      RouterLink,
      FilterPanelComponent
   ],
@@ -53,20 +46,14 @@ interface VisitorRecord {
 })
 export class VisitorListComponent implements OnInit {
 
-  private readonly visitorService =
-    inject(VisitorService);
+  private readonly visitorService = inject(VisitorService);
 
-  private readonly changeDetectorRef =
-    inject(ChangeDetectorRef);
-private readonly router = inject(Router);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
 
   visitorRecords: VisitorRecord[] = [];
 
-
-  
-    //  FILTERS
- 
-
+  //filters
   searchText = '';
 
   selectedVisitorType = '';
@@ -75,26 +62,20 @@ private readonly router = inject(Router);
 
   toDate = '';
 
-
-  
-    //  SORTING
+//  SORTING
  
 
   sortBy = 'lastVisitDate';
 
   sortDirection: 'asc' | 'desc' = 'desc';
 
-
-  
-    //  PAGINATION
+//  PAGINATION
  
 
   currentPage = 1;
 
   pageSize = 10;
 
-
-  
     //  INITIALIZATION
  
 
@@ -103,17 +84,12 @@ private readonly router = inject(Router);
     this.loadVisitors();
 
   }
-
-
-  
     //  LOAD VISITORS
  
 
   private loadVisitors(): void {
 
-    this.visitorService
-      .getVisitors()
-      .subscribe({
+    this.visitorService.getVisitors().subscribe({
 
         next: (visitors) => {
 
@@ -122,11 +98,7 @@ private readonly router = inject(Router);
             visitors
           );
 
-
-          this.visitorRecords =
-            visitors.map(visitor =>
-              this.mapToVisitorRecord(visitor)
-            );
+          this.visitorRecords =visitors.map(visitor =>this.mapToVisitorRecord(visitor));
 
 
           console.log(
@@ -139,7 +111,6 @@ private readonly router = inject(Router);
 
         },
 
-
         error: (error) => {
 
           console.error(
@@ -148,10 +119,8 @@ private readonly router = inject(Router);
           );
 
         }
-
       });
-
-  }
+}
 
 
   
@@ -185,25 +154,15 @@ private readonly router = inject(Router);
     };
 
   }
-
-
-  
-    //  FILTER + SORT
+//  FILTER + SORT
  
+get filteredVisitors(): VisitorRecord[] {
 
-  get filteredVisitors(): VisitorRecord[] {
+    const search =this.searchText.toLowerCase().trim();
 
-    const search =
-      this.searchText
-        .toLowerCase()
-        .trim();
+    let visitors =this.visitorRecords.filter(visitor => {
 
-
-    let visitors =
-      this.visitorRecords.filter(visitor => {
-
-
-        /* Search */
+      /* Search */
 
         const matchesSearch =
 
@@ -239,21 +198,12 @@ private readonly router = inject(Router);
 
         /* Visitor Type */
 
-        const matchesVisitorType =
-
-          !this.selectedVisitorType ||
-
-          visitor.visitorType ===
-            this.selectedVisitorType;
+        const matchesVisitorType =!this.selectedVisitorType ||visitor.visitorType ===this.selectedVisitorType;
 
 
         /* From Date */
 
-        const matchesFromDate =
-
-          !this.fromDate ||
-
-          (
+        const matchesFromDate =!this.fromDate ||(
             visitor.lastVisitDate &&
             visitor.lastVisitDate
               .substring(0, 10) >=
@@ -263,19 +213,14 @@ private readonly router = inject(Router);
 
         /* To Date */
 
-        const matchesToDate =
-
-          !this.toDate ||
-
-          (
+        const matchesToDate =!this.toDate ||(
             visitor.lastVisitDate &&
             visitor.lastVisitDate
               .substring(0, 10) <=
               this.toDate
           );
 
-
-        return (
+return (
 
           matchesSearch &&
 
@@ -302,9 +247,11 @@ private readonly router = inject(Router);
       switch (this.sortBy) {
 
         case 'name':
-
-          comparison =
-            a.name.localeCompare(
+//localeCompare() compares two strings alphabetically and returns a number indicating their order.
+//'a'.localeCompare('b') // -1
+// 'b'.localeCompare('a') // 1
+// 'a'.localeCompare('a') // 0
+          comparison =a.name.localeCompare(
               b.name
             );
 
@@ -395,24 +342,17 @@ editVisitor(visitorId: string): void {
     );
 
   }
-
-
   get totalPages(): number {
 
     return Math.ceil(
-
       this.filteredVisitors.length /
       this.pageSize
-
     );
 
   }
-
-
   get startRecord(): number {
 
-    if (
-      this.filteredVisitors.length === 0
+    if (this.filteredVisitors.length === 0
     ) {
 
       return 0;
@@ -453,9 +393,6 @@ editVisitor(visitorId: string): void {
     this.currentPage = 1;
 
   }
-
-
-  
     //  FILTER CHANGE
  
 
@@ -464,9 +401,6 @@ editVisitor(visitorId: string): void {
     this.currentPage = 1;
 
   }
-
-
-  
     //  PAGINATION
  
 
@@ -479,8 +413,6 @@ editVisitor(visitorId: string): void {
     }
 
   }
-
-
   nextPage(): void {
 
     if (
@@ -493,9 +425,6 @@ editVisitor(visitorId: string): void {
     }
 
   }
-
-
-  
     //  CLEAR FILTERS
  
 
@@ -516,9 +445,6 @@ editVisitor(visitorId: string): void {
     this.currentPage = 1;
 
   }
-
-
-  
     //  TOTAL
  
 
@@ -526,11 +452,7 @@ editVisitor(visitorId: string): void {
 
     return this.visitorRecords.length;
 
-  }
-
-
-  
-    //  DISPLAY HELPERS
+  }//  DISPLAY HELPERS
  
 
   getVisitorTypeLabel(
@@ -565,8 +487,6 @@ editVisitor(visitorId: string): void {
       return '-';
 
     }
-
-
     const visitDate =
       new Date(date);
 
@@ -581,8 +501,6 @@ editVisitor(visitorId: string): void {
     );
 
   }
-
-
   formatVisitTime(
     date: string
   ): string {
@@ -590,8 +508,7 @@ editVisitor(visitorId: string): void {
     if (!date) {
 
       return '';
-
-    }
+}
 
 
     const visitDate =

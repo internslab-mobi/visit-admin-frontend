@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
+import { finalize } from 'rxjs';//Observable complete/error/unsubscribe aagumbodhu cleanup pannum
 
 import { AuthService } from '../../../core/services/auth/auth.service';
 
@@ -45,8 +45,7 @@ export class ChangePasswordComponent {
     this.successMessage = '';
     this.isLoading = true;
 
-    this.authService
-      .changePassword({
+    this.authService.changePassword({
         currentPassword: this.currentPassword,
         newPassword: this.newPassword,
         confirmNewPassword: this.confirmNewPassword,
@@ -64,8 +63,6 @@ export class ChangePasswordComponent {
           this.currentPassword = '';
           this.newPassword = '';
           this.confirmNewPassword = '';
-
-        
           this.authService.clearSession();
           this.cdr.markForCheck();
         },

@@ -4,8 +4,8 @@ export type VisitorType =
   | 'VENDOR';
 
 export type RegistrationType =
-  | 'PRE_REGISTRATION'
-  | 'INDIA_REGISTRATION';
+  | 'PRE_REGISTRATION';
+  
 
 export type ProofType =
   | 'AADHAAR'

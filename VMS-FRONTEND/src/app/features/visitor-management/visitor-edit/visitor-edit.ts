@@ -26,26 +26,19 @@ import { ViewChild } from '@angular/core';
 })
 export class VisitorEditComponent implements OnInit {
 
-
-
-  private readonly visitorService =
-    inject(VisitorService);
+  private readonly visitorService = inject(VisitorService);
 
     //activated router gets the detail from current router
-  private readonly route =
-    inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
 //router helps to navigate to another page/router
-  private readonly router =
-    inject(Router);
+  private readonly router = inject(Router);
 
-  private readonly changeDetectorRef =
-    inject(ChangeDetectorRef);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-    private readonly blacklistService = inject(BlacklistService);
+private readonly blacklistService = inject(BlacklistService);
 private readonly authService = inject(AuthService);
 
-private readonly documentService =
-  inject(DocumentService);
+private readonly documentService = inject(DocumentService);
 
 
 
@@ -53,9 +46,7 @@ private readonly documentService =
 
   visitor: VisitorEditVisitor | null = null;
 
-  vendor: {
-    vendorId: string;
-  } | null = null;
+  vendor: {vendorId: string;} | null = null;
 
   documents: VisitorDocument[] = [];
 
@@ -85,23 +76,20 @@ isAdmin = false;
   mobileNumber = '';
 
   companyName = '';
-
-
-
   photoUrl = '';
 
 
-  
-@ViewChild(BlacklistComponent)
+  //We are getting a reference to the child component so that the parent component can access its properties and methods.
+
+//! - tells angular that the blacklist properties will get assigned later for sure
+  @ViewChild(BlacklistComponent)
 blacklistComponent!: BlacklistComponent;
 
   ngOnInit(): void {
 
-    this.isAdmin =
-  this.authService.currentUser()?.role === 'ADMIN';
+    this.isAdmin = this.authService.currentUser()?.role === 'ADMIN';
 
-    this.visitorId =
-      this.route.snapshot.paramMap.get('visitorId') ?? '';
+    this.visitorId =this.route.snapshot.paramMap.get('visitorId') ?? '';
 
     if (!this.visitorId) {
 
@@ -119,56 +107,37 @@ blacklistComponent!: BlacklistComponent;
     this.loadDocuments();
   }
 
-
-
   private loadVisitor(): void {
 
     this.loading = true;
 
-    this.visitorService
-      .getVisitorForEdit(this.visitorId)
+    this.visitorService.getVisitorForEdit(this.visitorId)
       .subscribe({
 
         next: (response) => {
 
-          this.visitor =
-            response.visitor;
+          this.visitor =response.visitor;
 
-          this.vendor =
-            response.vendor;
+          this.vendor =response.vendor;
 
-         
+         this.visits =response.visits ?? [];
 
-          this.visits =
-            response.visits ?? [];
+          this.blacklist = response.blacklist;
 
-          this.blacklist =
-            response.blacklist;
+          this.blacklisted =response.blacklisted;
 
-          this.blacklisted =
-            response.blacklisted;
+          this.firstName =response.visitor.firstName ?? '';
 
+          this.lastName =response.visitor.lastName ?? '';
 
+          this.email =response.visitor.email ?? '';
 
-          this.firstName =
-            response.visitor.firstName ?? '';
+          this.mobileNumber =response.visitor.mobileNumber ?? '';
 
-          this.lastName =
-            response.visitor.lastName ?? '';
-
-          this.email =
-            response.visitor.email ?? '';
-
-          this.mobileNumber =
-            response.visitor.mobileNumber ?? '';
-
-          this.companyName =
-            response.visitor.companyName ?? '';
+          this.companyName =response.visitor.companyName ?? '';
 
 
-          this.photoUrl =
-            this.documentService
-              .getVisitorPhotoUrl(
+          this.photoUrl =this.documentService.getVisitorPhotoUrl(
                 this.visitorId
               );
 
@@ -186,20 +155,15 @@ blacklistComponent!: BlacklistComponent;
             error
           );
 
-          this.errorMessage =
-            'Failed to load visitor details.';
+          this.errorMessage = 'Failed to load visitor details.';
 
           this.loading = false;
 
           this.changeDetectorRef.markForCheck();
 
         }
-
       });
-
   }
-
-
 
 private loadDocuments(): void {
   this.documentService.getVisitorDocuments(this.visitorId).subscribe({
@@ -216,24 +180,19 @@ private loadDocuments(): void {
 }
 
 
-
-
   saveChanges(): void {
 
     if (this.saving) {
       return;
     }
-
-
-    if (
+if (
       !this.firstName.trim() ||
       !this.lastName.trim() ||
       !this.email.trim() ||
       !this.mobileNumber.trim()
     ) {
 
-      this.errorMessage =
-        'Please fill all required fields.';
+      this.errorMessage ='Please fill all required fields.';
 
       return;
     }
@@ -247,30 +206,16 @@ private loadDocuments(): void {
 
 
     const request = {
-
-      firstName:
-        this.firstName.trim(),
-
-      lastName:
-        this.lastName.trim(),
-
-      email:
-        this.email.trim(),
-
-      mobileNumber:
-        this.mobileNumber.trim(),
-
-      companyName:
-        this.companyName.trim() || null
+      firstName: this.firstName.trim(),
+      lastName: this.lastName.trim(),
+      email: this.email.trim(),
+      mobileNumber:this.mobileNumber.trim(),
+      companyName: this.companyName.trim() || null
 
     };
 
 
-    this.visitorService
-      .updateVisitor(
-        this.visitorId,
-        request
-      )
+    this.visitorService.updateVisitor(this.visitorId,request)
       .subscribe({
 
         next: (updatedVisitor) => {
@@ -305,10 +250,8 @@ private loadDocuments(): void {
 
           this.saving = false;
 
-          this.errorMessage =
-            error?.error?.message ??
+          this.errorMessage =error?.error?.message ??   //?? -nullish colleasing - it will assign default value when the error message is not there 
             'Failed to update visitor details.';
-
           this.changeDetectorRef.markForCheck();
 
         }
@@ -316,11 +259,6 @@ private loadDocuments(): void {
       });
 
   }
-
-
-  
-
-
   cancel(): void {
 
     this.router.navigate([
@@ -328,16 +266,6 @@ private loadDocuments(): void {
     ]);
 
   }
-
-
-  
-
-
-
-  
-
-
-
 
   getRegistrationLabel(
     type: string | null
@@ -393,28 +321,6 @@ private loadDocuments(): void {
   }
 
 
-  // formatDateTime(
-  //   value: string | null
-  // ): string {
-
-  //   if (!value) {
-  //     return '-';
-  //   }
-
-  //   return new Date(value)
-  //     .toLocaleString(
-  //       'en-IN',
-  //       {
-  //         day: '2-digit',
-  //         month: 'short',
-  //         year: 'numeric',
-  //         hour: '2-digit',
-  //         minute: '2-digit'
-  //       }
-  //     );
-
-  // }
-
 
   formatDate(
   value: string | null,
@@ -454,10 +360,7 @@ private loadDocuments(): void {
       document.documentId
     );
 
-  window.open(
-    documentUrl,
-    '_blank'
-  );
+  window.open(documentUrl,'_blank');
 
 }
  

@@ -1,13 +1,7 @@
 <div class="registration-page">
 
- 
-       <!-- RIGHT FORM PANEL -->
-       
-
   <main class="form-panel">
 
-
-<!-- DATE / TIME -->
 <div class="top-date-time">
   <span>
     📅
@@ -22,9 +16,6 @@
 
 <div class="registration-card">
 
- 
-       <!-- HEADER -->
-       
   <div class="form-header">
 
     <div class="header-main">
@@ -47,11 +38,6 @@
 
   </div>
 
-
- 
-       <!-- ALERTS -->
-       
-
   <div
     *ngIf="errorMessage"
     class="alert-message error-alert"
@@ -68,18 +54,12 @@
     <span>{{ successMessage }}</span>
   </div>
 
-
- 
-       <!-- REACTIVE FORM -->
-       
-
   <form
     [formGroup]="registrationForm"
     (ngSubmit)="submitRegistration()"
     novalidate
   >
 
-  
     <section class="form-section">
 
       <div class="section-heading">
@@ -95,8 +75,6 @@
       </div>
 
       <div class="form-grid">
-
-        <!-- VISITOR TYPE -->
 
         <div class="field-group">
 
@@ -149,9 +127,6 @@
 
         </div>
 
-
-        <!-- REGISTRATION TYPE -->
-
         <div class="field-group">
 
           <label for="registrationType">
@@ -168,24 +143,16 @@
               ▣
             </span>
 
-            <select
-              id="registrationType"
-              formControlName="registrationType"
-            >
+           <div class="form-group">
+  <!-- <label for="registrationType">Registration Type</label> -->
 
-              <option value="">
-                Select Registration Type
-              </option>
-
-              <option value="PRE_REGISTRATION">
-                Pre Registration
-              </option>
-
-              <!-- <option value="ARRIVAL_REGISTRATION">
-                Arrival Registration
-              </option> -->
-
-            </select>
+  <input
+    type="text"
+    id="registrationType"
+    value="Pre Registration"
+    readonly
+  />
+</div>
 
           </div>
 
@@ -197,8 +164,6 @@
           </div>
 
         </div>
-
-        <!-- VENDOR SELECTION -->
 
         <div
           class="field-group vendor-selection-field"
@@ -279,15 +244,9 @@
 
         </div>
 
-
       </div>
 
     </section>
-
-
-   
-         <!-- 2. PERSONAL DETAILS -->
-         
 
     <section class="form-section">
 
@@ -304,8 +263,6 @@
       </div>
 
       <div class="form-grid">
-
-        <!-- FIRST NAME -->
 
         <div class="field-group">
 
@@ -343,9 +300,6 @@
 
         </div>
 
-
-        <!-- LAST NAME -->
-
         <div class="field-group">
 
           <label for="lastName">
@@ -381,9 +335,6 @@
           </div>
 
         </div>
-
-
-        <!-- EMAIL -->
 
         <div class="field-group">
 
@@ -422,9 +373,6 @@
           </div>
 
         </div>
-
-
-        <!-- MOBILE NUMBER -->
 
         <div class="field-group">
 
@@ -466,9 +414,6 @@
 
         </div>
 
-
-        <!-- COMPANY -->
-
         <div class="field-group">
 
           <label for="companyName">
@@ -503,11 +448,6 @@
 
     </section>
 
-
-   
-         <!-- 3. VISIT DETAILS -->
-         
-
     <section class="form-section">
 
       <div class="section-heading">
@@ -523,8 +463,6 @@
       </div>
 
       <div class="form-grid">
-
-        <!-- PURPOSE -->
 
         <div class="field-group">
 
@@ -560,9 +498,6 @@
           </div>
 
         </div>
-
-
-        <!-- PERSON TO MEET -->
 
         <div class="field-group">
 
@@ -600,7 +535,7 @@
                 class="employee-clear-button"
                 aria-label="Clear employee selection"
                 (mousedown)="$event.preventDefault()"
-                (click)="employeeSearchTerm = ''; registrationForm.get('hostId')?.reset(); registrationForm.patchValue({departmentName: ''}); onEmployeeSearchInput()"
+                (click)="clearEmployeeSelection()"
               >
                 ×
               </button>
@@ -654,9 +589,6 @@
 
         </div>
 
-
-        <!-- DEPARTMENT -->
-
         <div class="field-group">
 
           <label for="departmentName">
@@ -684,9 +616,6 @@
           </small>
 
         </div>
-
-
-        <!-- EXPECTED ARRIVAL -->
 
         <div class="field-group">
 
@@ -721,9 +650,6 @@
           </div>
 
         </div>
-
-
-        <!-- EXPECTED DEPARTURE -->
 
         <div class="field-group">
 
@@ -762,11 +688,6 @@
       </div>
 
     </section>
-
-
-   
-        
-         
 
     <section class="form-section">
 
@@ -811,11 +732,6 @@
 
     </section>
 
-
-   
-     <!-- 5. NATIONALITY & ID PROOF -->
-         
-
     <section class="form-section">
 
       <div class="section-heading">
@@ -850,9 +766,6 @@
         <span>Existing visitor details are loaded. Existing supporting/proof documents are shown below when available; enter the proof number below for identity verification.</span>
       </div>
 
-
-      <!-- NATIONALITY -->
-
       <div class="field-group">
 
         <label for="nationality">
@@ -875,14 +788,9 @@
             (change)="onNationalityChange()"
           >
 
-            <!-- <option value="">
-              Select Nationality
-            </option> -->
-
                <option value="" disabled>
         Select Nationality
       </option>
-
 
             <option value="INDIA">
               INDIA
@@ -905,18 +813,12 @@
 
       </div>
 
-
-     
-           <!-- INDIA - AADHAAR + PAN -->
-          
       <div
         class="id-grid"
         *ngIf="
           registrationForm.get('nationality')?.value === 'INDIA'
         "
       >
-
-        <!-- AADHAAR -->
 
         <div class="field-group">
 
@@ -954,9 +856,6 @@
           </div>
 
         </div>
-
-
-        <!-- PAN -->
 
         <div class="field-group">
 
@@ -997,10 +896,6 @@
 
       </div>
 
-
-     
-           <!-- INTERNATIONAL - PASSPORT -->
-          
       <div
         class="field-group"
         *ngIf="
@@ -1026,6 +921,7 @@
             id="passportNumber"
             type="text"
             formControlName="passportNumber"
+            minlength="6"
             maxlength="20"
             autocomplete="off"
             placeholder="Enter passport number"
@@ -1043,10 +939,6 @@
       </div>
 
     </section>
-
-
-     <!-- 6. DOCUMENTS -->
-         
 
     <section class="form-section">
 
@@ -1066,10 +958,7 @@
         Upload supporting documents if required for existing visitor, documents neccessary for new registration
       </p>
 
-
       <div class="documents-upload-section">
-
-        <!-- EXISTING VENDOR DOCUMENTS -->
 
         <div
           class="existing-vendor-documents"
@@ -1116,17 +1005,15 @@
 
         </div>
 
-        <!-- SELECTED DOCUMENTS -->
-
         <div
           class="selected-documents"
-          *ngIf="getSelectedDocuments().length > 0"
+          *ngIf="selectedDocuments.length > 0"
         >
 
           <div
             class="document-item"
             *ngFor="
-              let file of getSelectedDocuments();
+              let file of selectedDocuments;
               let i = index
             "
           >
@@ -1164,9 +1051,6 @@
 
         </div>
 
-
-        <!-- ADD DOCUMENT -->
-
         <label
           for="documents"
           class="add-document-box"
@@ -1203,11 +1087,6 @@
 
     </section>
 
-
-   
-         <!-- ACTIONS -->
-         
-
     <div class="form-actions">
 
       <button
@@ -1239,11 +1118,6 @@
 
   </form>
 
-
- 
-       <!-- SUCCESS -->
-       
-
   <section
     *ngIf="registrationSuccess && createdVisit"
     class="success-section"
@@ -1261,10 +1135,7 @@
       Your visit has been registered successfully.
     </p>
 
-
     <div class="success-details">
-
-      <!-- VISIT REFERENCE -->
 
       <div class="success-detail">
 
@@ -1278,9 +1149,6 @@
 
       </div>
 
-
-      <!-- VISITOR -->
-
       <div class="success-detail">
 
         <span>
@@ -1293,9 +1161,6 @@
         </strong>
 
       </div>
-
-
-      <!-- EXPECTED ARRIVAL -->
 
       <div class="success-detail">
 
@@ -1312,9 +1177,6 @@
 
       </div>
 
-
-      <!-- EXPECTED DEPARTURE -->
-
       <div class="success-detail">
 
         <span>
@@ -1330,9 +1192,6 @@
 
       </div>
 
-
-      <!-- STATUS -->
-
       <div class="success-detail">
 
         <span>
@@ -1347,9 +1206,6 @@
 
     </div>
 
-
-    <!-- REGISTER ANOTHER -->
-
     <button
       type="button"
       class="primary-button"
@@ -1361,7 +1217,6 @@
   </section>
 
 </div>
-
 
   </main>
 
