@@ -16,7 +16,7 @@ import {
 } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
-
+import { DocumentResponse } from '../../../core/models/document/DocumentResponse';
 import { Employee } from '../../../core/models/employee/employee.model';
 import { DocumentService } from '../../../core/services/document/document.service';
 import {
@@ -582,34 +582,53 @@ private documentService=inject(DocumentService);
     this.updateCompanyValidator();
     this.updateVendorSelectionValidator();
     this.clearMessages();
+ const visitorSubscription =
+    this.visitorService.getVisitorForEdit(vendor.visitorId).subscribe({
 
-    const subscription =
-      this.visitorService.getVisitorForEdit(vendor.visitorId).subscribe({
+      next: (details: VisitorEditResponse) => {
 
-        next: (details: VisitorEditResponse) => {
-          this.existingVendorDocuments = details.documents ?? [];
+        if (details.visitor?.nationality) {
 
-          if (details.visitor?.nationality) {
-            this.registrationForm.patchValue({
-              nationality: details.visitor.nationality
-            });
-            this.applyNationalityValidators(false);
-          }
+          this.registrationForm.patchValue({
+            nationality: details.visitor.nationality
+          });
 
-          this.isLoadingVendorDetails = false;
-          this.cdr.detectChanges();
-        },
-
-        error: (error: any) => {
-          console.error('Failed to load vendor details:', error);
-          this.isLoadingVendorDetails = false;
-          this.existingVendorDocuments = [];
-          this.errorMessage =
-            error?.error?.message ??
-            'Unable to load the selected vendor details.';
-          this.cdr.detectChanges();
+          this.applyNationalityValidators(false);
         }
-      });
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error: any) => {
+
+        console.error('Failed to load vendor visitor details:', error);
+
+      }
+    });
+
+  this.subscriptions.add(visitorSubscription);
+    const subscription =
+      this.documentService.getVisitorDocuments(vendor.visitorId).subscribe({
+
+  next: (documents: DocumentResponse[]) => {
+
+    this.existingVendorDocuments = documents ?? [];
+
+    this.isLoadingVendorDetails = false;
+    this.cdr.detectChanges();
+  },
+
+  error: (error: any) => {
+
+    console.error('Failed to load vendor documents:', error);
+
+    this.isLoadingVendorDetails = false;
+    this.existingVendorDocuments = [];
+
+    this.cdr.detectChanges();
+  }
+});
+    
 
     this.subscriptions.add(subscription);
   }
@@ -677,71 +696,90 @@ private documentService=inject(DocumentService);
     this.onNationalityChange();
   }
 
-  private loadExistingVisitor(visitor: VisitorResponse): void {
+ private loadExistingVisitor(visitor: VisitorResponse): void {
 
-    if (this.isExistingVisitor && this.selectedVisitorId === visitor.id) {
-      return;
-    }
-
-    this.selectedVisitorId = visitor.id;
-    this.isExistingVisitor = true;
-    this.isExistingVendor = false;
-    this.isCreatingNewVendor = false;
-    this.isLoadingVendorDetails = true;
-    this.existingVendorDocuments = [];
-
-    this.registrationForm.patchValue({
-      firstName: visitor.firstName,
-      lastName: visitor.lastName,
-      email: visitor.email,
-      mobileNumber: visitor.mobileNumber,
-      companyName: visitor.companyName ?? '',
-      documents: []
-    });
-
-    this.setPersonalFieldsReadonly(true);
-    this.setNationalityReadonly(true);
-    this.updateCompanyValidator();
-
-    const subscription =
-      this.visitorService.getVisitorForEdit(visitor.id).subscribe({
-
-        next: (details: VisitorEditResponse) => {
-          this.existingVendorDocuments = details.documents ?? [];
-
-          this.registrationForm.patchValue({
-            firstName: details.visitor?.firstName ?? visitor.firstName,
-            lastName: details.visitor?.lastName ?? visitor.lastName,
-            email: details.visitor?.email ?? visitor.email,
-            mobileNumber: details.visitor?.mobileNumber ?? visitor.mobileNumber,
-            companyName: details.visitor?.companyName ?? visitor.companyName ?? ''
-          });
-
-          if (details.visitor?.nationality) {
-            this.registrationForm.patchValue({
-              nationality: details.visitor.nationality
-            });
-            this.applyNationalityValidators(false);
-          }
-
-          this.isLoadingVendorDetails = false;
-          this.cdr.detectChanges();
-        },
-
-        error: (error: any) => {
-          console.error('Failed to load existing visitor details:', error);
-          this.isLoadingVendorDetails = false;
-          this.existingVendorDocuments = [];
-          this.errorMessage =
-            error?.error?.message ??
-            'Unable to load the existing visitor details.';
-          this.cdr.detectChanges();
-        }
-      });
-
-    this.subscriptions.add(subscription);
+  if (this.isExistingVisitor && this.selectedVisitorId === visitor.id) {
+    return;
   }
 
+  this.selectedVisitorId = visitor.id;
+  this.isExistingVisitor = true;
+  this.isExistingVendor = false;
+  this.isCreatingNewVendor = false;
+  this.isLoadingVendorDetails = true;
+  this.existingVendorDocuments = [];
+
+  this.registrationForm.patchValue({
+    firstName: visitor.firstName,
+    lastName: visitor.lastName,
+    email: visitor.email,
+    mobileNumber: visitor.mobileNumber,
+    companyName: visitor.companyName ?? '',
+    documents: []
+  });
+
+  this.setPersonalFieldsReadonly(true);
+  this.setNationalityReadonly(true);
+  this.updateCompanyValidator();
+
+  // 1. Fetch existing visitor details and nationality
+  const visitorSubscription =
+    this.visitorService.getVisitorForEdit(visitor.id).subscribe({
+
+      next: (details: VisitorEditResponse) => {
+
+        this.registrationForm.patchValue({
+          firstName: details.visitor?.firstName ?? visitor.firstName,
+          lastName: details.visitor?.lastName ?? visitor.lastName,
+          email: details.visitor?.email ?? visitor.email,
+          mobileNumber: details.visitor?.mobileNumber ?? visitor.mobileNumber,
+          companyName: details.visitor?.companyName ?? visitor.companyName ?? ''
+        });
+
+        if (details.visitor?.nationality) {
+
+          this.registrationForm.patchValue({
+            nationality: details.visitor.nationality
+          });
+
+          this.applyNationalityValidators(false);
+        }
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error: any) => {
+        console.error('Failed to load existing visitor details:', error);
+      }
+    });
+
+  this.subscriptions.add(visitorSubscription);
+
+  // 2. Fetch existing documents using DocumentService
+  const documentSubscription =
+    this.documentService.getVisitorDocuments(visitor.id).subscribe({
+
+      next: (documents: DocumentResponse[]) => {
+
+        this.existingVendorDocuments = documents ?? [];
+
+        this.isLoadingVendorDetails = false;
+        this.cdr.detectChanges();
+      },
+
+      error: (error: any) => {
+
+        console.error('Failed to load existing visitor documents:', error);
+
+        this.existingVendorDocuments = [];
+
+        this.isLoadingVendorDetails = false;
+        this.cdr.detectChanges();
+      }
+    });
+
+  this.subscriptions.add(documentSubscription);
+}
   createNewVendor(): void {
 
     this.selectedVendorId = null;
