@@ -201,6 +201,13 @@
                   </label>
                 </div>
 
+                @if (photoError) {
+                  <div class="inline-alert alert-error" role="alert">
+                    <span aria-hidden="true">!</span>
+                    {{ photoError }}
+                  </div>
+                }
+
                 @if (selectedPhoto) {
                   <button type="button" class="text-button" (click)="discardPhoto()">
                     Remove selected photo
@@ -328,7 +335,7 @@
             </div>
           } @else {
             <div class="identity-form">
-              @if (nationality === 'DOMESTIC') {
+              @if (nationality === 'INDIA') {
                 <div class="form-field">
                   <label for="aadharNumber">Aadhaar number</label>
                   <input

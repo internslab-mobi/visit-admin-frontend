@@ -366,8 +366,5 @@ changePassword(
   private hasAllowedRole(response: LoginResponse): boolean {
     return response.role === 'ADMIN' || response.role === 'HR';
   }
-
-
-
   
 }

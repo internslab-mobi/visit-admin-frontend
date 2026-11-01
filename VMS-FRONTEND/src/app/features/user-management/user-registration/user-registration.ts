@@ -40,7 +40,7 @@ export class UserRegistrationComponent implements OnInit {
 
   readonly roles: { value: UserRole; label: string }[] = [
     { value: 'ADMIN', label: 'Admin' },
-    { value: 'HR', label: 'Front Desk' },
+    { value: 'HR', label: 'HR' },
   ];
 
   readonly registrationForm = this.fb.nonNullable.group({

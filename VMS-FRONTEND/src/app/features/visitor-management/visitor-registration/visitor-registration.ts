@@ -933,7 +933,7 @@ private documentService=inject(DocumentService);
       passportControl?.reset(null);
     }
 
-    if (nationality === 'DOMESTIC') {
+    if (nationality === 'INDIA') {
       aadhaarControl?.setValidators([
         Validators.required,
         Validators.pattern(/^\d{12}$/)
@@ -956,9 +956,9 @@ private documentService=inject(DocumentService);
   }
 
 
-  get isDOMESTICExistingProfile(): boolean {
+  get isINDIAExistingProfile(): boolean {
     return this.isExistingProfile &&
-      this.registrationForm.get('nationality')?.value === 'DOMESTIC';
+      this.registrationForm.get('nationality')?.value === 'INDIA';
   }
 
   get isInternationalExistingProfile(): boolean {
@@ -1357,7 +1357,7 @@ formatFileSize(size: number): string {
 
   const nationality = value.nationality as Nationality | null;
 
-  if (nationality === 'DOMESTIC') {
+  if (nationality === 'INDIA') {
     
 
     if (value.aadhaarNumber) {

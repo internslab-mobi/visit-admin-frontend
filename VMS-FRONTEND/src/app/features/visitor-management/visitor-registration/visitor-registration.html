@@ -884,12 +884,12 @@
       </option>
 
 
-            <option value="DOMESTIC">
-              DOMESTIC
+            <option value="INDIA">
+              INDIA
             </option>
 
             <option value="INTERNATIONAL">
-              International
+              INTERNATIONAL
             </option>
 
           </select>
@@ -904,15 +904,13 @@
         </div>
 
       </div>
-
-
      
-           <!-- DOMESTIC- AADHAAR + PAN -->
+           <!-- INDIA- AADHAAR + PAN -->
           
       <div
         class="id-grid"
         *ngIf="
-          registrationForm.get('nationality')?.value === 'DOMESTIC'
+          registrationForm.get('nationality')?.value === 'INDIA'
         "
       >
 

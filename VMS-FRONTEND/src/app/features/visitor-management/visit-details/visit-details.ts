@@ -95,7 +95,7 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
       passportNumber?: string;
     } = {};
 
-    if (this.nationality === 'DOMESTIC') {
+    if (this.nationality === 'INDIA') {
       identityRequest.aadharNumber = this.aadharNumber;
       identityRequest.panNumber = this.panNumber;
     } else if (this.nationality === 'INTERNATIONAL') {
@@ -449,11 +449,11 @@ export class VisitDetailsComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       },
 
-      error: (error) => {
-        this.checkInError = error?.error?.message || 'Unable to check in visitor.';
+error: (error) => {
+        this.checkInError =
+          error?.error?.message || 'Photo upload failed. The file may exceed the allowed size.';
 
         this.isCheckingIn = false;
-
         this.cdr.detectChanges();
       },
     });

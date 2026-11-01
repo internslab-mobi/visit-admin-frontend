@@ -46,6 +46,7 @@ export class VisitorLogComponent implements OnInit, OnDestroy {
   ];
 
   historicalStatuses = [
+  { value: 'CHECKED_IN', label: 'Checked In' },
   { value: 'CHECKED_OUT', label: 'Checked Out' },
   { value: 'CANCELLED', label: 'Cancelled' },
   { value: 'NO_SHOW', label: 'No Show' }
@@ -208,26 +209,6 @@ closeTimeTracking(): void {
   this.trackingLoading = false;
   this.trackingError = '';
 }
-
-// formatDuration(totalSeconds: number | null | undefined): string {
-//   if (totalSeconds == null || totalSeconds < 0) {
-//     return '-';
-//   }
-
-//   const hours = Math.floor(totalSeconds / 3600);
-//   const minutes = Math.floor((totalSeconds % 3600) / 60);
-//   const seconds = totalSeconds % 60;
-
-//   if (hours > 0) {
-//     return `${hours}h ${minutes}m ${seconds}s`;
-//   }
-
-//   if (minutes > 0) {
-//     return `${minutes}m ${seconds}s`;
-//   }
-
-//   return `${seconds}s`;
-// }
 
   resetFilters(): void {
 

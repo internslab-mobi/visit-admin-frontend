@@ -36,18 +36,21 @@ private syncTimer(): void {
   ) ?? false;
 
   const shouldRun =
-    (this.sessions !== null && hasActiveSession) ||
-    (this.sessions === null &&
-      this.status === 'CHECKED_IN' &&
-      !!this.checkedInAt);
+    this.status !== 'CHECKED_OUT' &&
+    (
+      (this.sessions !== null && hasActiveSession) ||
+      (this.sessions === null &&
+        this.status === 'CHECKED_IN' &&
+        !!this.checkedInAt)
+    );
 
   if (shouldRun && !this.timerId) {
     this.currentTime = Date.now();
 
     this.timerId = setInterval(() => {
-  this.currentTime = Date.now();
-  this.cdr.detectChanges();
-}, 1000);
+      this.currentTime = Date.now();
+      this.cdr.detectChanges();
+    }, 1000);
   } else if (!shouldRun) {
     this.stopTimer();
   }
@@ -71,7 +74,7 @@ private stopTimer(): void {
   if (this.sessions !== null) {
     const totalSeconds = this.sessions.reduce(
       (total, session) => {
-        if (session.outTime !== null) {
+        if (session.outTime !== null || this.status === 'CHECKED_OUT') {
           return total + session.durationSeconds;
         }
 

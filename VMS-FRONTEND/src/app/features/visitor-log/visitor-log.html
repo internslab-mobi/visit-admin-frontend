@@ -560,6 +560,7 @@
           <strong>
   <app-visit-duration
     [sessions]="trackingData?.sessions ?? null"
+    [status]="trackingVisit.status"
   />
 </strong>
         </div>
@@ -590,6 +591,8 @@
                     <td>
                       @if (session.outTime) {
                         {{ formatDateTime(session.outTime) }}
+                      } @else if (trackingVisit.status === 'CHECKED_OUT') {
+                        <span>Missing OUT timestamp</span>
                       } @else {
                         <span class="tracking-open-status">
                           Still inside
@@ -599,7 +602,7 @@
                     <td>
   <app-visit-duration
     [totalSeconds]="session.durationSeconds"
-    [status]="session.outTime ? 'CHECKED_OUT' : 'CHECKED_IN'"
+    [status]="trackingVisit.status"
     [checkedInAt]="session.inTime"
   />
 </td>
